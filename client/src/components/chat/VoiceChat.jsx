@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { RealtimeAgent, RealtimeSession } from '@openai/agents/realtime'
 import { fileSearchTool } from '@openai/agents-openai'
 import { createVoiceSession } from '@/lib/api.js'
@@ -10,6 +10,9 @@ import { Mic, MicOff, Loader2, Volume2, RefreshCw } from 'lucide-react'
 const DEFAULT_NAME = "Tim's AI Assistant"
 const DEFAULT_GREETING =
   "Hi there! I'm Tim's AI assistant. Ask how AI can accelerate your business and I'll tailor recommendations for SMB leaders."
+const LOCKED_VOICE = 'marin'
+const VOICE_OPENING_DIRECTIVE =
+  "Always open a fresh voice session by speaking first: greet the listener, introduce yourself as Tim's AI assistant, explain you can draw on Tim's consulting playbook, and invite their first question. Keep it warm and concise."
 
 function toRealtimeHistory(messages) {
   const items = []
@@ -89,32 +92,24 @@ function reduceHistoryToMessages(history) {
   return output
 }
 
-export function VoiceChat({
-  instructions,
-  messages,
-  vectorStoreId,
-  realtimeModel,
-  voices = [],
-  onConversationUpdate
-}) {
+export function VoiceChat({ instructions, messages, vectorStoreId, realtimeModel, onConversationUpdate }) {
   const [status, setStatus] = useState('idle')
   const [error, setError] = useState(null)
-  const [selectedVoice, setSelectedVoice] = useState(() => voices?.[0] || 'alloy')
   const [transcript, setTranscript] = useState('')
   const sessionRef = useRef(null)
 
-  useEffect(() => {
-    return () => {
-      teardown()
+  const voiceInstructions = useMemo(() => {
+    if (!instructions || instructions.trim().length === 0) {
+      return VOICE_OPENING_DIRECTIVE
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
-  useEffect(() => {
-    if (voices && voices.length > 0) {
-      setSelectedVoice((current) => (voices.includes(current) ? current : voices[0]))
+    const normalized = instructions.trim()
+    if (normalized.includes(VOICE_OPENING_DIRECTIVE)) {
+      return normalized
     }
-  }, [voices])
+
+    return `${normalized}\n\n${VOICE_OPENING_DIRECTIVE}`
+  }, [instructions])
 
   const tools = useMemo(() => {
     if (vectorStoreId) {
@@ -122,6 +117,24 @@ export function VoiceChat({
     }
     return []
   }, [vectorStoreId])
+
+  const teardown = useCallback(() => {
+    if (sessionRef.current) {
+      try {
+        sessionRef.current.close()
+      } catch (err) {
+        console.warn('Error closing realtime session', err)
+      }
+      sessionRef.current = null
+    }
+    setStatus('idle')
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      teardown()
+    }
+  }, [teardown])
 
   const startVoice = async () => {
     if (status === 'connecting' || status === 'connected') {
@@ -139,8 +152,8 @@ export function VoiceChat({
 
       const { token, model, voice } = await createVoiceSession({
         model: realtimeModel,
-        voice: selectedVoice,
-        instructions
+        voice: LOCKED_VOICE,
+        instructions: voiceInstructions
       })
 
       if (!token) {
@@ -149,8 +162,8 @@ export function VoiceChat({
 
       const agent = new RealtimeAgent({
         name: DEFAULT_NAME,
-        instructions,
-        voice: voice || selectedVoice,
+        instructions: voiceInstructions,
+        voice: voice || LOCKED_VOICE,
         tools
       })
 
@@ -159,7 +172,7 @@ export function VoiceChat({
         config: {
           model: model || realtimeModel,
           audio: {
-            output: { voice: voice || selectedVoice }
+            output: { voice: voice || LOCKED_VOICE }
           }
         }
       })
@@ -185,7 +198,8 @@ export function VoiceChat({
       })
 
       const seededHistory = toRealtimeHistory(messages)
-      if (seededHistory.length > 0) {
+      const shouldSeedHistory = messages?.some((message) => message.role === 'user')
+      if (shouldSeedHistory && seededHistory.length > 0) {
         try {
           session.updateHistory(seededHistory)
         } catch (historyError) {
@@ -195,23 +209,16 @@ export function VoiceChat({
 
       sessionRef.current = session
       setStatus('connected')
+      try {
+        session.transport?.sendEvent({ type: 'response.create' })
+      } catch (introError) {
+        console.warn('Failed to trigger opening response', introError)
+      }
     } catch (err) {
       console.error('Failed to start realtime session', err)
       setError(err.message)
       teardown()
     }
-  }
-
-  const teardown = () => {
-    if (sessionRef.current) {
-      try {
-        sessionRef.current.close()
-      } catch (err) {
-        console.warn('Error closing realtime session', err)
-      }
-      sessionRef.current = null
-    }
-    setStatus('idle')
   }
 
   const handleStop = () => {
@@ -243,25 +250,14 @@ export function VoiceChat({
           <p>
             Start a realtime conversation with Tim's consulting playbook. Grant microphone access to enable voice.
           </p>
-          <p className="text-xs text-slate-500">
-            Model: {realtimeModel ?? 'loading…'} • Voice: {selectedVoice}
+        </div>
+        <div className="rounded-lg border border-slate-700 bg-slate-900/60 p-3">
+          <p className="text-xs uppercase tracking-wide text-slate-400 font-medium">Voice profile</p>
+          <p className="text-sm text-slate-50 font-medium">Marin · British accent</p>
+          <p className="text-xs text-slate-500 mt-1">
+            The assistant opens each session with its own spoken introduction so you can jump straight in.
           </p>
         </div>
-        <label className="text-xs uppercase tracking-wide text-slate-400 font-medium">
-          Voice
-          <select
-            value={selectedVoice}
-            onChange={(event) => setSelectedVoice(event.target.value)}
-            disabled={isConnected || voices.length === 0}
-            className="mt-1 w-full rounded-md border border-slate-600 bg-slate-900 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-400"
-          >
-            {voices.map((voiceOption) => (
-              <option key={voiceOption} value={voiceOption}>
-                {voiceOption}
-              </option>
-            ))}
-          </select>
-        </label>
         <div className="flex items-center gap-3 flex-wrap">
           {isIdle && (
             <Button onClick={startVoice} className="bg-cyan-400 text-slate-900 hover:bg-cyan-500" size="lg">

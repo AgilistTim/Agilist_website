@@ -134,7 +134,6 @@ export default function ChatBot() {
                   messages={messages}
                   vectorStoreId={config?.vectorStoreId || null}
                   realtimeModel={config?.realtimeModel}
-                  voices={config?.voices || []}
                   onConversationUpdate={handleVoiceHistorySync}
                 />
               )}
