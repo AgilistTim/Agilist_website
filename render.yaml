@@ -1,7 +1,6 @@
 services:
-  - type: static
+  - type: static_site
     name: ai-consulting-site
-    env: static
     rootDir: client
     buildCommand: npm install && npm run build
     staticPublishPath: dist
