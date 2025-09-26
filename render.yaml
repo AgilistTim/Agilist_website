@@ -1,3 +1,5 @@
+version: 1
+
 services:
   - type: static_site
     name: ai-consulting-site
