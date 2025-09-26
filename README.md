@@ -24,6 +24,15 @@ npm install
 npm run dev
 ```
 
+
+Set up server configuration and prompt files:
+
+```bash
+cp server/.env.example server/.env
+cp server/prompts/agent-system.example.txt server/prompts/agent-system.txt
+# Edit both files to add your keys and tailor the system prompt
+```
+
 Backend expects a `.env` file with:
 
 ```
@@ -32,7 +41,9 @@ OPENAI_VECTOR_STORE_ID=...
 OPENAI_TEXT_MODEL=gpt-5-nano
 OPENAI_REALTIME_MODEL=gpt-4o-realtime-preview-2024-12-17
 OPENAI_REALTIME_VOICES=alloy,breeze,coral,marin,sage,verse
-OPENAI_AGENT_INSTRUCTIONS="..."
+OPENAI_AGENT_INSTRUCTIONS_FILE=prompts/agent-system.txt
+# Optional fallback if you prefer to inline the prompt directly:
+# OPENAI_AGENT_INSTRUCTIONS="..."
 PORT=4000
 ```
 
@@ -52,7 +63,7 @@ Frontend expects `VITE_API_BASE_URL` (defaults to `http://localhost:4000`).
      - Build: `npm install`
      - Start: `npm run start`
      - Health check: `/health`
-     - Add env vars: `OPENAI_API_KEY`, `OPENAI_VECTOR_STORE_ID`, `OPENAI_TEXT_MODEL`, `OPENAI_REALTIME_MODEL`, `OPENAI_REALTIME_VOICES`, `OPENAI_AGENT_INSTRUCTIONS`, `PORT=4000`.
+     - Add env vars: `OPENAI_API_KEY`, `OPENAI_VECTOR_STORE_ID`, `OPENAI_TEXT_MODEL`, `OPENAI_REALTIME_MODEL`, `OPENAI_REALTIME_VOICES`, `OPENAI_AGENT_INSTRUCTIONS` (or set `OPENAI_AGENT_INSTRUCTIONS_FILE` if you manage the prompt file on the server), `PORT=4000`.
 3. Deploy the API first, note its public URL, then update the Static Site env var `VITE_API_BASE_URL` and redeploy the site.
 4. Attach custom domains (e.g., `www.agilist.co.uk` for frontend, `api.agilist.co.uk` for backend) via Render Settings. Update DNS with the provided CNAMEs.
 5. Optionally tighten CORS in the Express app to allow only the production origins.

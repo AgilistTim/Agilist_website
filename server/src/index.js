@@ -2,6 +2,31 @@ import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import OpenAI from 'openai'
+import { readFileSync } from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const SERVER_ROOT = path.resolve(__dirname, '..')
+
+function resolveAgentInstructionsFromFile(filePath) {
+  const resolvedPath = path.isAbsolute(filePath) ? filePath : path.join(SERVER_ROOT, filePath)
+
+  try {
+    const content = readFileSync(resolvedPath, 'utf8')
+    const trimmed = content.trim()
+
+    if (!trimmed) {
+      console.warn(`Agent instructions file "${resolvedPath}" is empty.`)
+      return null
+    }
+
+    return trimmed
+  } catch (error) {
+    console.warn(`Failed to read agent instructions file "${resolvedPath}":`, error)
+    return null
+  }
+}
 
 const PORT = process.env.PORT || 4000
 const VECTOR_STORE_ID = process.env.OPENAI_VECTOR_STORE_ID
@@ -9,6 +34,8 @@ const REALTIME_MODEL =
   process.env.OPENAI_REALTIME_MODEL || 'gpt-4o-realtime-preview-2024-12-17'
 const TEXT_MODEL = process.env.OPENAI_TEXT_MODEL || 'gpt-5-nano'
 const AGENT_INSTRUCTIONS =
+  (process.env.OPENAI_AGENT_INSTRUCTIONS_FILE &&
+    resolveAgentInstructionsFromFile(process.env.OPENAI_AGENT_INSTRUCTIONS_FILE)) ||
   process.env.OPENAI_AGENT_INSTRUCTIONS ||
   `You are Tim Robinson's AI consulting assistant. Blend executive-level clarity with practical, ROI-focused recommendations for SMB leaders evaluating AI adoption. Always ground advice in Tim's experience, and reference the consulting playbook when relevant.`
 

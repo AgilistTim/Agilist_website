@@ -103,7 +103,7 @@ export default function ChatBot() {
                 Powered by OpenAI realtime voice and RAG over Tim's consulting playbook
               </p>
             </CardHeader>
-            <CardContent className="bg-slate-900 border-b border-slate-800 flex gap-2 p-4">
+            <CardContent className="bg-slate-900 border-b border-slate-800 flex gap-2 p-4 pt-6">
               <Button
                 variant={mode === 'text' ? 'default' : 'outline'}
                 className={mode === 'text' ? 'bg-cyan-400 text-slate-900 hover:bg-cyan-500' : ''}

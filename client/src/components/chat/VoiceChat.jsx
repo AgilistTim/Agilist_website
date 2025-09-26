@@ -251,13 +251,6 @@ export function VoiceChat({ instructions, messages, vectorStoreId, realtimeModel
             Start a realtime conversation with Tim's consulting playbook. Grant microphone access to enable voice.
           </p>
         </div>
-        <div className="rounded-lg border border-slate-700 bg-slate-900/60 p-3">
-          <p className="text-xs uppercase tracking-wide text-slate-400 font-medium">Voice profile</p>
-          <p className="text-sm text-slate-50 font-medium">Marin · British accent</p>
-          <p className="text-xs text-slate-500 mt-1">
-            The assistant opens each session with its own spoken introduction so you can jump straight in.
-          </p>
-        </div>
         <div className="flex items-center gap-3 flex-wrap">
           {isIdle && (
             <Button onClick={startVoice} className="bg-cyan-400 text-slate-900 hover:bg-cyan-500" size="lg">
