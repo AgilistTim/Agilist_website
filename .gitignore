@@ -15,7 +15,6 @@ server/dist/
 *.env
 server/.env*
 client/.env*
-server/prompts/agent-system.txt
 
 # Logs & runtime artifacts
 *.log
