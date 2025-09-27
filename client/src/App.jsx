@@ -568,9 +568,9 @@ function App() {
                   Co-author of <span className="text-cyan-300">The Generative Organization</span>
                 </h3>
                 <p className="text-slate-300 text-base sm:text-lg leading-relaxed">
-                  Building on our award-winning book <em>CYCLES</em>, this playbook shows leaders how to make “working with AI” their
-                  team’s greatest competitive advantage. It blends strategy, governance, and day-to-day AI workflows drawn from
-                  35+ experts—including my own transformation projects.
+                  Following the success of the award-winning book <em>CYCLES</em>, this playbook reveals how leaders can make AI their
+                  ultimate competitive advantage. Blending strategy, governance, and hands-on workflows from 35+ experts—including
+                  lessons from my own transformation projects—it bridges the gap between ambition and execution.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button
@@ -646,7 +646,7 @@ function App() {
           <div className="text-center mb-16" data-aos="fade-up">
             <h2 className="text-3xl sm:text-4xl font-bold mb-6">Is This You?</h2>
             <p className="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto">
-              Many SMB leaders face these common challenges when considering AI implementation
+              Many leaders face these common challenges when considering AI implementation
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
@@ -842,7 +842,7 @@ function App() {
                       <Star key={star} className="h-5 w-5 text-yellow-400 fill-current" />
                     ))}
                   </div>
-                  <p className="text-sm text-slate-300 mt-2">Trusted by 50+ SMBs</p>
+                  <p className="text-sm text-slate-300 mt-2">Trusted by multiple teams and organisations</p>
                 </div>
               </div>
             </div>
