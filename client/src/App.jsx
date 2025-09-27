@@ -2,7 +2,20 @@ import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
-import { ArrowRight, CheckCircle, Users, Zap, Target, Star, Calendar, MessageCircle, Quote } from 'lucide-react'
+import {
+  ArrowRight,
+  CheckCircle,
+  Users,
+  Zap,
+  Target,
+  Star,
+  Calendar,
+  MessageCircle,
+  Quote,
+  Workflow,
+  TrendingUp,
+  Sparkles
+} from 'lucide-react'
 import ChatBot from '@/components/ChatBot.jsx'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
@@ -405,7 +418,9 @@ function App() {
   ]
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
+    <div className="relative min-h-screen text-white overflow-x-hidden">
+      <div className="global-gradient pointer-events-none fixed inset-0 -z-30" />
+      <div id="particles-js" className="particles-overlay" />
       {/* Navigation */}
       <nav className="fixed top-0 w-full bg-slate-900/95 backdrop-blur-sm z-50 border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -432,7 +447,6 @@ function App() {
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-28">
-        <div id="particles-js" className="absolute inset-0"></div>
         <div className="relative z-10 max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <Badge className="mb-6 bg-cyan-400/20 text-cyan-400 border-cyan-400/30" data-aos="fade-up">
             20+ Years Experience • 3+ Years AI Expertise
@@ -505,28 +519,28 @@ function App() {
                     Read Reviews
                   </Button>
                 </div>
-                <div className="mt-6 bg-slate-900/60 border border-slate-800 rounded-2xl p-6 min-h-[180px]">
-                  <div className="flex items-start gap-3 text-slate-200">
-                    <Quote className="h-6 w-6 text-cyan-300 mt-1" />
-                    <div>
-                      <p className="text-lg leading-relaxed whitespace-pre-wrap">
+                <div className="mt-6 bg-slate-900/60 border border-slate-800 rounded-2xl p-6 h-[280px] md:h-[320px]">
+                  <div className="flex items-start gap-3 text-slate-200 h-full">
+                    <Quote className="h-6 w-6 text-cyan-300 mt-1 shrink-0" />
+                    <div className="flex-1 flex flex-col overflow-hidden">
+                      <div className="overflow-y-auto pr-2 text-lg leading-relaxed whitespace-pre-wrap">
                         {expandedReview || bookReviews[currentReviewIndex].quote.length <= 320
                           ? bookReviews[currentReviewIndex].quote
                           : `${bookReviews[currentReviewIndex].quote.slice(0, 320)}…`}
-                      </p>
-                      {bookReviews[currentReviewIndex].quote.length > 320 && (
-                        <button
-                          type="button"
-                          onClick={() => setExpandedReview((prev) => !prev)}
-                          className="mt-3 text-sm text-cyan-200 hover:text-cyan-100 underline underline-offset-4"
-                        >
-                          {expandedReview ? 'Show less' : 'Read more'}
-                        </button>
-                      )}
-                      <p className="mt-3 text-sm text-slate-400 uppercase tracking-wide">
+                        {bookReviews[currentReviewIndex].quote.length > 320 && (
+                          <button
+                            type="button"
+                            onClick={() => setExpandedReview((prev) => !prev)}
+                            className="block mt-3 text-sm text-cyan-200 hover:text-cyan-100 underline underline-offset-4"
+                          >
+                            {expandedReview ? 'Show less' : 'Read more'}
+                          </button>
+                        )}
+                      </div>
+                      <p className="mt-3 text-sm text-slate-400 uppercase tracking-wide shrink-0">
                         {bookReviews[currentReviewIndex].reviewer}
                       </p>
-                      <div className="mt-4 flex items-center gap-2">
+                      <div className="mt-4 flex items-center gap-2 shrink-0">
                         {bookReviews.map((_, idx) => (
                           <span
                             key={idx}
@@ -564,14 +578,23 @@ function App() {
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              "Struggling with manual processes that slow you down?",
-              "Feeling you're falling behind competitors using new tech?",
-              "Unsure how to start with AI without a massive budget?"
-            ].map((question, index) => (
+              {
+                icon: <Workflow className="h-12 w-12 text-cyan-300 mx-auto" />,
+                text: 'Struggling with manual processes that slow you down?'
+              },
+              {
+                icon: <TrendingUp className="h-12 w-12 text-cyan-300 mx-auto" />,
+                text: "Feeling you're falling behind competitors using new tech?"
+              },
+              {
+                icon: <Sparkles className="h-12 w-12 text-cyan-300 mx-auto" />,
+                text: 'Unsure how to start with AI without a massive budget?'
+              }
+            ].map((item, index) => (
               <Card key={index} className="bg-slate-800 border-slate-700" data-aos="fade-up" data-aos-delay={index * 100}>
-                <CardContent className="p-6 text-center">
-                  <div className="text-6xl mb-4">❓</div>
-                  <p className="text-lg text-slate-300">{question}</p>
+                <CardContent className="p-6 text-center space-y-4">
+                  <div className="flex justify-center">{item.icon}</div>
+                  <p className="text-lg text-slate-300">{item.text}</p>
                 </CardContent>
               </Card>
             ))}

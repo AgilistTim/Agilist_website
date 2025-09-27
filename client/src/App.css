@@ -1,8 +1,18 @@
 #particles-js {
-  position: absolute;
+  position: fixed;
+  inset: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  pointer-events: none;
+  z-index: -20;
+}
+
+.global-gradient {
+  background:
+    radial-gradient(at 20% 20%, rgba(45, 212, 191, 0.18) 0, transparent 55%),
+    radial-gradient(at 80% 0%, rgba(129, 140, 248, 0.2) 0, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(14, 165, 233, 0.18) 0, transparent 50%),
+    linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
 }
 
 html {
