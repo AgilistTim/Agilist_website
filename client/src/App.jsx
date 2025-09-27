@@ -14,7 +14,9 @@ import {
   Quote,
   Workflow,
   TrendingUp,
-  Sparkles
+  Sparkles,
+  Menu,
+  X
 } from 'lucide-react'
 import ChatBot from '@/components/ChatBot.jsx'
 import AOS from 'aos'
@@ -161,6 +163,7 @@ function App() {
 
   const [currentReviewIndex, setCurrentReviewIndex] = useState(0)
   const [expandedReview, setExpandedReview] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     AOS.init({
@@ -252,6 +255,17 @@ function App() {
   useEffect(() => {
     setExpandedReview(false)
   }, [currentReviewIndex])
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setMobileMenuOpen(false)
+      }
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const services = [
     {
@@ -424,51 +438,110 @@ function App() {
       {/* Navigation */}
       <nav className="fixed top-0 w-full bg-slate-900/95 backdrop-blur-sm z-50 border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
+          <div className="flex items-center justify-between py-4">
             <div className="text-2xl font-bold text-cyan-400">Tim Robinson</div>
-            <div className="hidden md:flex space-x-8">
-              <a href="#about" className="hover:text-cyan-400 transition-colors">About</a>
-              <a href="#services" className="hover:text-cyan-400 transition-colors">Services</a>
-              <a href="#success-stories" className="hover:text-cyan-400 transition-colors">Success Stories</a>
-              <a href="#contact" className="hover:text-cyan-400 transition-colors">Contact</a>
+            <div className="hidden md:flex items-center gap-8">
+              <div className="flex items-center gap-8">
+                <a href="#about" className="hover:text-cyan-400 transition-colors">About</a>
+                <a href="#services" className="hover:text-cyan-400 transition-colors">Services</a>
+                <a href="#success-stories" className="hover:text-cyan-400 transition-colors">Success Stories</a>
+                <a href="#contact" className="hover:text-cyan-400 transition-colors">Contact</a>
+              </div>
+              <Button
+                href={bookingLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-cyan-400 hover:bg-cyan-500 text-slate-900"
+              >
+                <Calendar className="h-4 w-4 mr-2" />
+                Book a Call
+              </Button>
             </div>
-            <Button
-              href={bookingLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-cyan-400 hover:bg-cyan-500 text-slate-900"
-            >
-              <Calendar className="h-4 w-4 mr-2" />
-              Book a Call
-            </Button>
+
+            <div className="md:hidden flex items-center gap-3">
+              <Button
+                href={bookingLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-cyan-400 hover:bg-cyan-500 text-slate-900 px-3 py-2 text-sm font-semibold"
+              >
+                <Calendar className="h-4 w-4 mr-1" />
+                Call
+              </Button>
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen((prev) => !prev)}
+                className="inline-flex items-center justify-center rounded-md border border-slate-700 bg-slate-800/70 p-2 text-slate-100 hover:text-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                aria-label="Toggle navigation"
+                aria-expanded={mobileMenuOpen}
+              >
+                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </button>
+            </div>
           </div>
+
+          {mobileMenuOpen && (
+            <div className="md:hidden pb-4">
+              <div className="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/95 p-6">
+                {[
+                  { href: '#about', label: 'About' },
+                  { href: '#services', label: 'Services' },
+                  { href: '#success-stories', label: 'Success Stories' },
+                  { href: '#contact', label: 'Contact' }
+                ].map((item) => (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block text-base font-medium text-slate-200 hover:text-cyan-400 transition-colors"
+                  >
+                    {item.label}
+                  </a>
+                ))}
+                <Button
+                  href={bookingLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full bg-cyan-400 hover:bg-cyan-500 text-slate-900"
+                >
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Book a Call
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-28">
-        <div className="relative z-10 max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <Badge className="mb-6 bg-cyan-400/20 text-cyan-400 border-cyan-400/30" data-aos="fade-up">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-28 sm:pt-32">
+        <div className="relative z-10 w-full max-w-4xl mx-auto text-center px-5 sm:px-6 lg:px-8">
+          <Badge className="inline-flex items-center justify-center mb-6 bg-cyan-400/20 text-cyan-400 border-cyan-400/30 text-[0.65rem] sm:text-xs px-4 py-1" data-aos="fade-up">
             20+ Years Experience • 3+ Years AI Expertise
           </Badge>
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent" data-aos="fade-up" data-aos-delay="100">
+          <h1 className="mx-auto max-w-[22rem] sm:max-w-[36rem] text-3xl sm:text-5xl md:text-7xl font-bold leading-snug sm:leading-tight mb-6 bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent" data-aos="fade-up" data-aos-delay="100">
             Unlock Your Business Potential with Practical AI
           </h1>
-          <p className="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="200">
+          <p className="mx-auto max-w-[24rem] sm:max-w-[40rem] text-sm sm:text-lg md:text-2xl text-slate-300 mb-8" data-aos="fade-up" data-aos-delay="200">
             I help small and medium-sized businesses drive growth, automate processes, and delight customers through strategic AI solutions that deliver measurable ROI.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center" data-aos="fade-up" data-aos-delay="300">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center" data-aos="fade-up" data-aos-delay="300">
             <Button
               href={bookingLink}
               target="_blank"
               rel="noopener noreferrer"
               size="lg"
-              className="bg-cyan-400 hover:bg-cyan-500 text-slate-900 text-lg px-8 py-4"
+              className="w-full sm:w-auto bg-cyan-400 hover:bg-cyan-500 text-slate-900 text-sm sm:text-base md:text-lg px-5 sm:px-6 md:px-8 py-3 md:py-4"
             >
               <Calendar className="h-5 w-5 mr-2" />
               Book a Free AI Strategy Call
             </Button>
-            <Button size="lg" variant="outline" className="border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-slate-900 text-lg px-8 py-4">
+            <Button
+              href="#services"
+              size="lg"
+              variant="outline"
+              className="w-full sm:w-auto border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-slate-900 text-sm sm:text-base md:text-lg px-5 sm:px-6 md:px-8 py-3 md:py-4"
+            >
               Learn More
               <ArrowRight className="h-5 w-5 ml-2" />
             </Button>
@@ -480,7 +553,7 @@ function App() {
             data-aos-delay="400"
           >
             <div className="flex flex-col md:flex-row items-center gap-8 text-left">
-              <div className="w-full md:w-1/3">
+              <div className="w-full md:w-1/3 max-w-sm mx-auto">
                 <img
                   src={bookCover}
                   alt="The Generative Organization book cover"
@@ -491,10 +564,10 @@ function App() {
                 <Badge className="bg-cyan-400/20 text-cyan-300 border-cyan-400/40 w-fit">
                   New Book Release
                 </Badge>
-                <h3 className="text-3xl font-semibold">
+                <h3 className="text-2xl sm:text-3xl font-semibold">
                   Co-author of <span className="text-cyan-300">The Generative Organization</span>
                 </h3>
-                <p className="text-slate-300 text-lg leading-relaxed">
+                <p className="text-slate-300 text-base sm:text-lg leading-relaxed">
                   Building on our award-winning book <em>CYCLES</em>, this playbook shows leaders how to make “working with AI” their
                   team’s greatest competitive advantage. It blends strategy, governance, and day-to-day AI workflows drawn from
                   35+ experts—including my own transformation projects.
@@ -504,7 +577,7 @@ function App() {
                     href={bookOrderLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="bg-cyan-400 hover:bg-cyan-500 text-slate-900"
+                    className="w-full sm:w-auto bg-cyan-400 hover:bg-cyan-500 text-slate-900"
                   >
                     Order a Copy
                     <ArrowRight className="h-4 w-4 ml-2" />
@@ -514,16 +587,16 @@ function App() {
                     target="_blank"
                     rel="noopener noreferrer"
                     variant="ghost"
-                    className="text-cyan-200 hover:text-cyan-100"
+                    className="w-full sm:w-auto text-cyan-200 hover:text-cyan-100"
                   >
                     Read Reviews
                   </Button>
                 </div>
-                <div className="mt-6 bg-slate-900/60 border border-slate-800 rounded-2xl p-6 h-[280px] md:h-[320px]">
+                <div className="mt-6 bg-slate-900/60 border border-slate-800 rounded-2xl p-6 h-[260px] sm:h-[280px] md:h-[320px]">
                   <div className="flex items-start gap-3 text-slate-200 h-full">
                     <Quote className="h-6 w-6 text-cyan-300 mt-1 shrink-0" />
                     <div className="flex-1 flex flex-col overflow-hidden">
-                      <div className="overflow-y-auto pr-2 text-lg leading-relaxed whitespace-pre-wrap">
+                      <div className="overflow-y-auto pr-2 text-sm sm:text-base leading-relaxed whitespace-pre-wrap">
                         {expandedReview || bookReviews[currentReviewIndex].quote.length <= 320
                           ? bookReviews[currentReviewIndex].quote
                           : `${bookReviews[currentReviewIndex].quote.slice(0, 320)}…`}
@@ -568,11 +641,11 @@ function App() {
       </section>
 
       {/* Is This You Section */}
-      <section className="py-20 bg-slate-800/50">
+      <section className="py-16 sm:py-20 bg-slate-800/50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16" data-aos="fade-up">
-            <h2 className="text-4xl font-bold mb-6">Is This You?</h2>
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-6">Is This You?</h2>
+            <p className="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto">
               Many SMB leaders face these common challenges when considering AI implementation
             </p>
           </div>
@@ -594,7 +667,7 @@ function App() {
               <Card key={index} className="bg-slate-800 border-slate-700" data-aos="fade-up" data-aos-delay={index * 100}>
                 <CardContent className="p-6 text-center space-y-4">
                   <div className="flex justify-center">{item.icon}</div>
-                  <p className="text-lg text-slate-300">{item.text}</p>
+                  <p className="text-base sm:text-lg text-slate-300">{item.text}</p>
                 </CardContent>
               </Card>
             ))}
@@ -603,11 +676,11 @@ function App() {
       </section>
 
       {/* Services Section */}
-      <section id="services" className="py-20">
+      <section id="services" className="py-16 sm:py-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16" data-aos="fade-up">
-            <h2 className="text-4xl font-bold mb-6">How I Help</h2>
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-6">How I Help</h2>
+            <p className="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto">
               Three core pillars of AI transformation designed specifically for SMBs
             </p>
           </div>
@@ -630,11 +703,11 @@ function App() {
       </section>
 
       {/* Success Stories Section */}
-      <section id="success-stories" className="py-20 bg-slate-800/50">
+      <section id="success-stories" className="py-16 sm:py-20 bg-slate-800/50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16" data-aos="fade-up">
-            <h2 className="text-4xl font-bold mb-6">Real-World Results</h2>
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-6">Real-World Results</h2>
+            <p className="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto">
               See how AI transformation has delivered measurable ROI for businesses like yours
             </p>
           </div>
@@ -672,12 +745,12 @@ function App() {
       </section>
 
       {/* Featured Projects */}
-      <section className="py-20 bg-slate-900/70">
+      <section className="py-16 sm:py-20 bg-slate-900/70">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12" data-aos="fade-up">
             <Badge className="bg-cyan-400/20 text-cyan-300 border-cyan-400/40">Featured Projects</Badge>
-            <h2 className="text-4xl font-bold mt-6 mb-4">AI Experiences in the Wild</h2>
-            <p className="text-lg text-slate-300 max-w-3xl">
+            <h2 className="text-3xl sm:text-4xl font-bold mt-6 mb-4">AI Experiences in the Wild</h2>
+            <p className="text-base sm:text-lg text-slate-300 max-w-3xl">
               These are living products that blend AI strategy with execution. Explore them to see how I bring
               automation, customer experience, and data storytelling to life.
             </p>
@@ -691,19 +764,19 @@ function App() {
                 data-aos="fade-up"
                 data-aos-delay={index * 100}
               >
-                <div className="grid lg:grid-cols-[2fr_3fr] gap-10 p-8">
+                <div className="grid gap-6 sm:gap-8 lg:grid-cols-[2fr_3fr] p-6 sm:p-8">
                   <div className="space-y-4">
                     <Badge className="bg-cyan-400/20 text-cyan-300 border-cyan-400/40">
                       {project.technologies.join(' • ')}
                     </Badge>
                     <h3 className="text-2xl font-semibold text-white">{project.title}</h3>
-                    <p className="text-slate-300">{project.description}</p>
+                    <p className="text-slate-300 text-base sm:text-lg">{project.description}</p>
                     <Button
                       href={project.link}
                       target="_blank"
                       rel="noopener noreferrer"
                       variant="outline"
-                      className="border-cyan-400 text-cyan-200"
+                      className="w-full sm:w-auto border-cyan-400 text-cyan-200"
                     >
                       View Live Project
                     </Button>
@@ -724,16 +797,16 @@ function App() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-20">
+      <section id="about" className="py-16 sm:py-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid gap-12 lg:grid-cols-2 items-center">
             <div data-aos="fade-right">
-              <h2 className="text-4xl font-bold mb-6">From Business Transformation to AI Innovation</h2>
-              <p className="text-lg text-slate-300 mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold mb-6">From Business Transformation to AI Innovation</h2>
+              <p className="text-base sm:text-lg text-slate-300 mb-6">
                 With over 20 years of experience in organizational transformation and 3+ years of hands-on AI product development, 
                 I bridge the gap between strategic business needs and practical AI implementation.
               </p>
-              <p className="text-lg text-slate-300 mb-6">
+              <p className="text-base sm:text-lg text-slate-300 mb-6">
                 I understand that successful AI adoption isn't just about the technology—it's about understanding your business, 
                 your team, and your customers. My unique combination of transformation expertise and AI technical knowledge 
                 ensures that every solution delivers real, measurable value.
@@ -751,19 +824,19 @@ function App() {
                   </Badge>
                 ))}
               </div>
-              <Button className="bg-cyan-400 hover:bg-cyan-500 text-slate-900">
+              <Button className="w-full sm:w-auto bg-cyan-400 hover:bg-cyan-500 text-slate-900">
                 View LinkedIn Profile
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </div>
             <div className="relative" data-aos="fade-left">
-              <div className="bg-gradient-to-br from-cyan-400/20 to-purple-600/20 rounded-2xl p-8 backdrop-blur-sm border border-cyan-400/30">
+              <div className="bg-gradient-to-br from-cyan-400/20 to-purple-600/20 rounded-2xl p-6 sm:p-8 backdrop-blur-sm border border-cyan-400/30">
                 <div className="text-center">
-                  <div className="w-32 h-32 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-full mx-auto mb-6 flex items-center justify-center text-4xl font-bold text-slate-900">
+                  <div className="w-28 h-28 sm:w-32 sm:h-32 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-full mx-auto mb-6 flex items-center justify-center text-3xl sm:text-4xl font-bold text-slate-900">
                     TR
                   </div>
-                  <h3 className="text-2xl font-bold mb-2">Tim Robinson</h3>
-                  <p className="text-cyan-400 mb-4">AI Consultant & Transformation Expert</p>
+                  <h3 className="text-xl sm:text-2xl font-bold mb-2">Tim Robinson</h3>
+                  <p className="text-cyan-400 mb-4 text-sm sm:text-base">AI Consultant & Transformation Expert</p>
                   <div className="flex justify-center space-x-4">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <Star key={star} className="h-5 w-5 text-yellow-400 fill-current" />
@@ -778,10 +851,10 @@ function App() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 bg-slate-800/50">
+      <section className="py-16 sm:py-20 bg-slate-800/50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16" data-aos="fade-up">
-            <h2 className="text-4xl font-bold mb-6">What Clients Say</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-6">What Clients Say</h2>
           </div>
           <div className="grid md:grid-cols-2 gap-8">
             {testimonials.map((testimonial, index) => (
@@ -792,7 +865,7 @@ function App() {
                       <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
                     ))}
                   </div>
-                  <blockquote className="text-lg text-slate-300 mb-4">
+                  <blockquote className="text-base sm:text-lg text-slate-300 mb-4">
                     "{testimonial.quote}"
                   </blockquote>
                   <div>
@@ -807,11 +880,11 @@ function App() {
       </section>
 
       {/* CTA Section */}
-      <section id="contact" className="py-20">
+      <section id="contact" className="py-16 sm:py-20">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <div data-aos="fade-up">
-            <h2 className="text-4xl font-bold mb-6">Ready to Unlock Your AI Potential?</h2>
-            <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-6">Ready to Unlock Your AI Potential?</h2>
+            <p className="text-lg sm:text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
               Let's discuss how AI can transform your business. Book a free 30-minute strategy call to explore the possibilities.
             </p>
             <Button
@@ -819,7 +892,7 @@ function App() {
               target="_blank"
               rel="noopener noreferrer"
               size="lg"
-              className="bg-cyan-400 hover:bg-cyan-500 text-slate-900 text-lg px-8 py-4 mb-8"
+              className="w-full sm:w-auto bg-cyan-400 hover:bg-cyan-500 text-slate-900 text-base md:text-lg px-6 md:px-8 py-3 md:py-4 mb-8"
             >
               <Calendar className="h-5 w-5 mr-2" />
               Book Your Free AI Strategy Call
