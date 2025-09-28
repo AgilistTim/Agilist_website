@@ -16,7 +16,10 @@ import {
   TrendingUp,
   Sparkles,
   Menu,
-  X
+  X,
+  PhoneCall,
+  ShieldCheck,
+  Home
 } from 'lucide-react'
 import ChatBot from '@/components/ChatBot.jsx'
 import AOS from 'aos'
@@ -161,8 +164,82 @@ function App() {
     }
   ]
 
+  const linkedinTestimonials = [
+    {
+      quote:
+        'Working with Tim has been a great experience. His expertise is matched by his creativity and endless great ideas. Tim knows how to get things done, and done the right way. He is a true team player who understands both technical and business needs, delivering solutions that hit the mark.',
+      author: 'Rick Kristalijn',
+      role: 'AI Automation Leader',
+      relationship: 'Former teammate, 2024'
+    },
+    {
+      quote:
+        'Tim brought data, insights, and stories that made our ChatGPT session exceptional. He kept the group engaged, shared generous resources, and left us with concrete takeaways and follow-ups. I am looking forward to collaborating with Tim more regularly—well done!',
+      author: 'Joseph Batts',
+      role: 'Business Systems Analyst, Adobe',
+      relationship: 'Knowledge share host, 2024'
+    },
+    {
+      quote:
+        "Tim is an immensely knowledgeable agile practitioner. He's deeply introspective, able to get underneath the hood and sort out what's really going on. He's a pleasure to work with, an asset to any team, and I'd highly recommend him to anyone in need of sustainable change.",
+      author: 'Ceri Newton-Sargunar',
+      role: 'Organisational Development Advisor',
+      relationship: 'Former teammate, 2023'
+    },
+    {
+      quote:
+        "Tim is a fantastic Agile Coach who helped me raise the bar for my team. He taught us agile principles, behaviours, and continuous improvement in a way that delivered real value for our customers. Tim figures out the problems to solve and finds the most pragmatic path forward—thank you for sharing your experience, Tim!",
+      author: 'Nicola Bennett',
+      role: 'Technology & Transformation Leader, NatWest',
+      relationship: 'Client partnership, 2023'
+    },
+    {
+      quote:
+        'Whilst at RBS, Tim consistently gave his time to mentor me. He listened, reflected, and helped me see the questions I was missing. Tim knows when to coach and when to consult, and I would happily work with him again in the future.',
+      author: 'Matt Evans',
+      role: 'Agile Consultant & Trainer',
+      relationship: 'Mentorship, 2020'
+    },
+    {
+      quote:
+        'Tim’s expert, clear, and enthusiastic way of explaining agile concepts helped me secure my first Scrum Master role. He was immediately open to helping, scheduled time, and guided my learning path. I would recommend Tim to anyone seeking a clearer understanding of agile.',
+      author: 'Natasha Morshead',
+      role: 'Agile Practice Manager',
+      relationship: 'Coaching client, 2018'
+    }
+  ]
+
+  const evacaresHighlights = [
+    'Phone-based AI companion for extra needs support',
+    'Automated wellbeing reports for carers and families',
+    'Accessible check-ins that reduce isolation'
+  ]
+
+  const evacaresFeatures = [
+    {
+      title: 'Cost-effective daily contact',
+      description:
+        'Eva calls cost pennies compared to the £28 per hour average for in-home visits, giving teams real-time insight without increasing budgets.',
+      icon: <PhoneCall className="h-5 w-5 text-cyan-300" />
+    },
+    {
+      title: 'Escalates when something changes',
+      description:
+        'Structured conversations surface mood, medication adherence, and wellbeing shifts—alerting carers or family automatically when support is needed.',
+      icon: <ShieldCheck className="h-5 w-5 text-cyan-300" />
+    },
+    {
+      title: 'Supports independent living',
+      description:
+        'Phone-first interactions help people stay in their homes longer with a friendly safety net that never requires new devices or apps.',
+      icon: <Home className="h-5 w-5 text-cyan-300" />
+    }
+  ]
+
   const [currentReviewIndex, setCurrentReviewIndex] = useState(0)
   const [expandedReview, setExpandedReview] = useState(false)
+  const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0)
+  const [expandedTestimonial, setExpandedTestimonial] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   useEffect(() => {
@@ -257,6 +334,18 @@ function App() {
   }, [currentReviewIndex])
 
   useEffect(() => {
+    if (linkedinTestimonials.length <= 1) return undefined
+    const interval = setInterval(() => {
+      setCurrentTestimonialIndex((prev) => (prev + 1) % linkedinTestimonials.length)
+    }, 7000)
+    return () => clearInterval(interval)
+  }, [linkedinTestimonials.length])
+
+  useEffect(() => {
+    setExpandedTestimonial(false)
+  }, [currentTestimonialIndex])
+
+  useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {
         setMobileMenuOpen(false)
@@ -287,42 +376,37 @@ function App() {
 
   const caseStudies = [
     {
-      client: "Mid-sized E-commerce Business",
-      challenge: "Manual customer support was overwhelming the team and response times were too slow.",
-      solution: "Implemented an AI-powered customer service chatbot with intelligent routing.",
-      result: "Reduced response time by 85% and freed up 30 hours per week for strategic work.",
-      roi: "300% ROI in 6 months"
-    },
-    {
-      client: "Regional Manufacturing Company",
-      challenge: "Inventory management was inefficient, leading to stockouts and overstock situations.",
-      solution: "Developed AI-driven demand forecasting and inventory optimization system.",
-      result: "Reduced inventory costs by 25% while improving product availability by 40%.",
-      roi: "250% ROI in 8 months"
-    },
-    {
       client: "Professional Services Firm",
-      challenge: "Lead qualification process was manual and inconsistent, missing opportunities.",
-      solution: "Created AI-powered lead scoring and automated qualification system.",
-      result: "Increased qualified leads by 60% and improved conversion rates by 35%.",
-      roi: "400% ROI in 4 months"
+      challenge:
+        "Manual lead follow-up was slow and inconsistent, causing valuable enquiries to be lost despite significant marketing spend.",
+      solution:
+        "Implemented an AI-powered, multi-channel system that engaged leads instantly via web and WhatsApp, qualified them automatically, and handled routine admin tasks.",
+      result: "Lead capture grew by 458%, sales increased by 30%, and ROI reached 1,733% within months.",
+      roi: "1,733% ROI in 6 months"
+    },
+    {
+      client: "Innovation Partner",
+      challenge:
+        "Organisations often face complex, high-level problems but lack clarity on the right solution. Traditional delivery approaches risk wasted investment and slow validation.",
+      solution:
+        "Applied a rapid prototyping approach—working closely with stakeholders to define the problem, refine assumptions, and deliver testable AI-powered solutions quickly.",
+      result:
+        "Clients reduced build risk, validated hypotheses early, and unlocked clear insight into what to scale—all without committing to lengthy or costly development cycles.",
+      roi: "Fast validation without costly long-term commitments"
+    },
+    {
+      client: "Organisational Transformation",
+      challenge:
+        "Teams and leaders often struggle to adapt to modern delivery practices, slowing progress and limiting business impact.",
+      solution:
+        "Delivered training and upskilling to hundreds of individuals, supported teams in embedding agile ways of working, and coached leadership to unlock faster, more effective delivery. In recent years, this has expanded to include leveraging AI to further enhance team efficiency and decision-making.",
+      result:
+        "Organisations achieved stronger alignment, improved delivery capability, and measurable gains in efficiency by combining agile practices with AI-driven augmentation.",
+      roi: "Accelerated delivery and measurable efficiency gains"
     }
   ]
 
-  const testimonials = [
-    {
-      quote: "Tim's unique combination of business transformation expertise and AI knowledge helped us implement solutions that actually work for our business, not just impressive technology demos.",
-      author: "Sarah Chen",
-      role: "CEO, TechStart Solutions",
-      rating: 5
-    },
-    {
-      quote: "The ROI was immediate and measurable. Tim understood our challenges and delivered practical AI solutions that transformed our operations.",
-      author: "Michael Rodriguez",
-      role: "Operations Director, GrowthCorp",
-      rating: 5
-    }
-  ]
+  const activeLinkedInTestimonial = linkedinTestimonials[currentTestimonialIndex]
 
   const projects = [
     {
@@ -708,7 +792,7 @@ function App() {
           <div className="text-center mb-16" data-aos="fade-up">
             <h2 className="text-3xl sm:text-4xl font-bold mb-6">Real-World Results</h2>
             <p className="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto">
-              See how AI transformation has delivered measurable ROI for businesses like yours
+              Some examples of how I have supported teams and organisations like yours to improve
             </p>
           </div>
           <div className="grid lg:grid-cols-3 gap-8">
@@ -824,7 +908,12 @@ function App() {
                   </Badge>
                 ))}
               </div>
-              <Button className="w-full sm:w-auto bg-cyan-400 hover:bg-cyan-500 text-slate-900">
+              <Button
+                href="https://www.linkedin.com/in/tim-robinson-agilist/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto bg-cyan-400 hover:bg-cyan-500 text-slate-900"
+              >
                 View LinkedIn Profile
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
@@ -850,31 +939,142 @@ function App() {
         </div>
       </section>
 
+      {/* EvaCares Section */}
+      <section id="evacares" className="py-16 sm:py-20 bg-slate-900/60">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-12 lg:grid-cols-2 items-center">
+            <div data-aos="fade-right">
+              <Badge className="bg-purple-500/20 text-purple-200 border-purple-500/40">Founder Venture</Badge>
+              <h2 className="text-3xl sm:text-4xl font-bold mt-4 mb-6 text-white">
+                EvaCares: Compassionate AI Support for Extra Needs
+              </h2>
+              <p className="text-base sm:text-lg text-slate-300 mb-5">
+                I founded EvaCares to tackle isolation and medication challenges experienced by my own family. Eva is a
+                phone-first AI companion that holds natural conversations, captures wellbeing signals, and keeps everyone in the
+                care circle informed.
+              </p>
+              <p className="text-base sm:text-lg text-slate-300 mb-6">
+                By combining friendly check-ins with automated reporting, EvaCares gives carers back valuable time while helping
+                people live independently for longer—without needing new devices or technical know-how.
+              </p>
+              <div className="flex flex-wrap gap-3 mb-8">
+                {evacaresHighlights.map((highlight, index) => (
+                  <Badge key={index} className="bg-cyan-400/15 text-cyan-200 border-cyan-400/30">
+                    <CheckCircle className="h-3 w-3 mr-1" />
+                    {highlight}
+                  </Badge>
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-4">
+                <Button
+                  href="https://www.evacares.co.uk"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto bg-cyan-400 hover:bg-cyan-500 text-slate-900"
+                >
+                  Explore EvaCares
+                  <ArrowRight className="h-4 w-4 ml-2" />
+                </Button>
+              </div>
+            </div>
+            <div data-aos="fade-left">
+              <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 sm:p-8 backdrop-blur-sm shadow-xl">
+                <div className="flex items-center gap-3 mb-6">
+                  <ShieldCheck className="h-6 w-6 text-cyan-300" />
+                  <div>
+                    <p className="text-sm uppercase tracking-wider text-cyan-200">Care Innovation Challenge Finalist</p>
+                    <p className="text-xs text-slate-400">The Care Show, Birmingham NEC • 9-10 October</p>
+                  </div>
+                </div>
+                <div className="space-y-5">
+                  {evacaresFeatures.map((feature, index) => (
+                    <div
+                      key={index}
+                      className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex items-start gap-3"
+                    >
+                      <div className="mt-1">{feature.icon}</div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-white">{feature.title}</h3>
+                        <p className="text-sm text-slate-300 leading-relaxed">{feature.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Testimonials Section */}
       <section className="py-16 sm:py-20 bg-slate-800/50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16" data-aos="fade-up">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-6">What Clients Say</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">What Clients Say</h2>
+            <p className="text-base sm:text-lg text-slate-300 max-w-3xl mx-auto">
+              Authentic recommendations sourced directly from leaders and teams I have partnered with on LinkedIn.
+            </p>
           </div>
-          <div className="grid md:grid-cols-2 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <Card key={index} className="bg-slate-800 border-slate-700" data-aos="fade-up" data-aos-delay={index * 100}>
-                <CardContent className="p-6">
-                  <div className="flex mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
-                    ))}
+          <div
+            className="relative max-w-4xl mx-auto"
+            data-aos="fade-up"
+            data-aos-delay="100"
+          >
+            <div className="bg-slate-900/70 border border-slate-800 rounded-3xl backdrop-blur-sm shadow-xl p-6 sm:p-8 md:p-10">
+              <Badge className="bg-cyan-400/20 text-cyan-300 border-cyan-400/40">LinkedIn Recommendations</Badge>
+              <div className="mt-6 flex items-start gap-4 text-slate-200">
+                <Quote className="h-6 w-6 text-cyan-300 mt-1 shrink-0" />
+                <div className="flex-1 flex flex-col overflow-hidden">
+                  <div className="text-sm sm:text-base md:text-lg leading-relaxed text-slate-200 whitespace-pre-wrap">
+                    {expandedTestimonial || activeLinkedInTestimonial.quote.length <= 360
+                      ? activeLinkedInTestimonial.quote
+                      : `${activeLinkedInTestimonial.quote.slice(0, 360)}…`}
+                    {activeLinkedInTestimonial.quote.length > 360 && (
+                      <button
+                        type="button"
+                        onClick={() => setExpandedTestimonial((prev) => !prev)}
+                        className="block mt-3 text-sm text-cyan-200 hover:text-cyan-100 underline underline-offset-4"
+                      >
+                        {expandedTestimonial ? 'Show less' : 'Read more'}
+                      </button>
+                    )}
                   </div>
-                  <blockquote className="text-base sm:text-lg text-slate-300 mb-4">
-                    "{testimonial.quote}"
-                  </blockquote>
-                  <div>
-                    <div className="font-semibold">{testimonial.author}</div>
-                    <div className="text-sm text-slate-400">{testimonial.role}</div>
+                  <div className="mt-6">
+                    <p className="text-lg sm:text-xl font-semibold text-white">{activeLinkedInTestimonial.author}</p>
+                    <p className="text-sm sm:text-base text-slate-400">{activeLinkedInTestimonial.role}</p>
+                    <p className="text-xs sm:text-sm text-slate-500 uppercase tracking-wide mt-2">
+                      {activeLinkedInTestimonial.relationship}
+                    </p>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
+                </div>
+              </div>
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <div className="flex items-center gap-2">
+                  {linkedinTestimonials.map((_, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setCurrentTestimonialIndex(idx)}
+                      className={`h-2.5 w-2.5 rounded-full transition-colors ${
+                        idx === currentTestimonialIndex
+                          ? 'bg-cyan-300'
+                          : 'bg-slate-600 hover:bg-slate-500'
+                      }`}
+                      aria-label={`Show testimonial ${idx + 1}`}
+                    />
+                  ))}
+                </div>
+                <a
+                  href="https://www.linkedin.com/in/tim-robinson-agilist/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ml-auto inline-flex items-center gap-2 text-sm sm:text-base text-cyan-200 hover:text-cyan-100 underline underline-offset-4"
+                >
+                  View more on LinkedIn
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </section>
