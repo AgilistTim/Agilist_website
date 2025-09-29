@@ -35,6 +35,11 @@ const VECTOR_STORE_ID = process.env.OPENAI_VECTOR_STORE_ID
 const REALTIME_MODEL =
   process.env.OPENAI_REALTIME_MODEL || 'gpt-4o-realtime-preview-2024-12-17'
 const TEXT_MODEL = process.env.OPENAI_TEXT_MODEL || 'gpt-5-nano'
+const AVAILABLE_VOICES = (
+  process.env.OPENAI_REALTIME_VOICES &&
+  process.env.OPENAI_REALTIME_VOICES.split(',').map((voice) => voice.trim()).filter(Boolean)
+) || ['alloy', 'breeze', 'coral', 'marin', 'sage', 'verse']
+
 const AGENT_INSTRUCTIONS =
   (process.env.OPENAI_AGENT_INSTRUCTIONS_FILE &&
     resolveAgentInstructionsFromFile(process.env.OPENAI_AGENT_INSTRUCTIONS_FILE)) ||
@@ -50,11 +55,6 @@ console.log('[agent-config] Environment overview:', {
   vectorStoreId: VECTOR_STORE_ID,
   voices: AVAILABLE_VOICES
 })
-
-const AVAILABLE_VOICES = (
-  process.env.OPENAI_REALTIME_VOICES &&
-  process.env.OPENAI_REALTIME_VOICES.split(',').map((voice) => voice.trim()).filter(Boolean)
-) || ['alloy', 'breeze', 'coral', 'marin', 'sage', 'verse']
 
 if (!process.env.OPENAI_API_KEY) {
   console.warn('Warning: OPENAI_API_KEY is not set. API requests will fail.')
