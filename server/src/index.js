@@ -13,17 +13,19 @@ function resolveAgentInstructionsFromFile(filePath) {
   const resolvedPath = path.isAbsolute(filePath) ? filePath : path.join(SERVER_ROOT, filePath)
 
   try {
+    console.log('[agent-config] Attempting to read instructions file:', resolvedPath)
     const content = readFileSync(resolvedPath, 'utf8')
     const trimmed = content.trim()
 
     if (!trimmed) {
-      console.warn(`Agent instructions file "${resolvedPath}" is empty.`)
+      console.warn('[agent-config] Instructions file is empty:', resolvedPath)
       return null
     }
 
+    console.log('[agent-config] Loaded instructions file successfully. Length:', trimmed.length)
     return trimmed
   } catch (error) {
-    console.warn(`Failed to read agent instructions file "${resolvedPath}":`, error)
+    console.warn('[agent-config] Failed to read instructions file:', resolvedPath, error)
     return null
   }
 }
@@ -38,6 +40,16 @@ const AGENT_INSTRUCTIONS =
     resolveAgentInstructionsFromFile(process.env.OPENAI_AGENT_INSTRUCTIONS_FILE)) ||
   process.env.OPENAI_AGENT_INSTRUCTIONS ||
   `You are Tim Robinson's AI consulting assistant. Blend executive-level clarity with practical, ROI-focused recommendations for SMB leaders evaluating AI adoption. Always ground advice in Tim's experience, and reference the consulting playbook when relevant.`
+
+console.log('[agent-config] Environment overview:', {
+  hasApiKey: Boolean(process.env.OPENAI_API_KEY),
+  realtimeModel: process.env.OPENAI_REALTIME_MODEL,
+  textModel: process.env.OPENAI_TEXT_MODEL,
+  instructionsFile: process.env.OPENAI_AGENT_INSTRUCTIONS_FILE,
+  instructionsLoaded: AGENT_INSTRUCTIONS ? `${AGENT_INSTRUCTIONS.slice(0, 60)}...` : null,
+  vectorStoreId: VECTOR_STORE_ID,
+  voices: AVAILABLE_VOICES
+})
 
 const AVAILABLE_VOICES = (
   process.env.OPENAI_REALTIME_VOICES &&
