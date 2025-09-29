@@ -8,6 +8,28 @@ import { VoiceChat } from '@/components/chat/VoiceChat.jsx'
 import { getAgentConfig, sendChatMessage } from '@/lib/api.js'
 
 const INITIAL_GREETING = `Hi there! I'm Tim's AI consulting assistant. Ask me how AI can boost automation, speed to market, or customer experience and I'll respond with proven strategies tailored to SMBs.`
+const STORAGE_KEY = 'agilist_chat_history'
+
+function loadStoredMessages() {
+  if (typeof window === 'undefined') return null
+
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY)
+    if (!raw) return null
+
+    const parsed = JSON.parse(raw)
+    if (!Array.isArray(parsed)) return null
+
+    const hydrated = parsed
+      .filter((entry) => entry && typeof entry.role === 'string' && typeof entry.text === 'string')
+      .map((entry) => createMessage(entry.role, entry.text))
+
+    return hydrated.length > 0 ? hydrated : null
+  } catch (err) {
+    console.warn('Failed to read stored chat history', err)
+    return null
+  }
+}
 
 function createMessage(role, text) {
   const seed = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Date.now()
@@ -21,11 +43,23 @@ function createMessage(role, text) {
 export default function ChatBot() {
   const [isOpen, setIsOpen] = useState(false)
   const [mode, setMode] = useState('text')
-  const [messages, setMessages] = useState(() => [createMessage('assistant', INITIAL_GREETING)])
+  const [messages, setMessages] = useState(() => loadStoredMessages() ?? [createMessage('assistant', INITIAL_GREETING)])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [config, setConfig] = useState(null)
   const [configError, setConfigError] = useState(null)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined
+
+    try {
+      const serializable = messages.map(({ role, text }) => ({ role, text }))
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(serializable.slice(-100)))
+    } catch (err) {
+      console.warn('Failed to persist chat history', err)
+    }
+    return undefined
+  }, [messages])
 
   useEffect(() => {
     getAgentConfig()
@@ -66,7 +100,7 @@ export default function ChatBot() {
   }
 
   const handleVoiceHistorySync = (historyMessages) => {
-    setMessages(historyMessages.map((msg) => createMessage(msg.role, msg.text)))
+    setMessages(historyMessages.slice(-100).map((msg) => createMessage(msg.role, msg.text)))
   }
 
   const disabled = Boolean(configError) || !config
