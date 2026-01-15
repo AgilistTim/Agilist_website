@@ -103,6 +103,20 @@ export default function ChatBot() {
     setMessages(historyMessages.slice(-100).map((msg) => createMessage(msg.role, msg.text)))
   }
 
+  const handleClearHistory = () => {
+    try {
+      if (typeof window !== 'undefined') {
+        window.localStorage.removeItem(STORAGE_KEY)
+      }
+    } catch (err) {
+      console.warn('Failed to clear chat history', err)
+    }
+
+    setMessages([createMessage('assistant', INITIAL_GREETING)])
+    setError(null)
+    setLoading(false)
+  }
+
   const disabled = Boolean(configError) || !config
 
   return (
@@ -137,25 +151,34 @@ export default function ChatBot() {
                 Powered by OpenAI realtime voice and RAG over Tim's consulting playbook
               </p>
             </CardHeader>
-            <CardContent className="bg-slate-900 border-b border-slate-800 flex gap-2 p-4 pt-6">
-              <Button
-                variant={mode === 'text' ? 'default' : 'outline'}
-                className={mode === 'text' ? 'bg-cyan-400 text-slate-900 hover:bg-cyan-500' : ''}
-                onClick={() => setMode('text')}
-                disabled={disabled}
-              >
-                <MessageCircle className="h-4 w-4 mr-2" />
-                Text Chat
-              </Button>
-              <Button
-                variant={mode === 'voice' ? 'default' : 'outline'}
-                className={mode === 'voice' ? 'bg-cyan-400 text-slate-900 hover:bg-cyan-500' : ''}
-                onClick={() => setMode('voice')}
-                disabled={disabled}
-              >
-                <Waves className="h-4 w-4 mr-2" />
-                Voice Chat
-              </Button>
+            <CardContent className="bg-slate-900 border-b border-slate-800 p-4 pt-6">
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  variant={mode === 'text' ? 'default' : 'outline'}
+                  className={mode === 'text' ? 'bg-cyan-400 text-slate-900 hover:bg-cyan-500' : ''}
+                  onClick={() => setMode('text')}
+                  disabled={disabled}
+                >
+                  <MessageCircle className="h-4 w-4 mr-2" />
+                  Text Chat
+                </Button>
+                <Button
+                  variant={mode === 'voice' ? 'default' : 'outline'}
+                  className={mode === 'voice' ? 'bg-cyan-400 text-slate-900 hover:bg-cyan-500' : ''}
+                  onClick={() => setMode('voice')}
+                  disabled={disabled}
+                >
+                  <Waves className="h-4 w-4 mr-2" />
+                  Voice Chat
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={handleClearHistory}
+                  className="ml-auto text-slate-200 hover:text-white"
+                >
+                  Clear history
+                </Button>
+              </div>
             </CardContent>
             <div className="p-4">
               {configError ? (
