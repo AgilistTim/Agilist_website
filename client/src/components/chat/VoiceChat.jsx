@@ -1,6 +1,4 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { RealtimeAgent, RealtimeSession } from '@openai/agents/realtime'
-import { fileSearchTool } from '@openai/agents-openai'
 import { createVoiceSession } from '@/lib/api.js'
 import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent } from '@/components/ui/card.jsx'
@@ -96,6 +94,7 @@ export function VoiceChat({ instructions, messages, vectorStoreId, realtimeModel
   const [status, setStatus] = useState('idle')
   const [error, setError] = useState(null)
   const [transcript, setTranscript] = useState('')
+  const [realtimeDeps, setRealtimeDeps] = useState(null)
   const sessionRef = useRef(null)
 
   const voiceInstructions = useMemo(() => {
@@ -112,11 +111,43 @@ export function VoiceChat({ instructions, messages, vectorStoreId, realtimeModel
   }, [instructions])
 
   const tools = useMemo(() => {
+    if (!realtimeDeps?.fileSearchTool) return []
     if (vectorStoreId) {
-      return [fileSearchTool(vectorStoreId)]
+      return [realtimeDeps.fileSearchTool(vectorStoreId)]
     }
     return []
-  }, [vectorStoreId])
+  }, [realtimeDeps, vectorStoreId])
+
+  useEffect(() => {
+    let active = true
+
+    const loadDeps = async () => {
+      try {
+        const [realtimeModule, openAiModule] = await Promise.all([
+          import('@openai/agents/realtime'),
+          import('@openai/agents-openai')
+        ])
+
+        if (!active) return
+        setRealtimeDeps({
+          RealtimeAgent: realtimeModule.RealtimeAgent,
+          RealtimeSession: realtimeModule.RealtimeSession,
+          fileSearchTool: openAiModule.fileSearchTool
+        })
+      } catch (err) {
+        console.error('Failed to load realtime voice dependencies', err)
+        if (active) {
+          setError('Voice chat dependencies failed to load. Please refresh and try again.')
+        }
+      }
+    }
+
+    loadDeps()
+
+    return () => {
+      active = false
+    }
+  }, [])
 
   const teardown = useCallback(() => {
     if (sessionRef.current) {
@@ -142,6 +173,10 @@ export function VoiceChat({ instructions, messages, vectorStoreId, realtimeModel
     }
 
     try {
+      if (!realtimeDeps?.RealtimeAgent || !realtimeDeps?.RealtimeSession) {
+        throw new Error('Voice chat is still loading. Please try again in a moment.')
+      }
+
       setError(null)
       setTranscript('')
       setStatus('connecting')
@@ -160,14 +195,14 @@ export function VoiceChat({ instructions, messages, vectorStoreId, realtimeModel
         throw new Error('Realtime client token not returned by the server.')
       }
 
-      const agent = new RealtimeAgent({
+      const agent = new realtimeDeps.RealtimeAgent({
         name: DEFAULT_NAME,
         instructions: voiceInstructions,
         voice: voice || LOCKED_VOICE,
         tools
       })
 
-      const session = new RealtimeSession(agent, {
+      const session = new realtimeDeps.RealtimeSession(agent, {
         transport: 'webrtc',
         config: {
           model: model || realtimeModel,
@@ -236,6 +271,7 @@ export function VoiceChat({ instructions, messages, vectorStoreId, realtimeModel
   const isIdle = status === 'idle'
   const isConnecting = status === 'connecting'
   const isConnected = status === 'connected'
+  const depsReady = Boolean(realtimeDeps?.RealtimeAgent && realtimeDeps?.RealtimeSession)
 
   return (
     <Card className="bg-slate-800 border-slate-700">
@@ -252,7 +288,13 @@ export function VoiceChat({ instructions, messages, vectorStoreId, realtimeModel
           </p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
-          {isIdle && (
+          {isIdle && !depsReady && (
+            <Button disabled className="bg-cyan-400/60 text-slate-900" size="lg">
+              <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+              Loading Voice Tools
+            </Button>
+          )}
+          {isIdle && depsReady && (
             <Button onClick={startVoice} className="bg-cyan-400 text-slate-900 hover:bg-cyan-500" size="lg">
               <Mic className="h-5 w-5 mr-2" />
               Start Voice Chat

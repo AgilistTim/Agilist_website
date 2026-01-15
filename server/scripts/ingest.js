@@ -6,7 +6,7 @@ import OpenAI from 'openai'
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
 const PROJECT_ROOT = path.resolve(process.cwd(), '..')
-const DOC_GLOBS = ['*.md']
+const DOC_GLOBS = ['*.md', 'client/src/content/**/*.md']
 const TMP_DIR = path.resolve(process.cwd(), 'tmp')
 
 async function main() {

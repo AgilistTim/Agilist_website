@@ -1,0 +1,134 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { getCollection } from 'astro:content'
+
+const posts = await getCollection('blog', ({ data }) => !data.draft)
+const sortedPosts = posts.sort((a, b) => b.data.date - a.data.date)
+
+const canonical = new URL('/blog', Astro.site ?? Astro.url.origin).toString()
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: 'Tim Robinson AI Consulting Blog',
+  url: canonical
+}
+
+const dateFormatter = new Intl.DateTimeFormat('en-GB', {
+  day: '2-digit',
+  month: 'long',
+  year: 'numeric'
+})
+---
+<BaseLayout
+  title="Blog | Tim Robinson AI Consulting"
+  description="Insights on AI, product operations, and practical ways to move faster with confidence."
+  canonical={canonical}
+  ogType="website"
+  jsonLd={jsonLd}
+>
+  <div class="min-h-screen bg-slate-900 text-white">
+    <nav class="fixed top-0 w-full bg-slate-900/95 backdrop-blur-sm z-50 border-b border-slate-800">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap items-center justify-between gap-4 py-4">
+          <a href="/" class="text-2xl font-bold text-cyan-400">Tim Robinson</a>
+          <div class="hidden md:flex space-x-8 text-sm">
+            <a href="/#about" class="hover:text-cyan-400 transition-colors">About</a>
+            <a href="/#services" class="hover:text-cyan-400 transition-colors">Services</a>
+            <a href="/#success-stories" class="hover:text-cyan-400 transition-colors">Success Stories</a>
+            <a href="/blog" class="text-cyan-200">Blog</a>
+            <a href="/#contact" class="hover:text-cyan-400 transition-colors">Contact</a>
+          </div>
+          <a
+            href="https://tanagra.youcanbook.me"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center rounded-md bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-cyan-500"
+          >
+            Book a Call
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="pt-28 pb-12 sm:pt-32 sm:pb-16">
+      <section class="pb-12 sm:pb-16">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p class="text-sm uppercase tracking-[0.2em] text-cyan-300">Blog</p>
+          <h1 class="text-4xl sm:text-5xl font-bold mt-4">Insights for faster, smarter product teams</h1>
+          <p class="text-base sm:text-lg text-slate-300 mt-4 max-w-3xl">
+            Practical thinking on AI-native product operations, experimentation, and the operating model shifts
+            that unlock sustainable advantage.
+          </p>
+        </div>
+      </section>
+
+      <section class="pb-16 sm:pb-24">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="grid gap-6">
+            {sortedPosts.map((post) => (
+              <article class="rounded-2xl border border-slate-800 bg-slate-900/70 p-6 sm:p-8">
+                <div class="flex flex-wrap items-center gap-3 text-xs uppercase tracking-wide text-slate-400">
+                  <span>{dateFormatter.format(post.data.date)}</span>
+                  {post.data.tags?.length ? (
+                    <div class="flex flex-wrap gap-2">
+                      {post.data.tags.map((tag) => (
+                        <span class="rounded-full bg-slate-800 px-3 py-1 text-[11px] text-cyan-200">{tag}</span>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-semibold mt-4">
+                  <a class="hover:text-cyan-300 transition-colors" href={`/blog/${post.slug}`}>
+                    {post.data.title}
+                  </a>
+                </h2>
+                <p class="text-slate-300 mt-3 leading-relaxed">{post.data.summary}</p>
+                <a
+                  class="inline-flex items-center gap-2 text-cyan-200 hover:text-cyan-100 mt-5 text-sm"
+                  href={`/blog/${post.slug}`}
+                >
+                  Read the full article
+                  <span aria-hidden="true">-&gt;</span>
+                </a>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-slate-900 border-t border-slate-800 py-12">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-3 gap-8">
+          <div>
+            <div class="text-2xl font-bold text-cyan-400 mb-4">Tim Robinson</div>
+            <p class="text-slate-300">AI Consulting & Business Transformation for SMBs</p>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-4">Quick Links</h3>
+            <div class="space-y-2">
+              <a href="/#about" class="block text-slate-300 hover:text-cyan-400 transition-colors">About</a>
+              <a href="/#services" class="block text-slate-300 hover:text-cyan-400 transition-colors">Services</a>
+              <a href="/blog" class="block text-slate-300 hover:text-cyan-400 transition-colors">Blog</a>
+            </div>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-4">Get in Touch</h3>
+            <a
+              href="https://tanagra.youcanbook.me"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center rounded-md bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-cyan-500 w-full"
+            >
+              Start a Conversation
+            </a>
+          </div>
+        </div>
+        <div class="border-t border-slate-800 mt-8 pt-8 text-center text-slate-400">
+          <p>&copy; 2025 Tim Robinson AI Consulting. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+</BaseLayout>

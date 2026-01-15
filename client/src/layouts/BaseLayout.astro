@@ -1,0 +1,60 @@
+---
+import '../index.css'
+import '../App.css'
+import ChatBot from '../components/ChatBot.jsx'
+
+const {
+  title,
+  description,
+  canonical,
+  ogType = 'website',
+  ogImage,
+  jsonLd,
+  noIndex = false
+} = Astro.props
+
+const metaTitle = title || 'Tim Robinson - AI Consulting & Business Transformation'
+const metaDescription =
+  description ||
+  'AI consulting and business transformation for SMBs. Practical AI solutions that deliver measurable ROI.'
+
+const baseUrl = Astro.site ?? new URL(Astro.url.origin)
+const canonicalUrl = canonical || new URL(Astro.url.pathname, baseUrl).toString()
+const ogImageUrl = ogImage || null
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{metaTitle}</title>
+    <meta name="description" content={metaDescription} />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:title" content={metaTitle} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonicalUrl} />
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={metaTitle} />
+    <meta name="twitter:description" content={metaDescription} />
+    {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
+    {noIndex && <meta name="robots" content="noindex, nofollow" />}
+
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    {jsonLd && (
+      <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    )}
+  </head>
+  <body class="bg-slate-900 text-white">
+    <slot />
+    <ChatBot client:only="react" />
+  </body>
+</html>

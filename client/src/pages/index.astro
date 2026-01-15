@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import App from '../App.jsx'
+import { getCollection } from 'astro:content'
+
+const posts = await getCollection('blog', ({ data }) => !data.draft)
+const latestPosts = posts
+  .sort((a, b) => b.data.date - a.data.date)
+  .slice(0, 3)
+  .map(({ slug, data }) => ({
+    slug,
+    title: data.title,
+    date: data.date.toISOString(),
+    summary: data.summary,
+    tags: data.tags ?? []
+  }))
+
+const canonical = new URL('/', Astro.site ?? Astro.url.origin).toString()
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Tim Robinson AI Consulting',
+  url: canonical,
+  description:
+    'AI consulting and business transformation for SMBs. Practical AI solutions that deliver measurable ROI.',
+  founder: {
+    '@type': 'Person',
+    name: 'Tim Robinson'
+  },
+  sameAs: ['https://www.linkedin.com/in/tim-robinson-agilist/']
+}
+---
+<BaseLayout
+  title="Tim Robinson - AI Consulting & Business Transformation"
+  description="AI consulting and business transformation for SMBs. Practical AI solutions that deliver measurable ROI."
+  canonical={canonical}
+  ogType="website"
+  jsonLd={jsonLd}
+>
+  <App latestPosts={latestPosts} client:load />
+</BaseLayout>

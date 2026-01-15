@@ -21,15 +21,20 @@ import {
   ShieldCheck,
   Home
 } from 'lucide-react'
-import ChatBot from '@/components/ChatBot.jsx'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import './App.css'
 const bookCover = 'https://assets.lulu.com/cover_thumbs/v/8/v8mqjq4-front-shortedge-384.jpg'
+const dateFormatter = new Intl.DateTimeFormat('en-GB', {
+  day: '2-digit',
+  month: 'long',
+  year: 'numeric'
+})
 
-function App() {
+function App({ latestPosts = [] }) {
   const bookingLink = 'https://tanagra.youcanbook.me'
-  const bookOrderLink = 'http://t.ly/GenOrg_order'
+  const bookFreeLink = 'https://books.genorg.ai'
+  const bookReasoningLink = 'https://books.genorg.ai/pr'
   const bookReviewsLink = 'https://www.amazon.co.uk/dp/B0FJG7BRG2#averageCustomerReviewsAnchor'
 
   const bookReviews = [
@@ -529,6 +534,7 @@ function App() {
                 <a href="#about" className="hover:text-cyan-400 transition-colors">About</a>
                 <a href="#services" className="hover:text-cyan-400 transition-colors">Services</a>
                 <a href="#success-stories" className="hover:text-cyan-400 transition-colors">Success Stories</a>
+                <a href="/blog" className="hover:text-cyan-400 transition-colors">Blog</a>
                 <a href="#contact" className="hover:text-cyan-400 transition-colors">Contact</a>
               </div>
               <Button
@@ -571,6 +577,7 @@ function App() {
                   { href: '#about', label: 'About' },
                   { href: '#services', label: 'Services' },
                   { href: '#success-stories', label: 'Success Stories' },
+                  { href: '/blog', label: 'Blog' },
                   { href: '#contact', label: 'Contact' }
                 ].map((item) => (
                   <a
@@ -646,34 +653,34 @@ function App() {
               </div>
               <div className="w-full md:w-2/3 space-y-4">
                 <Badge className="bg-cyan-400/20 text-cyan-300 border-cyan-400/40 w-fit">
-                  New Book Release
+                  Free Book Release
                 </Badge>
                 <h3 className="text-2xl sm:text-3xl font-semibold">
                   Co-author of <span className="text-cyan-300">The Generative Organization</span>
                 </h3>
                 <p className="text-slate-300 text-base sm:text-lg leading-relaxed">
-                  Following the success of the award-winning book <em>CYCLES</em>, this playbook reveals how leaders can make AI their
-                  ultimate competitive advantage. Blending strategy, governance, and hands-on workflows from 35+ experts—including
-                  lessons from my own transformation projects—it bridges the gap between ambition and execution.
+                  Following the success of the award-winning book <em>CYCLES</em>, this playbook shows leaders how to make AI their
+                  ultimate competitive advantage. It's now free because only 1% of business book ideas get used. We're using an
+                  AI-augmented model to change the math and help teams turn insight into action.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button
-                    href={bookOrderLink}
+                    href={bookFreeLink}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full sm:w-auto bg-cyan-400 hover:bg-cyan-500 text-slate-900"
                   >
-                    Order a Copy
+                    Get the free book
                     <ArrowRight className="h-4 w-4 ml-2" />
                   </Button>
                   <Button
-                    href={bookReviewsLink}
+                    href={bookReasoningLink}
                     target="_blank"
                     rel="noopener noreferrer"
                     variant="ghost"
                     className="w-full sm:w-auto text-cyan-200 hover:text-cyan-100"
                   >
-                    Read Reviews
+                    Why it's free
                   </Button>
                 </div>
                 <div className="mt-6 bg-slate-900/60 border border-slate-800 rounded-2xl p-6 h-[260px] sm:h-[280px] md:h-[320px]">
@@ -827,6 +834,71 @@ function App() {
           </div>
         </div>
       </section>
+
+      {latestPosts.length > 0 && (
+        <section id="latest-insights" className="py-16 sm:py-20">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12" data-aos="fade-up">
+              <div>
+                <Badge className="bg-cyan-400/20 text-cyan-300 border-cyan-400/40">Latest Insights</Badge>
+                <h2 className="text-3xl sm:text-4xl font-bold mt-6 mb-4">From the blog</h2>
+                <p className="text-base sm:text-lg text-slate-300 max-w-2xl">
+                  Thoughtful, practical guidance on AI-native product operations and building momentum that lasts.
+                </p>
+              </div>
+              <Button
+                href="/blog"
+                variant="outline"
+                className="border-cyan-400 text-cyan-200 w-full md:w-auto"
+              >
+                View all posts
+              </Button>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-3">
+              {latestPosts.map((post, index) => {
+                const formattedDate = post.date ? dateFormatter.format(new Date(post.date)) : ''
+                return (
+                  <Card
+                    key={post.slug}
+                    className="bg-slate-800/80 border-slate-700 hover:border-cyan-400/50 transition-all duration-300"
+                    data-aos="fade-up"
+                    data-aos-delay={index * 100}
+                  >
+                    <CardHeader className="space-y-3">
+                      <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wide text-slate-400">
+                        <span>{formattedDate}</span>
+                        {post.tags?.length ? (
+                          <div className="flex flex-wrap gap-2">
+                            {post.tags.map((tag) => (
+                              <Badge key={tag} className="bg-slate-900/60 text-cyan-200 border-slate-700">
+                                {tag}
+                              </Badge>
+                            ))}
+                          </div>
+                        ) : null}
+                      </div>
+                      <CardTitle className="text-xl text-white">{post.title}</CardTitle>
+                      <CardDescription className="text-slate-300 text-sm leading-relaxed">
+                        {post.summary}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Button
+                        href={`/blog/${post.slug}`}
+                        variant="outline"
+                        className="border-cyan-400 text-cyan-200 w-full"
+                      >
+                        Read the article
+                      </Button>
+                    </CardContent>
+                  </Card>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Featured Projects */}
       <section className="py-16 sm:py-20 bg-slate-900/70">
@@ -1120,6 +1192,7 @@ function App() {
                 <a href="#about" className="block text-slate-300 hover:text-cyan-400 transition-colors">About</a>
                 <a href="#services" className="block text-slate-300 hover:text-cyan-400 transition-colors">Services</a>
                 <a href="#success-stories" className="block text-slate-300 hover:text-cyan-400 transition-colors">Success Stories</a>
+                <a href="/blog" className="block text-slate-300 hover:text-cyan-400 transition-colors">Blog</a>
               </div>
             </div>
             <div>
@@ -1141,8 +1214,6 @@ function App() {
         </div>
       </footer>
 
-      {/* AI Chatbot */}
-      <ChatBot />
     </div>
   )
 }
