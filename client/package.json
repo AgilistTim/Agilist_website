@@ -10,7 +10,7 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "@openai/agents": "^0.1.5",
+    "@openai/agents": "^0.4.2",
     "@openai/agents-openai": "^0.4.2",
     "aos": "^2.3.4",
     "gray-matter": "^4.0.3",
