@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import posthog from 'posthog-js'
+import AdminDashboard from './components/AdminDashboard'
+import Blog from './components/Blog'
 import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
@@ -531,6 +533,24 @@ function App({ latestPosts = [] }) {
       ]
     }
   ]
+
+  const [path, setPath] = useState(window.location.pathname);
+
+  useEffect(() => {
+    const handleLocationChange = () => {
+      setPath(window.location.pathname);
+    };
+    window.addEventListener('popstate', handleLocationChange);
+    return () => window.removeEventListener('popstate', handleLocationChange);
+  }, []);
+
+  if (path === '/admin') {
+    return <AdminDashboard />;
+  }
+
+  if (path === '/blog' || path.startsWith('/blog/')) {
+    return <Blog />;
+  }
 
   return (
     <div className="relative min-h-screen text-white overflow-x-hidden">

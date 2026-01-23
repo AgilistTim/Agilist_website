@@ -1,0 +1,1 @@
+---\ntitle: Welcome to the New Agilist Blog\ndate: 2026-01-23\nauthor: Tim Robinson\n---\n\nThis is the first post in our new Git-based CMS. You can now manage your content directly from the admin dashboard.
