@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import posthog from 'posthog-js'
 import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
@@ -246,6 +247,17 @@ function App({ latestPosts = [] }) {
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0)
   const [expandedTestimonial, setExpandedTestimonial] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  useEffect(() => {
+    posthog.init('phc_Wc0iXC2dmeghsETmIbxnT7Z960ZwEK8N4FcVAcaz6nf', {
+      api_host: 'https://us.i.posthog.com',
+      person_profiles: 'identified_only',
+    })
+  }, [])
+
+  const trackEvent = (eventName, properties = {}) => {
+    posthog.capture(eventName, properties)
+  }
 
   useEffect(() => {
     AOS.init({
@@ -617,23 +629,27 @@ function App({ latestPosts = [] }) {
             I help small and medium-sized businesses drive growth, automate processes, and delight customers through strategic AI solutions that deliver measurable ROI.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center" data-aos="fade-up" data-aos-delay="300">
-            <Button
+               <Button
               href={bookingLink}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackEvent('clicked_book_call', { location: 'hero' })}
               size="lg"
               className="w-full sm:w-auto bg-cyan-400 hover:bg-cyan-500 text-slate-900 text-sm sm:text-base md:text-lg px-5 sm:px-6 md:px-8 py-3 md:py-4"
             >
               <Calendar className="h-5 w-5 mr-2" />
-              Book a Free AI Strategy Call
+              Book a Strategy Call
             </Button>
             <Button
-              href="#services"
+              href="https://survey.agilist.co.uk"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackEvent('clicked_take_assessment', { location: 'hero' })}
               size="lg"
               variant="outline"
               className="w-full sm:w-auto border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-slate-900 text-sm sm:text-base md:text-lg px-5 sm:px-6 md:px-8 py-3 md:py-4"
             >
-              Learn More
+              Take the AI Readiness Assessment
               <ArrowRight className="h-5 w-5 ml-2" />
             </Button>
           </div>
@@ -1201,6 +1217,7 @@ function App({ latestPosts = [] }) {
                 href={bookingLink}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackEvent('clicked_start_conversation', { location: 'footer' })}
                 className="bg-cyan-400 hover:bg-cyan-500 text-slate-900 w-full"
               >
                 <MessageCircle className="h-4 w-4 mr-2" />
