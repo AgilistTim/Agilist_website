@@ -66,6 +66,7 @@ ${content}`;
               <input
                 type="password"
                 placeholder="Enter Password"
+                autocomplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full p-3 rounded bg-slate-800 border border-slate-700 focus:border-cyan-400 outline-none"
