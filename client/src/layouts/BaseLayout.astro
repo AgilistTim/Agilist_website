@@ -55,6 +55,9 @@ const ogImageUrl = ogImage || null
       <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     )}
 
+    <script is:inline>
+      window.POSTHOG_KEY = import.meta.env.PUBLIC_POSTHOG_KEY;
+    </script>
     <script src="/posthog-init.js" is:inline></script>
 
   </head>
