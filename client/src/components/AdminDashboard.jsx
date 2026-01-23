@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button.jsx';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.jsx';
 import { savePostToGithub } from '@/utils/githubCms';
-import posthog from 'posthog-js';
 
-const ADMIN_PASSWORD = 'D238458t';
+
+
+const ADMIN_PASSWORD = import.meta.env.PUBLIC_ADMIN_PASSWORD;
+
+
 
 const AdminDashboard = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -43,8 +46,7 @@ ${content}`;
 
     try {
       await savePostToGithub(filename, fileContent, `Add blog post: ${title}`);
-      posthog.capture('blog_post_published', { title, slug });
-      setStatus('Published successfully! Site will rebuild in a few minutes.');
+    posthog.capture('blog_post_published', { title, slug });  setStatus('Published successfully! Site will rebuild in a few minutes.');
       setTitle('');
       setContent('');
     } catch (error) {

@@ -54,6 +54,9 @@ const ogImageUrl = ogImage || null
     {jsonLd && (
       <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     )}
+
+    <script src="/posthog-init.js" is:inline></script>
+
   </head>
   <body class="bg-slate-900 text-white">
     <slot />

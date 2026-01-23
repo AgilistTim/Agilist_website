@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import App from '../App.jsx'
+---
+<BaseLayout
+  title="Admin Dashboard | Tim Robinson AI Consulting"
+  description="Admin dashboard for managing blog content."
+>
+  <App client:only="react" />
+</BaseLayout>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
-import posthog from 'posthog-js'
+
+
 import AdminDashboard from './components/AdminDashboard'
 import Blog from './components/Blog'
 import { Button } from '@/components/ui/button.jsx'
@@ -27,6 +28,9 @@ import {
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import './App.css'
+
+
+
 const bookCover = 'https://assets.lulu.com/cover_thumbs/v/8/v8mqjq4-front-shortedge-384.jpg'
 const dateFormatter = new Intl.DateTimeFormat('en-GB', {
   day: '2-digit',
@@ -534,9 +538,15 @@ function App({ latestPosts = [] }) {
     }
   ]
 
-  const [path, setPath] = useState(window.location.pathname);
+  const [path, setPath] = useState('/');
 
   useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: true
+    })
+
+    setPath(window.location.pathname);
     const handleLocationChange = () => {
       setPath(window.location.pathname);
     };
@@ -544,11 +554,13 @@ function App({ latestPosts = [] }) {
     return () => window.removeEventListener('popstate', handleLocationChange);
   }, []);
 
-  if (path === '/admin') {
+  const normalizedPath = path.endsWith('/') && path.length > 1 ? path.slice(0, -1) : path;
+
+  if (normalizedPath === '/admin') {
     return <AdminDashboard />;
   }
 
-  if (path === '/blog' || path.startsWith('/blog/')) {
+  if (normalizedPath === '/blog' || normalizedPath.startsWith('/blog/')) {
     return <Blog />;
   }
 
