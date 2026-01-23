@@ -5,7 +5,7 @@ import { savePostToGithub } from '@/utils/githubCms';
 
 
 
-const ADMIN_PASSWORD = import.meta.env.PUBLIC_ADMIN_PASSWORD;
+const getAdminPassword = () => import.meta.env.PUBLIC_ADMIN_PASSWORD;
 
 
 
@@ -18,7 +18,7 @@ const AdminDashboard = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
+    if (password === getAdminPassword()) {
       setIsLoggedIn(true);
     } else {
       alert('Incorrect password');
@@ -46,7 +46,7 @@ ${content}`;
 
     try {
       await savePostToGithub(filename, fileContent, `Add blog post: ${title}`);
-    posthog.capture('blog_post_published', { title, slug });  setStatus('Published successfully! Site will rebuild in a few minutes.');
+    setStatus('Published successfully! Site will rebuild in a few minutes.');
       setTitle('');
       setContent('');
     } catch (error) {

@@ -254,15 +254,10 @@ function App({ latestPosts = [] }) {
   const [expandedTestimonial, setExpandedTestimonial] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  useEffect(() => {
-    posthog.init('phc_Wc0iXC2dmeghsETmIbxnT7Z960ZwEK8N4FcVAcaz6nf', {
-      api_host: 'https://us.i.posthog.com',
-      person_profiles: 'identified_only',
-    })
-  }, [])
-
   const trackEvent = (eventName, properties = {}) => {
-    posthog.capture(eventName, properties)
+    if (window.posthog) {
+      window.posthog.capture(eventName, properties)
+    }
   }
 
   useEffect(() => {
