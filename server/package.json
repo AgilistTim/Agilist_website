@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "node --watch src/index.js",
     "start": "node src/index.js",
-    "ingest": "node scripts/ingest.js"
+    "ingest": "node scripts/ingest.js",
+    "upload-blogs": "node scripts/upload-blogs-to-vectorstore.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

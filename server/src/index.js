@@ -217,6 +217,41 @@ app.post('/api/voice-token', async (req, res) => {
   }
 })
 
+app.post('/api/upload-blog-to-vectorstore', async (req, res) => {
+  try {
+    const { content, fileName } = req.body || {}
+
+    if (!content || !fileName) {
+      return res.status(400).json({ error: 'Content and fileName are required' })
+    }
+
+    if (!VECTOR_STORE_ID) {
+      return res.status(500).json({ error: 'Vector store not configured' })
+    }
+
+    // Create file in OpenAI
+    const file = await openai.files.create({
+      file: new Blob([content], { type: 'text/markdown' }),
+      purpose: 'assistants'
+    })
+
+    // Add to vector store
+    await openai.vectorStores.files.create(VECTOR_STORE_ID, {
+      file_id: file.id
+    })
+
+    res.json({
+      success: true,
+      fileId: file.id,
+      fileName,
+      vectorStoreId: VECTOR_STORE_ID
+    })
+  } catch (error) {
+    console.error('Upload to vector store error:', error)
+    res.status(500).json({ error: error.message || 'Failed to upload to vector store' })
+  }
+})
+
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`)
 })
