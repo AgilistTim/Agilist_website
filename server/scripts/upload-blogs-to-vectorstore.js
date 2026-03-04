@@ -25,12 +25,11 @@ async function uploadBlogToVectorStore(filePath, fileName) {
   try {
     console.log(`\n📄 Processing: ${fileName}`)
 
-    const content = readFileSync(filePath, 'utf-8')
-
-    // Create a file in OpenAI
+    // Create a file in OpenAI using fs.createReadStream
     console.log('  → Uploading to OpenAI...')
+    const { createReadStream } = await import('node:fs')
     const file = await openai.files.create({
-      file: new Blob([content], { type: 'text/markdown' }),
+      file: createReadStream(filePath),
       purpose: 'assistants'
     })
 

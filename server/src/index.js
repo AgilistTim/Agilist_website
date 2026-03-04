@@ -229,9 +229,10 @@ app.post('/api/upload-blog-to-vectorstore', async (req, res) => {
       return res.status(500).json({ error: 'Vector store not configured' })
     }
 
-    // Create file in OpenAI
+    // Create file in OpenAI using Buffer
+    const buffer = Buffer.from(content, 'utf-8')
     const file = await openai.files.create({
-      file: new Blob([content], { type: 'text/markdown' }),
+      file: new File([buffer], fileName, { type: 'text/markdown' }),
       purpose: 'assistants'
     })
 
