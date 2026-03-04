@@ -145,21 +145,29 @@ app.post('/api/chat', async (req, res) => {
       }
     }
 
-    const response = await openai.responses.create({
+    const stream = await openai.responses.stream({
       model: TEXT_MODEL,
       instructions: AGENT_INSTRUCTIONS,
       input: conversation
     })
 
-    const outputText = response.output_text ?? ''
+    res.setHeader('Content-Type', 'text/event-stream')
+    res.setHeader('Cache-Control', 'no-cache')
+    res.setHeader('Connection', 'keep-alive')
 
-    res.json({
-      response: outputText,
-      metadata: {
-        model: response.model,
-        id: response.id
+    for await (const chunk of stream) {
+      if (chunk.type === 'response.output_text.delta') {
+        res.write(`data: ${JSON.stringify({ type: 'delta', text: chunk.delta })}\n\n`)
+      } else if (chunk.type === 'response.output_text.done') {
+        res.write(`data: ${JSON.stringify({ type: 'done', text: chunk.text })}\n\n`)
+      } else if (chunk.type === 'response.done') {
+        res.write(`data: ${JSON.stringify({
+          type: 'complete',
+          metadata: { model: chunk.response?.model, id: chunk.response?.id }
+        })}\n\n`)
+        res.end()
       }
-    })
+    }
   } catch (error) {
     console.error('Chat error:', error)
     res.status(500).json({ error: error.message || 'Unknown error' })

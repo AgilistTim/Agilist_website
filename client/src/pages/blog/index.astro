@@ -5,6 +5,13 @@ import { getCollection } from 'astro:content'
 const posts = await getCollection('blog', ({ data }) => !data.draft)
 const sortedPosts = posts.sort((a, b) => b.data.date - a.data.date)
 
+// Track blog page view (client-side)
+const trackBlogView = `
+  import('../../lib/analytics.js').then(({ analytics }) => {
+    analytics.blogPageViewed()
+  })
+`
+
 const canonical = new URL('/blog', Astro.site ?? Astro.url.origin).toString()
 
 const jsonLd = {
@@ -130,4 +137,5 @@ const dateFormatter = new Intl.DateTimeFormat('en-GB', {
       </div>
     </footer>
   </div>
+  <script type="module" set:html={trackBlogView} />
 </BaseLayout>

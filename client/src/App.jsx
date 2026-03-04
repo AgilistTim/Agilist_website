@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge.jsx'
 import { TextChat } from '@/components/chat/TextChat.jsx'
 import { VoiceChat } from '@/components/chat/VoiceChat.jsx'
 import { getAgentConfig, sendChatMessage } from '@/lib/api.js'
+import { initAnalytics, analytics } from '@/lib/analytics.js'
 import {
   ArrowRight,
   Calendar,
@@ -243,6 +244,8 @@ function App({ latestPosts = [] }) {
       offset: 120
     })
 
+    initAnalytics()
+
     setCurrentPath(window.location.pathname)
     const handleLocationChange = () => {
       setCurrentPath(window.location.pathname)
@@ -286,15 +289,27 @@ function App({ latestPosts = [] }) {
     setMessages((prev) => [...prev, userEntry])
     setLoading(true)
 
+    // Create streaming assistant message
+    const assistantId = `assistant-${Date.now()}`
+    const streamingMessage = { id: assistantId, role: 'assistant', text: '' }
+    setMessages((prev) => [...prev, streamingMessage])
+
     try {
       const historyForApi = [...messages, userEntry].map(({ role, text }) => ({ role, text }))
-      const result = await sendChatMessage({ messages: historyForApi })
 
-      const assistantEntry = createMessage('assistant', result.response || '')
-      setMessages((prev) => [...prev, assistantEntry])
+      await sendChatMessage({
+        messages: historyForApi,
+        onChunk: (delta, fullText) => {
+          setMessages((prev) =>
+            prev.map((msg) => msg.id === assistantId ? { ...msg, text: fullText } : msg)
+          )
+        }
+      })
     } catch (err) {
       console.error(err)
       setError(err.message)
+      // Remove failed streaming message
+      setMessages((prev) => prev.filter((msg) => msg.id !== assistantId))
     } finally {
       setLoading(false)
     }
@@ -313,6 +328,7 @@ function App({ latestPosts = [] }) {
       console.warn('Failed to clear chat history', err)
     }
 
+    analytics.historyCleared()
     setMessages([createMessage('assistant', INITIAL_GREETING)])
     setError(null)
     setLoading(false)
@@ -351,6 +367,7 @@ function App({ latestPosts = [] }) {
                 href={bookingLink}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => analytics.bookingLinkClicked('nav')}
                 className="bg-gradient-to-r from-[#7C3AED] to-[#9F67FA] text-white hover:opacity-90"
               >
                 Start a conversation
@@ -448,6 +465,7 @@ function App({ latestPosts = [] }) {
                         href={item.link}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={() => analytics.projectClicked(item.project, 'track-record', item.link)}
                         className="text-xs text-[#A1A1AA] hover:text-white inline-flex items-center gap-1"
                       >
                         View project
@@ -497,6 +515,7 @@ function App({ latestPosts = [] }) {
                         href={project.link}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={() => analytics.projectClicked(project.title, 'featured-projects', project.link)}
                         variant="outline"
                         className="border-[#7C3AED] text-[#F4F4F5] w-fit"
                       >
@@ -713,7 +732,12 @@ function App({ latestPosts = [] }) {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <Button href={`/blog/${post.slug}`} variant="outline" className="border-[#7C3AED] text-white w-full">
+                      <Button
+                        href={`/blog/${post.slug}`}
+                        onClick={() => analytics.blogPostClicked(post.title, post.slug)}
+                        variant="outline"
+                        className="border-[#7C3AED] text-white w-full"
+                      >
                         Read the article
                       </Button>
                     </CardContent>
@@ -758,6 +782,7 @@ function App({ latestPosts = [] }) {
             href={bookingLink}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => analytics.bookingLinkClicked('contact-section')}
             size="lg"
             className="mt-8 bg-gradient-to-r from-[#7C3AED] to-[#9F67FA] text-white text-base px-6 py-3"
           >
@@ -790,6 +815,7 @@ function App({ latestPosts = [] }) {
                 href={bookingLink}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => analytics.bookingLinkClicked('footer')}
                 className="bg-gradient-to-r from-[#7C3AED] to-[#9F67FA] text-white w-full"
               >
                 <Calendar className="h-4 w-4 mr-2" />

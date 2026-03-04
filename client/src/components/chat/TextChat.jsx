@@ -4,6 +4,15 @@ import { Card, CardContent } from '@/components/ui/card.jsx'
 import { Input } from '@/components/ui/input.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import { Send, MessageCircle, Bot, Loader2 } from 'lucide-react'
+import { analytics } from '@/lib/analytics.js'
+
+const SUGGESTED_PROMPTS = [
+  "Our team keeps debating priorities but never moves forward",
+  "Decision-making takes forever in our organization",
+  "We're drowning in manual work but can't see where AI fits",
+  "Where should we even start with AI in a regulated sector?",
+  "How do I know if a problem is worth solving with AI?"
+]
 
 export function TextChat({ messages, onSend, loading, error }) {
   const [value, setValue] = useState('')
@@ -12,8 +21,17 @@ export function TextChat({ messages, onSend, loading, error }) {
     event.preventDefault()
     if (!value.trim() || loading) return
 
-    await onSend(value.trim())
+    const message = value.trim()
+    analytics.messageSent(message.length, true)
+    await onSend(message)
     setValue('')
+  }
+
+  const handleSuggestedPrompt = (prompt) => {
+    if (loading) return
+    analytics.suggestedPromptClicked(prompt)
+    analytics.messageSent(prompt.length, true)
+    onSend(prompt)
   }
 
   const renderWithLinks = (text) => {
@@ -68,6 +86,22 @@ export function TextChat({ messages, onSend, loading, error }) {
           </Badge>
         </div>
         <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+          {messages.length <= 1 && !loading && (
+            <div className="space-y-3">
+              <p className="text-xs text-[#A1A1AA] uppercase tracking-wide">Suggested questions:</p>
+              <div className="flex flex-wrap gap-2">
+                {SUGGESTED_PROMPTS.map((prompt) => (
+                  <button
+                    key={prompt}
+                    onClick={() => handleSuggestedPrompt(prompt)}
+                    className="text-xs px-3 py-2 rounded-lg bg-[#0D0D0F] border border-[#2A2A35] text-[#A1A1AA] hover:border-[#7C3AED] hover:text-[#A78BFA] transition-colors text-left"
+                  >
+                    {prompt}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           {messages.map((message) => (
             <div
               key={message.id}

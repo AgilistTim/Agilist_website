@@ -16,6 +16,17 @@ const { Content } = await post.render()
 // Use LinkedIn URL as canonical if this is a cross-post, otherwise use this page
 const canonical = post.data.canonicalUrl || post.data.linkedinUrl || new URL(`/blog/${post.slug}`, Astro.site ?? Astro.url.origin).toString()
 
+// Track blog post view (client-side)
+const trackPostView = `
+  import('../../lib/analytics.js').then(({ analytics }) => {
+    analytics.blogPostViewed(
+      ${JSON.stringify(post.data.title)},
+      ${JSON.stringify(post.slug)},
+      ${JSON.stringify(post.data.tags || [])}
+    )
+  })
+`
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Article',
@@ -124,4 +135,5 @@ const dateFormatter = new Intl.DateTimeFormat('en-GB', {
       </div>
     </footer>
   </div>
+  <script type="module" set:html={trackPostView} />
 </BaseLayout>
