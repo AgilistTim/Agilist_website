@@ -10,7 +10,7 @@ const DEFAULT_GREETING =
   "Hi there! I'm Tim's AI assistant. Ask about AI transformation, foresight, or regulated sectors and I'll respond in Tim's voice."
 const LOCKED_VOICE = 'marin'
 const VOICE_OPENING_DIRECTIVE =
-  "VOICE MODE: Keep ALL responses extremely brief (3-4 sentences maximum). For voice, always open by greeting the listener, introducing yourself as Tim's AI assistant in one sentence, and inviting their question. Keep every response concise and conversational."
+  "VOICE MODE - CRITICAL: You MUST keep ALL voice responses to 2-3 sentences MAXIMUM. Never exceed 50 words per response. Speak in short, complete thoughts. For opening: One sentence greeting + invitation to speak. For all other responses: One insight + one question, nothing more. Be conversational and brief above all else."
 
 function toRealtimeHistory(messages) {
   const items = []
@@ -215,9 +215,9 @@ export function VoiceChat({ instructions, messages, vectorStoreId, realtimeModel
           },
           turn_detection: {
             type: 'server_vad',
-            threshold: 0.6,
+            threshold: 0.8,
             prefix_padding_ms: 300,
-            silence_duration_ms: 1000
+            silence_duration_ms: 2000
           },
           input_audio_transcription: {
             model: 'whisper-1'
