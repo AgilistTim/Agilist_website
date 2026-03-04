@@ -66,64 +66,80 @@ function loadStoredMessages() {
 }
 
 function App({ latestPosts = [] }) {
-  const bookingLink = 'https://tanagra.youcanbook.me'
+  const bookingLink = 'https://calendly.com/agilist/quick-chat'
   const bookFreeLink = 'https://books.genorg.ai'
   const bookReasoningLink = 'https://books.genorg.ai/pr'
 
   const trackRecord = [
     {
+      project: 'Web-Coin',
+      year: '2023',
+      insight: 'The internet would need verifiable post attribution and anti-AI slop mechanisms to preserve human engagement and content quality.',
+      link: 'https://github.com/AgilistTim/web-coin'
+    },
+    {
       project: 'GEO (Generative Engine Optimisation)',
       year: '2023',
-      insight: 'AI would replace traditional search — two years before “GEO” became a category.'
+      insight: 'AI would replace traditional search — two years before "GEO" became a category.'
     },
     {
       project: 'EvaCares',
-      year: '2024',
+      year: '2023',
       insight: 'AI voice companions for elderly care would become critical infrastructure.',
       link: 'https://www.evacares.co.uk'
     },
     {
-      project: 'Project Bias / Delphi',
+      project: 'Project Bias',
       year: '2024',
       insight: 'Investment committees needed AI co-pilots to surface cognitive bias in real time.',
       link: 'https://www.mybias.co.uk'
     },
     {
-      project: 'PodGuide',
+      project: 'Delphi Decision Co-Pilot',
       year: '2024',
+      insight: 'Strategic planning needed AI that could model scenarios and synthesize competing signals.',
+      link: 'https://github.com/AgilistTim/Delphi'
+    },
+    {
+      project: 'PodGuide',
+      year: '2026',
       insight: 'Podcasters needed an AI co-pilot for the full episode lifecycle — from planning through live interview to content generation.',
       link: 'https://podguide.agilist.co.uk/'
     },
     {
       project: 'OBD-AI',
-      year: '2024',
-      insight: 'Pre-purchase vehicle inspection would be transformed by AI.'
+      year: '2026',
+      insight: 'Vehicle diagnostics needed AI that could bridge complex automotive telemetry and human-readable insights — transforming how drivers maintain vehicles and buyers evaluate purchases.',
+      link: 'https://github.com/AgilistTim/OBD-AI'
     }
   ]
 
   const featuredProjects = [
     {
       title: 'EvaCares',
-      year: '2024',
+      year: '2023',
       problem: 'Isolation and fragmented care signals in elderly support.',
       proof: 'Phone-first AI companion delivering wellbeing insights without new devices.',
       stack: ['Voice AI', 'RAG', 'Telephony', 'React'],
-      link: 'https://www.evacares.co.uk'
+      link: 'https://www.evacares.co.uk',
+      signal: 'Voice AI would become critical infrastructure for care — not through apps, but by meeting the elderly where they already are: on the phone.'
     },
     {
-      title: 'Project Bias (Delphi)',
+      title: 'Project Bias',
       year: '2024',
       problem: 'Investment committees miss hidden cognitive bias in high-stakes decisions.',
       proof: 'Bias fingerprinting engine that surfaces blind spots before capital is allocated.',
       stack: ['Next.js', 'OpenAI', 'Chart.js', 'Auth0'],
-      link: 'https://www.mybias.co.uk'
+      link: 'https://www.mybias.co.uk',
+      signal: 'High-stakes decisions needed real-time cognitive bias detection. Built before decision intelligence became a category.'
     },
     {
       title: 'GEO (Generative Engine Optimisation)',
       year: '2023',
       problem: 'Traditional SEO breaks when AI answers replace search results.',
       proof: 'Frameworks and tooling that optimise for AI retrieval, not page rank.',
-      stack: ['LLMs', 'Search', 'Content systems']
+      stack: ['LLMs', 'Search', 'Content systems'],
+      signal: 'Called in 2023: AI would replace traditional search. Two years before "GEO" became an industry term.'
     },
     {
       title: 'Delphi Decision Co-Pilot',
@@ -131,15 +147,26 @@ function App({ latestPosts = [] }) {
       problem: 'Strategy teams need faster synthesis of competing signals.',
       proof: 'Scenario modelling with AI summaries that move decisions from debate to action.',
       stack: ['TypeScript', 'LangGraph', 'PostgreSQL'],
-      link: 'https://github.com/AgilistTim/Delphi'
+      link: 'https://github.com/AgilistTim/Delphi',
+      signal: 'Strategic planning needed AI that could model scenarios and synthesize competing signals — not just summarize documents.'
     },
     {
       title: 'PodGuide',
-      year: '2024',
+      year: '2026',
       problem: 'Podcasters waste hours on prep, run interviews blind, then face a content cliff after recording.',
       proof: 'Full-lifecycle AI co-pilot: episode planning, 3 live interview modes (including a fully autonomous AI interviewer), and 10+ content pieces generated per episode. Invite-only beta live.',
       stack: ['GPT-4.1', 'ElevenLabs', 'Next.js'],
-      link: 'https://podguide.agilist.co.uk/'
+      link: 'https://podguide.agilist.co.uk/',
+      signal: 'Podcast production would shift from post-production editing to AI-assisted live interview. Built the full lifecycle before the market saw the gap.'
+    },
+    {
+      title: 'OBD-AI',
+      year: '2026',
+      problem: 'Vehicle diagnostics are impenetrable to non-mechanics, and pre-purchase inspections miss hidden risks.',
+      proof: 'Professional-grade diagnostic platform bridging OBD2 telemetry and natural language. AI Mechanic correlates symptoms with live sensor data. Buyer Analysis mode delivers Purchase Risk Scores for used cars. Web Bluetooth integration — no app required.',
+      stack: ['React', 'Gemini API', 'Web Bluetooth', 'TypeScript'],
+      link: 'https://github.com/AgilistTim/OBD-AI',
+      signal: 'Pre-purchase vehicle inspection needed AI that could interpret telemetry in real-time — transforming trust in the used car market.'
     }
   ]
 
@@ -156,21 +183,24 @@ function App({ latestPosts = [] }) {
     }
   ]
 
-  const speakingHighlights = [
+  const publicSignals = [
     {
-      title: 'First Thursday — AI foresight and strategy',
-      location: 'London',
-      year: '2024'
+      title: 'SETsquared Bath Sessions',
+      description: "As AI Advisor in Residence, you'll find me at First Thursday sessions and Third Thursday co-working at SETsquared Bath Innovation Centre.",
+      link: 'https://www.eventbrite.co.uk/e/first-thursday-in-march-at-setsquared-bath-innovation-centre-tickets-1982873027603?aff=oddtdtcreator#organizer-card',
+      linkText: 'View upcoming sessions'
     },
     {
-      title: 'Devereux Nash webinar — AI transformation for leaders',
-      location: 'Online',
-      year: '2024'
+      title: 'Long-form Articles',
+      description: 'I share my thinking on AI transformation, foresight, and strategy through in-depth articles on LinkedIn.',
+      link: 'https://www.linkedin.com/in/tim-robinson-agilist/recent-activity/articles/',
+      linkText: 'Read the articles'
     },
     {
-      title: 'Harleys AI Accelerator — venture studio execution',
-      location: 'London',
-      year: '2025'
+      title: 'Connect on LinkedIn',
+      description: 'Always happy to discuss AI, process improvements, and transformation challenges.',
+      link: 'https://www.linkedin.com/in/tim-robinson-agilist/',
+      linkText: 'Connect with me'
     }
   ]
 
@@ -475,12 +505,14 @@ function App({ latestPosts = [] }) {
                       </Button>
                     )}
                   </div>
-                  <div className="bg-[#0D0D0F] border border-[#2A2A35] rounded-xl p-5 text-sm text-[#A1A1AA]">
-                    <p className="text-xs uppercase tracking-[0.3em] text-[#A78BFA]">Signal</p>
-                    <p className="mt-3">
-                      Built for operators, investors, and enterprise leaders who needed certainty before the market caught up.
-                    </p>
-                  </div>
+                  {project.signal && (
+                    <div className="bg-[#0D0D0F] border border-[#2A2A35] rounded-xl p-5 text-sm text-[#A1A1AA]">
+                      <p className="text-xs uppercase tracking-[0.3em] text-[#A78BFA]">Signal</p>
+                      <p className="mt-3">
+                        {project.signal}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </Card>
             ))}
@@ -573,7 +605,7 @@ function App({ latestPosts = [] }) {
               <h2 className="text-3xl sm:text-4xl font-bold mt-4">The Generative Organization</h2>
               <p className="text-[#A1A1AA] mt-4">
                 Co-authored with 34 AI practitioners. Not a theory book — a field guide for leaders building AI-native
-                organisations.
+                organisations. Available free — we care about people using the tools, not buying books they do nothing with.
               </p>
               <div className="mt-6 flex flex-wrap gap-4">
                 <Button
@@ -582,7 +614,7 @@ function App({ latestPosts = [] }) {
                   rel="noopener noreferrer"
                   className="bg-gradient-to-r from-[#7C3AED] to-[#9F67FA] text-white"
                 >
-                  Read the free chapter
+                  Download the book (free)
                   <BookOpen className="h-4 w-4 ml-2" />
                 </Button>
                 <Button
@@ -592,7 +624,7 @@ function App({ latestPosts = [] }) {
                   variant="outline"
                   className="border-[#7C3AED] text-[#F4F4F5]"
                 >
-                  Download the reasoning
+                  Why we made it free
                 </Button>
               </div>
             </div>
@@ -603,18 +635,33 @@ function App({ latestPosts = [] }) {
       <section id="speaking" className="py-16 sm:py-20 bg-[#121216]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-10" data-aos="fade-up">
-            <p className="text-xs uppercase tracking-[0.35em] text-[#A78BFA]">Speaking & Thought Leadership</p>
+            <p className="text-xs uppercase tracking-[0.35em] text-[#A78BFA]">Public Signals</p>
             <h2 className="text-3xl sm:text-4xl font-bold mt-4">Signals I share publicly.</h2>
+            <p className="text-[#A1A1AA] mt-4 max-w-2xl">
+              As AI Advisor in Residence at SETsquared Bath, I share insights through events, articles, and conversations.
+            </p>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
-            {speakingHighlights.map((event) => (
-              <Card key={event.title} className="bg-[#16161A] border border-[#2A2A35]" data-aos="fade-up">
+            {publicSignals.map((item) => (
+              <Card key={item.title} className="bg-[#16161A] border border-[#2A2A35]" data-aos="fade-up">
                 <CardHeader>
-                  <CardTitle className="text-lg text-white">{event.title}</CardTitle>
+                  <CardTitle className="text-lg text-white">{item.title}</CardTitle>
                   <CardDescription className="text-[#A1A1AA]">
-                    {event.location} • {event.year}
+                    {item.description}
                   </CardDescription>
                 </CardHeader>
+                <CardContent>
+                  <Button
+                    href={item.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    variant="outline"
+                    className="border-[#7C3AED] text-[#F4F4F5] w-full"
+                  >
+                    {item.linkText}
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </Button>
+                </CardContent>
               </Card>
             ))}
           </div>
