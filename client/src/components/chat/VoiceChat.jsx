@@ -10,7 +10,7 @@ const DEFAULT_GREETING =
   "Hi there! I'm Tim's AI assistant. Ask about AI transformation, foresight, or regulated sectors and I'll respond in Tim's voice."
 const LOCKED_VOICE = 'marin'
 const VOICE_OPENING_DIRECTIVE =
-  "Always open a fresh voice session by speaking first: greet the listener, introduce yourself as Tim's AI assistant, explain you can draw on Tim's consulting playbook, and invite their first question. Keep it warm and concise."
+  "VOICE MODE: Keep ALL responses extremely brief (3-4 sentences maximum). For voice, always open by greeting the listener, introducing yourself as Tim's AI assistant in one sentence, and inviting their question. Keep every response concise and conversational."
 
 function toRealtimeHistory(messages) {
   const items = []
@@ -208,6 +208,12 @@ export function VoiceChat({ instructions, messages, vectorStoreId, realtimeModel
           model: model || realtimeModel,
           audio: {
             output: { voice: voice || LOCKED_VOICE }
+          },
+          turn_detection: {
+            type: 'server_vad',
+            threshold: 0.5,
+            prefix_padding_ms: 300,
+            silence_duration_ms: 500
           }
         }
       })
