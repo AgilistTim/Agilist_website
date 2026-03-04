@@ -91,8 +91,8 @@ function App({ latestPosts = [] }) {
     {
       project: 'PodGuide',
       year: '2024',
-      insight: 'AI-native podcast tools would disrupt the production stack.',
-      link: 'https://aipodcast-j91oecfb9-agilisttims-projects.vercel.app'
+      insight: 'Podcasters needed an AI co-pilot for the full episode lifecycle — from planning through live interview to content generation.',
+      link: 'https://podguide.agilist.co.uk/'
     },
     {
       project: 'OBD-AI',
@@ -136,10 +136,10 @@ function App({ latestPosts = [] }) {
     {
       title: 'PodGuide',
       year: '2024',
-      problem: 'Podcast production stacks are slow and fragmented.',
-      proof: 'AI-native pipeline from idea to publish-ready audio with analytics.',
+      problem: 'Podcasters waste hours on prep, run interviews blind, then face a content cliff after recording.',
+      proof: 'Full-lifecycle AI co-pilot: episode planning, 3 live interview modes (including a fully autonomous AI interviewer), and 10+ content pieces generated per episode. Invite-only beta live.',
       stack: ['GPT-4.1', 'ElevenLabs', 'Next.js'],
-      link: 'https://aipodcast-j91oecfb9-agilisttims-projects.vercel.app'
+      link: 'https://podguide.agilist.co.uk/'
     }
   ]
 
