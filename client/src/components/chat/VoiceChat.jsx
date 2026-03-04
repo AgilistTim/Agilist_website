@@ -207,13 +207,20 @@ export function VoiceChat({ instructions, messages, vectorStoreId, realtimeModel
         config: {
           model: model || realtimeModel,
           audio: {
-            output: { voice: voice || LOCKED_VOICE }
+            output: { voice: voice || LOCKED_VOICE },
+            input: {
+              format: 'pcm16',
+              sampleRate: 24000
+            }
           },
           turn_detection: {
             type: 'server_vad',
-            threshold: 0.5,
+            threshold: 0.6,
             prefix_padding_ms: 300,
-            silence_duration_ms: 500
+            silence_duration_ms: 1000
+          },
+          input_audio_transcription: {
+            model: 'whisper-1'
           }
         }
       })
