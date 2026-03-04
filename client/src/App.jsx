@@ -1,877 +1,620 @@
-import { useState, useEffect, useRef } from 'react'
-
-
+import { useEffect, useMemo, useState } from 'react'
 import AdminDashboard from './components/AdminDashboard'
 import Blog from './components/Blog'
 import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
+import { TextChat } from '@/components/chat/TextChat.jsx'
+import { VoiceChat } from '@/components/chat/VoiceChat.jsx'
+import { getAgentConfig, sendChatMessage } from '@/lib/api.js'
 import {
   ArrowRight,
-  CheckCircle,
-  Users,
-  Zap,
-  Target,
-  Star,
   Calendar,
-  MessageCircle,
-  Quote,
-  Workflow,
-  TrendingUp,
-  Sparkles,
+  ChevronRight,
   Menu,
+  MessageCircle,
   X,
-  PhoneCall,
+  BookOpen,
+  Globe,
   ShieldCheck,
-  Home
+  BrainCircuit
 } from 'lucide-react'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import './App.css'
 
-
+const INITIAL_GREETING =
+  "Hi! I'm Tim's AI assistant. Ask me about AI transformation, foresight, regulated sectors, or how to work with Tim."
+const STORAGE_KEY = 'agilist_chat_history'
 
 const bookCover = 'https://assets.lulu.com/cover_thumbs/v/8/v8mqjq4-front-shortedge-384.jpg'
+
 const dateFormatter = new Intl.DateTimeFormat('en-GB', {
   day: '2-digit',
   month: 'long',
   year: 'numeric'
 })
 
+function createMessage(role, text) {
+  const seed = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Date.now()
+  return {
+    id: `${role}-${seed}`,
+    role,
+    text
+  }
+}
+
+function loadStoredMessages() {
+  if (typeof window === 'undefined') return null
+
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY)
+    if (!raw) return null
+
+    const parsed = JSON.parse(raw)
+    if (!Array.isArray(parsed)) return null
+
+    const hydrated = parsed
+      .filter((entry) => entry && typeof entry.role === 'string' && typeof entry.text === 'string')
+      .map((entry) => createMessage(entry.role, entry.text))
+
+    return hydrated.length > 0 ? hydrated : null
+  } catch (err) {
+    console.warn('Failed to read stored chat history', err)
+    return null
+  }
+}
+
 function App({ latestPosts = [] }) {
   const bookingLink = 'https://tanagra.youcanbook.me'
   const bookFreeLink = 'https://books.genorg.ai'
   const bookReasoningLink = 'https://books.genorg.ai/pr'
-  const bookReviewsLink = 'https://www.amazon.co.uk/dp/B0FJG7BRG2#averageCustomerReviewsAnchor'
 
-  const bookReviews = [
+  const trackRecord = [
     {
-      quote:
-        '“This is a truly value packed book. With my disclaimer - I helped in some part contribute to 1 of the chapters. I don\'t think that should stop me from writing a review of the book because I (just like you) am getting to know the rest of the authors. The breadth of experience and view points is phenomenal and I have been in awe of some of the experts involved. Is it perfect - of course not. Here\'s the 1 thing i really think you should know. All of the authors had a style and a way they wanted to get their GPTs working within the standardized prompt framework and it wasn\'t always perfect. If you enjoy an authors contribution then engage them in conversation somewhere and find out how they have progressed their GPT\'s, prompts and models because as we all know the models are changing daily!”',
-      reviewer: "Peter O'Donoghue"
+      project: 'GEO (Generative Engine Optimisation)',
+      year: '2023',
+      insight: 'AI would replace traditional search — two years before “GEO” became a category.'
     },
     {
-      quote:
-        '“I’ve read a few beginner\'s books on AI, which were great for my initial understanding; however, I was looking for something more in-depth this time. Rather than focusing on the theory of AI, this book is about actually using AI in the business world and has been written by 34 experts in the field. The book is full of practical exercises and guides you on how to get the best out of AI without feeling overwhelmed. It is a long book, but I loved just how packed it was with useful prompts. Not all of it will be relevant for everyone, but there is so much good content here that I will certainly be going back for another read.”',
-      reviewer: 'Jose Saavedra'
+      project: 'EvaCares',
+      year: '2024',
+      insight: 'AI voice companions for elderly care would become critical infrastructure.',
+      link: 'https://www.evacares.co.uk'
     },
     {
-      quote: '“I love the combination of tips and practical tools and how I can read this as a book or reference library, loving the tools and can\'t wait to use them more”',
-      reviewer: 'Tim Robinson'
+      project: 'Project Bias / Delphi',
+      year: '2024',
+      insight: 'Investment committees needed AI co-pilots to surface cognitive bias in real time.',
+      link: 'https://www.mybias.co.uk'
     },
     {
-      quote:
-        '“A Timely, Practical and Insightful Guide for the AI Age The Generative Organization is a refreshingly practical and wide-ranging guide to navigating the complex, fast-moving landscape of AI in the workplace. Spearheaded by Bryan Cassady and co-authored by 34 experts across innovation, systems thinking, design and leadership, this book offers a rich diversity of perspectives and disciplines... What sets The Generative Organization apart is its hopeful pragmatism. It acknowledges the risks of AI, but places even greater emphasis on its creative, empowering potential — if used wisely and with intention. This is not just a book; it’s a toolkit, a learning journey and a strategy retreat rolled into one.”',
-      reviewer: 'Eu Too'
+      project: 'PodGuide',
+      year: '2024',
+      insight: 'AI-native podcast tools would disrupt the production stack.',
+      link: 'https://aipodcast-j91oecfb9-agilisttims-projects.vercel.app'
     },
     {
-      quote:
-        '“What a genuinely useful, thought-provoking book... It’s one of the book’s key strengths that each chapter brings different knowledge and perspectives to the broader topic of harnessing AI to create truly generative organisations... It’s a fantastic resource. I can see myself going back to this book time and time again, dipping into it for specific guidance when I need it. Highly recommended.”',
-      reviewer: 'DC'
-    },
-    {
-      quote:
-        '“If you\'re drowning in AI tools but starved of results, *The Generative Organization* shows how to transform GenAI into a disciplined innovation engine... This book is ideal for executives, product leads, and transformation managers seeking quick outcomes—and for teams who appreciated Bryan\'s previous book, *Cycles*, but now need an AI-accelerated approach.”',
-      reviewer: 'Robin (London)'
-    },
-    {
-      quote:
-        '“I wasn’t sure what to expect at first, but this book really surprised me in the best way. It’s not full of buzzwords or complex tech talk—just straight, practical advice for anyone curious about using AI in a real-world setting... Definitely worth the read especially at this price.”',
-      reviewer: 'Ergi Mira'
-    },
-    {
-      quote:
-        '“As someone who often finds business and innovation books overly dense, The Generative Organization was a refreshing surprise... Overall, this is a valuable guide for leaders and innovators looking to understand how AI can become a true teammate rather than just a tool.”',
-      reviewer: 'Neha'
-    },
-    {
-      quote:
-        '“This book has so much valuable information for anyone in business or looking to launch a new venture... The information is presented in a very detailed and honest format, providing checks and balances for a business idea... The use of AI is also very helpful as it guides the reader through the developmental process.”',
-      reviewer: 'Amazon Customer'
-    },
-    {
-      quote:
-        '“Being one of the 35 co-authors of The Generative Organization has been a truly transformative experience... For me, this isn’t just another AI book, it’s a playbook I actually keep next to me when working with startups and innovation teams.”',
-      reviewer: 'Urs Rothmayr'
-    },
-    {
-      quote:
-        '“Das Buch ist das, was man benötigt, wenn man in Unternehmensführung oder Strategie arbeitet. Ein Top Playbook für KMUs ... Zum Glück nicht zu technisch, sonst wäre es vermutlich schon wieder veraltet :D”',
-      reviewer: 'friedrich von symbion'
-    },
-    {
-      quote:
-        '“Super practical and straight forward! Leverage GenAI, thanks to the provided prompts in the book, to get your team and you to results. Partnering with AI made easy and accessible! Go for it!”',
-      reviewer: 'Kindle-Kunde'
-    },
-    {
-      quote:
-        '“The Generative Organization is a must-have playbook for anyone serious about leading, managing, or innovating with artificial intelligence at speed and scale... This book is a vital companion on the AI-powered innovation journey.”',
-      reviewer: 'Dennis van der Spoel'
-    },
-    {
-      quote:
-        '“Full disclosure: I wrote Chapter 24 on accelerating physical prototyping with AI. That said, this review is about the rest of the book, and as a reader, I was impressed... Particularly strong are the sections on alignment, systematizing innovation, and integrating AI into your team\'s daily workflow.”',
-      reviewer: 'RWB'
-    },
-    {
-      quote:
-        '“Practical, Inspiring, and Action-Oriented This isn’t just another AI book filled with buzzwords. It combines expert perspectives, ready-to-use prompts, and tested frameworks that help you turn ideas into results.”',
-      reviewer: 'svr'
-    },
-    {
-      quote:
-        '“I love the content and the many useful tools in this book. The ideas are practical, well-explained, and clearly come from real experience. That said, the sheer number of concepts and tools can feel overwhelming... Still, a valuable resource for anyone serious about AI and innovation.”',
-      reviewer: 'Nicole Luyten'
-    },
-    {
-      quote:
-        '“What I like most about this book is the range of expert perspectives. Instead of just one author’s view, you get insights from people who actually work with AI every day... Highly recomended.”',
-      reviewer: 'Hari Acharya'
-    },
-    {
-      quote:
-        '“This book provides practical guidance on building a generative organization... I appreciate that the book clearly shows AI is a tool and not a replacement for human judgment and expertise.”',
-      reviewer: 'Fancy Girl'
-    },
-    {
-      quote:
-        '“What I loved most about this book is how practical it is. Instead of just talking about AI in theory, it gives you real tools, prompts, and frameworks you can apply right away... Highly recommended for anyone serious about innovation.”',
-      reviewer: 'Padma'
-    },
-    {
-      quote:
-        '“This is the only book that informs and teaches how to stop using AI and start working with it! This opens up infinite possibilities for organizations to innovate faster with less risk.”',
-      reviewer: 'Tom Gerace'
-    },
-    {
-      quote:
-        '“What makes this book special is that it brings together 36 AI and business experts, all sharing their experience in one place... PS: I’ve already tried some of the prompts at work, and they really helped me come up with better, more workable ideas.”',
-      reviewer: 'Vaishali S.'
-    },
-    {
-      quote:
-        '“The Generative Organization is a working reference guide and playbook for serious folks wishing to harness AI for innovation... If you want a playbook you can actually use tomorrow, not just another AI think piece, this is it.”',
-      reviewer: 'Sunil Malhotra'
-    },
-    {
-      quote:
-        '“A book with actual tools and tips, that you can use to make a difference in business development or to scale a start up!”',
-      reviewer: 'Arjan'
-    },
-    {
-      quote:
-        '“Some books you read once and forget, but this one feels like a long-term companion... If you want a structured approach to using AI for exponential growth, this is the book to get.”',
-      reviewer: 'Krishna Vamshi'
-    },
-    {
-      quote:
-        '“The Generative Organization blends CYCLES and AI4Innovation tool into a comprehensive, future-facing framework... makes this book an invaluable guide for the years ahead.”',
-      reviewer: 'Umesh'
-    },
-    {
-      quote:
-        '“What makes this book stand out is the mix of expert voices and practical prompts... Highly recommended.”',
-      reviewer: 'Mohammed Nabi Adnan Ahmed'
+      project: 'OBD-AI',
+      year: '2024',
+      insight: 'Pre-purchase vehicle inspection would be transformed by AI.'
     }
   ]
 
-  const linkedinTestimonials = [
+  const featuredProjects = [
     {
-      quote:
-        'Working with Tim has been a great experience. His expertise is matched by his creativity and endless great ideas. Tim knows how to get things done, and done the right way. He is a true team player who understands both technical and business needs, delivering solutions that hit the mark.',
-      author: 'Rick Kristalijn',
-      role: 'AI Automation Leader',
-      relationship: 'Former teammate, 2024'
+      title: 'EvaCares',
+      year: '2024',
+      problem: 'Isolation and fragmented care signals in elderly support.',
+      proof: 'Phone-first AI companion delivering wellbeing insights without new devices.',
+      stack: ['Voice AI', 'RAG', 'Telephony', 'React'],
+      link: 'https://www.evacares.co.uk'
     },
     {
-      quote:
-        'Tim brought data, insights, and stories that made our ChatGPT session exceptional. He kept the group engaged, shared generous resources, and left us with concrete takeaways and follow-ups. I am looking forward to collaborating with Tim more regularly—well done!',
-      author: 'Joseph Batts',
-      role: 'Business Systems Analyst, Adobe',
-      relationship: 'Knowledge share host, 2024'
+      title: 'Project Bias (Delphi)',
+      year: '2024',
+      problem: 'Investment committees miss hidden cognitive bias in high-stakes decisions.',
+      proof: 'Bias fingerprinting engine that surfaces blind spots before capital is allocated.',
+      stack: ['Next.js', 'OpenAI', 'Chart.js', 'Auth0'],
+      link: 'https://www.mybias.co.uk'
     },
     {
-      quote:
-        "Tim is an immensely knowledgeable agile practitioner. He's deeply introspective, able to get underneath the hood and sort out what's really going on. He's a pleasure to work with, an asset to any team, and I'd highly recommend him to anyone in need of sustainable change.",
-      author: 'Ceri Newton-Sargunar',
-      role: 'Organisational Development Advisor',
-      relationship: 'Former teammate, 2023'
+      title: 'GEO (Generative Engine Optimisation)',
+      year: '2023',
+      problem: 'Traditional SEO breaks when AI answers replace search results.',
+      proof: 'Frameworks and tooling that optimise for AI retrieval, not page rank.',
+      stack: ['LLMs', 'Search', 'Content systems']
     },
     {
-      quote:
-        "Tim is a fantastic Agile Coach who helped me raise the bar for my team. He taught us agile principles, behaviours, and continuous improvement in a way that delivered real value for our customers. Tim figures out the problems to solve and finds the most pragmatic path forward—thank you for sharing your experience, Tim!",
-      author: 'Nicola Bennett',
-      role: 'Technology & Transformation Leader, NatWest',
-      relationship: 'Client partnership, 2023'
+      title: 'Delphi Decision Co-Pilot',
+      year: '2024',
+      problem: 'Strategy teams need faster synthesis of competing signals.',
+      proof: 'Scenario modelling with AI summaries that move decisions from debate to action.',
+      stack: ['TypeScript', 'LangGraph', 'PostgreSQL'],
+      link: 'https://github.com/AgilistTim/Delphi'
     },
     {
-      quote:
-        'Whilst at RBS, Tim consistently gave his time to mentor me. He listened, reflected, and helped me see the questions I was missing. Tim knows when to coach and when to consult, and I would happily work with him again in the future.',
-      author: 'Matt Evans',
-      role: 'Agile Consultant & Trainer',
-      relationship: 'Mentorship, 2020'
-    },
-    {
-      quote:
-        'Tim’s expert, clear, and enthusiastic way of explaining agile concepts helped me secure my first Scrum Master role. He was immediately open to helping, scheduled time, and guided my learning path. I would recommend Tim to anyone seeking a clearer understanding of agile.',
-      author: 'Natasha Morshead',
-      role: 'Agile Practice Manager',
-      relationship: 'Coaching client, 2018'
+      title: 'PodGuide',
+      year: '2024',
+      problem: 'Podcast production stacks are slow and fragmented.',
+      proof: 'AI-native pipeline from idea to publish-ready audio with analytics.',
+      stack: ['GPT-4.1', 'ElevenLabs', 'Next.js'],
+      link: 'https://aipodcast-j91oecfb9-agilisttims-projects.vercel.app'
     }
   ]
 
-  const evacaresHighlights = [
-    'Phone-based AI companion for extra needs support',
-    'Automated wellbeing reports for carers and families',
-    'Accessible check-ins that reduce isolation'
-  ]
-
-  const evacaresFeatures = [
+  const engagementModels = [
     {
-      title: 'Cost-effective daily contact',
+      title: 'Partner Track',
       description:
-        'Eva calls cost pennies compared to the £28 per hour average for in-home visits, giving teams real-time insight without increasing budgets.',
-      icon: <PhoneCall className="h-5 w-5 text-cyan-300" />
+        'I generate the thesis. I build the POC. You handle commercialisation. We split the upside. This is how EvaCares was built, and how I want to build the next five.'
     },
     {
-      title: 'Escalates when something changes',
+      title: 'Engage Track',
       description:
-        'Structured conversations surface mood, medication adherence, and wellbeing shifts—alerting carers or family automatically when support is needed.',
-      icon: <ShieldCheck className="h-5 w-5 text-cyan-300" />
-    },
-    {
-      title: 'Supports independent living',
-      description:
-        'Phone-first interactions help people stay in their homes longer with a friendly safety net that never requires new devices or apps.',
-      icon: <Home className="h-5 w-5 text-cyan-300" />
+        "You have an AI challenge. I've probably already solved a version of it. Fixed-scope engagements, fast validation, no long retainers."
     }
   ]
 
-  const [currentReviewIndex, setCurrentReviewIndex] = useState(0)
-  const [expandedReview, setExpandedReview] = useState(false)
-  const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0)
-  const [expandedTestimonial, setExpandedTestimonial] = useState(false)
+  const speakingHighlights = [
+    {
+      title: 'First Thursday — AI foresight and strategy',
+      location: 'London',
+      year: '2024'
+    },
+    {
+      title: 'Devereux Nash webinar — AI transformation for leaders',
+      location: 'Online',
+      year: '2024'
+    },
+    {
+      title: 'Harleys AI Accelerator — venture studio execution',
+      location: 'London',
+      year: '2025'
+    }
+  ]
+
+  const faqItems = [
+    {
+      question: 'Who is Tim Robinson AI?',
+      answer:
+        'Tim Robinson is a UK-based AI inventor and consultant known for building AI products ahead of market demand and guiding regulated-sector transformations.'
+    },
+    {
+      question: 'What is GEO (Generative Engine Optimisation)?',
+      answer:
+        'GEO is the practice of shaping content, structure, and signals so AI systems can retrieve and cite your work accurately—beyond traditional SEO.'
+    },
+    {
+      question: 'How does AI transformation work for regulated sectors?',
+      answer:
+        'It starts with risk-aware use cases, fast validation, and governance-by-design—then scales through secure data pipelines and clear accountability.'
+    },
+    {
+      question: 'What is EvaCares?',
+      answer:
+        'EvaCares is a phone-first AI companion for elderly care that captures wellbeing signals and keeps carers informed without new devices.'
+    }
+  ]
+
+  const [currentPath, setCurrentPath] = useState('/')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  const trackEvent = (eventName, properties = {}) => {
-    if (window.posthog) {
-      window.posthog.capture(eventName, properties)
-    }
-  }
+  const [messages, setMessages] = useState(() => loadStoredMessages() ?? [createMessage('assistant', INITIAL_GREETING)])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [config, setConfig] = useState(null)
+  const [configError, setConfigError] = useState(null)
 
   useEffect(() => {
     AOS.init({
       duration: 800,
       once: true,
-      offset: 100
+      offset: 120
     })
 
-    let cancelled = false
-
-    const initParticles = () => {
-      if (cancelled || !window.particlesJS) return
-
-      window.particlesJS('particles-js', {
-        particles: {
-          number: { value: 80, density: { enable: true, value_area: 800 } },
-          color: { value: '#64FFDA' },
-          shape: { type: 'circle' },
-          opacity: { value: 0.5, random: false },
-          size: { value: 3, random: true },
-          line_linked: {
-            enable: true,
-            distance: 150,
-            color: '#64FFDA',
-            opacity: 0.4,
-            width: 1
-          },
-          move: {
-            enable: true,
-            speed: 6,
-            direction: 'none',
-            random: false,
-            straight: false,
-            out_mode: 'out',
-            bounce: false
-          }
-        },
-        interactivity: {
-          detect_on: 'canvas',
-          events: {
-            onhover: { enable: true, mode: 'repulse' },
-            onclick: { enable: true, mode: 'push' },
-            resize: true
-          },
-          modes: {
-            grab: { distance: 400, line_linked: { opacity: 1 } },
-            bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 },
-            repulse: { distance: 200, duration: 0.4 },
-            push: { particles_nb: 4 },
-            remove: { particles_nb: 2 }
-          }
-        },
-        retina_detect: true
-      })
-    }
-
-    if (window.particlesJS) {
-      initParticles()
-    } else {
-      const scriptId = 'particles-js-script'
-      let script = document.getElementById(scriptId)
-
-      if (!script) {
-        script = document.createElement('script')
-        script.id = scriptId
-        script.src = 'https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js'
-        script.async = true
-        script.onload = () => initParticles()
-        script.onerror = (error) => console.error('Failed to load particles.js', error)
-        document.body.appendChild(script)
-      } else {
-        script.addEventListener('load', initParticles, { once: true })
-      }
-    }
-
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
-  useEffect(() => {
-    if (bookReviews.length <= 1) return undefined
-    const interval = setInterval(() => {
-      setCurrentReviewIndex((prev) => (prev + 1) % bookReviews.length)
-    }, 6000)
-    return () => clearInterval(interval)
-  }, [bookReviews.length])
-
-  useEffect(() => {
-    setExpandedReview(false)
-  }, [currentReviewIndex])
-
-  useEffect(() => {
-    if (linkedinTestimonials.length <= 1) return undefined
-    const interval = setInterval(() => {
-      setCurrentTestimonialIndex((prev) => (prev + 1) % linkedinTestimonials.length)
-    }, 7000)
-    return () => clearInterval(interval)
-  }, [linkedinTestimonials.length])
-
-  useEffect(() => {
-    setExpandedTestimonial(false)
-  }, [currentTestimonialIndex])
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setMobileMenuOpen(false)
-      }
-    }
-
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  const services = [
-    {
-      icon: <Zap className="h-8 w-8 text-cyan-400" />,
-      title: "AI for Automation & Efficiency",
-      description: "Automate internal processes, reduce manual work, and cut operational costs with intelligent solutions tailored to your business."
-    },
-    {
-      icon: <Target className="h-8 w-8 text-cyan-400" />,
-      title: "AI for Speed to Market",
-      description: "Rapidly build AI Proofs of Concept to validate ideas quickly and gain a competitive edge in your industry."
-    },
-    {
-      icon: <Users className="h-8 w-8 text-cyan-400" />,
-      title: "AI for Customer Experience",
-      description: "Use AI to better understand and serve your customers, leading to increased loyalty, satisfaction, and sales."
-    }
-  ]
-
-  const caseStudies = [
-    {
-      client: "Professional Services Firm",
-      challenge:
-        "Manual lead follow-up was slow and inconsistent, causing valuable enquiries to be lost despite significant marketing spend.",
-      solution:
-        "Implemented an AI-powered, multi-channel system that engaged leads instantly via web and WhatsApp, qualified them automatically, and handled routine admin tasks.",
-      result: "Lead capture grew by 458%, sales increased by 30%, and ROI reached 1,733% within months.",
-      roi: "1,733% ROI in 6 months"
-    },
-    {
-      client: "Innovation Partner",
-      challenge:
-        "Organisations often face complex, high-level problems but lack clarity on the right solution. Traditional delivery approaches risk wasted investment and slow validation.",
-      solution:
-        "Applied a rapid prototyping approach—working closely with stakeholders to define the problem, refine assumptions, and deliver testable AI-powered solutions quickly.",
-      result:
-        "Clients reduced build risk, validated hypotheses early, and unlocked clear insight into what to scale—all without committing to lengthy or costly development cycles.",
-      roi: "Fast validation without costly long-term commitments"
-    },
-    {
-      client: "Organisational Transformation",
-      challenge:
-        "Teams and leaders often struggle to adapt to modern delivery practices, slowing progress and limiting business impact.",
-      solution:
-        "Delivered training and upskilling to hundreds of individuals, supported teams in embedding agile ways of working, and coached leadership to unlock faster, more effective delivery. In recent years, this has expanded to include leveraging AI to further enhance team efficiency and decision-making.",
-      result:
-        "Organisations achieved stronger alignment, improved delivery capability, and measurable gains in efficiency by combining agile practices with AI-driven augmentation.",
-      roi: "Accelerated delivery and measurable efficiency gains"
-    }
-  ]
-
-  const activeLinkedInTestimonial = linkedinTestimonials[currentTestimonialIndex]
-
-  const projects = [
-    {
-      title: 'AI Podcast Producer',
-      description:
-        'End-to-end AI podcast automation pipeline covering ideation, script writing, synthetic voices, mastering, and publishing.',
-      link: 'https://aipodcast-j91oecfb9-agilisttims-projects.vercel.app',
-      technologies: ['GPT-4.1', 'ElevenLabs', 'Next.js', 'Whisper'],
-      highlights: [
-        'Dynamic topic discovery with market gap analysis',
-        'Multi-voice narration with emotion controls',
-        'Automated RSS feed + social clip generation',
-        'Analytics overlays for episode performance'
-      ]
-    },
-    {
-      title: 'Delphi Decision Co-Pilot',
-      description:
-        'Interactive strategic planning assistant that combines scenario modelling, priority scoring, and AI-guided facilitation.',
-      link: 'https://github.com/AgilistTim/Delphi',
-      technologies: ['TypeScript', 'LangGraph', 'ShadCN', 'PostgreSQL'],
-      highlights: [
-        'Guided decision workshops with collaborative inputs',
-        'AI-generated executive summaries & action plans',
-        'Scenario stress-testing with probabilistic scoring',
-        'Pluggable architecture for custom organisational data'
-      ]
-    },
-    {
-      title: 'EHCP Plan Reviewer',
-      description:
-        'Special educational needs teams upload Education, Health and Care Plans to benchmark quality, surface gaps, and interrogate every section with natural language questions.',
-      link: 'https://silly-conkies-99132c.netlify.app',
-      technologies: ['React', 'LangChain', 'Pinecone', 'Azure OpenAI'],
-      highlights: [
-        'Uploads PDF plans and automatically extracts statutory sections',
-        'Gap analysis with compliance scoring mapped to SEND guidelines',
-        'Conversational assistant to query any paragraph in plain English',
-        'Action tracker that collates next steps for case managers'
-      ]
-    },
-    {
-      title: 'ISF Funding Checker',
-      description:
-        'Supports Individual Service Fund reviews by validating care plans, comparing requested support against outcomes, and accelerating panel decisions.',
-      link: 'https://tiny-souffle-01cb35.netlify.app',
-      technologies: ['Vue', 'Supabase', 'OpenAI Assistants', 'Tailwind'],
-      highlights: [
-        'Automated compliance checklist against local authority policy',
-        'Budget modelling with “what if” scenarios for finance teams',
-        'Document chat to clarify missing evidence or contradictory details',
-        'Exports structured summaries ready for approval meetings'
-      ]
-    },
-    {
-      title: 'Project Bias – Investment Decision Coach',
-      description:
-        'An AI co-pilot for investment committees that surfaces cognitive and emotional biases hidden in decks, memos, and due diligence packs before they skew capital allocation.',
-      link: 'https://www.mybias.co.uk',
-      technologies: ['Next.js', 'OpenAI', 'Chart.js', 'Auth0'],
-      highlights: [
-        'Uploads investment proposals and diligence reports for bias fingerprinting',
-        'Interactive dashboards quantify confidence, loss aversion, anchoring, and more',
-        'Risk-scored insights with recommended mitigation actions per bias',
-        'Blind-spot detection engine that compares historical decisions to current rationale'
-      ]
-    },
-    {
-      title: 'Comic Strip Creator GPT',
-      description:
-        'Popular GPT that turns meeting notes or story prompts into ready-to-share comic strips—with scene design, dialogue, and layout suggestions.',
-      link: 'https://chatgpt.com/g/g-oS7vIDRnD-comic-strip-creator',
-      technologies: ['OpenAI GPTs', 'Prompt Engineering', 'Midjourney / DALL·E Hooks'],
-      highlights: [
-        'Trusted by 1K+ users for rapid visual storytelling',
-        'Guides users through character, setting, and punchline ideation',
-        'Generates panel scripts plus image prompts for art tools',
-        'Includes export-ready storyboard format for teams'
-      ]
-    },
-    {
-      title: 'Resume Review GPT',
-      description:
-        'AI hiring coach that diagnoses CV gaps, rewrites bullet points, and tailor fits resumes to specific job descriptions in minutes.',
-      link: 'https://chatgpt.com/g/g-MOBE05uLE-resume-review',
-      technologies: ['OpenAI GPTs', 'Resume Libraries', 'Career Benchmarks'],
-      highlights: [
-        'Used by 1K+ professionals to accelerate job search prep',
-        'Benchmarks experience against role-specific competency models',
-        'Produces quantified bullet rewrites and cover letter talking points',
-        'Flags missing keywords and recommends measurable achievements'
-      ]
-    },
-    {
-      title: 'Website Optimizer GPT',
-      description:
-        'Conversion-focused GPT that audits landing pages, proposes UX/copy experiments, and delivers A/B testing ideas tailored to AI products.',
-      link: 'https://chatgpt.com/g/g-6zkJViM5o-website-optimizer-for-ai',
-      technologies: ['OpenAI GPTs', 'CRO Frameworks', 'Prompt Orchestration'],
-      highlights: [
-        'Diagnoses messaging gaps, friction, and proof needs in seconds',
-        'Maps recommendations to funnel stages with expected uplift',
-        'Generates variant copy, hero structures, and CTA tests',
-        'Exports prioritised experiment backlog ready for product teams'
-      ]
-    }
-  ]
-
-  const [path, setPath] = useState('/');
-
-  useEffect(() => {
-    AOS.init({
-      duration: 1000,
-      once: true
-    })
-
-    setPath(window.location.pathname);
+    setCurrentPath(window.location.pathname)
     const handleLocationChange = () => {
-      setPath(window.location.pathname);
-    };
-    window.addEventListener('popstate', handleLocationChange);
-    return () => window.removeEventListener('popstate', handleLocationChange);
-  }, []);
+      setCurrentPath(window.location.pathname)
+    }
+    window.addEventListener('popstate', handleLocationChange)
+    return () => window.removeEventListener('popstate', handleLocationChange)
+  }, [])
 
-  const normalizedPath = path.endsWith('/') && path.length > 1 ? path.slice(0, -1) : path;
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined
+
+    try {
+      const serializable = messages.map(({ role, text }) => ({ role, text }))
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(serializable.slice(-100)))
+    } catch (err) {
+      console.warn('Failed to persist chat history', err)
+    }
+    return undefined
+  }, [messages])
+
+  useEffect(() => {
+    getAgentConfig()
+      .then((data) => {
+        setConfig(data)
+      })
+      .catch(() => {
+        setConfigError('Unable to load assistant configuration. Please try again later.')
+      })
+  }, [])
+
+  const instructions = useMemo(() => config?.instructions ?? '', [config])
+
+  const handleSend = async (userMessage) => {
+    if (!config) {
+      setError('Assistant configuration is still loading. Please wait a moment.')
+      return
+    }
+
+    setError(null)
+    const userEntry = createMessage('user', userMessage)
+    setMessages((prev) => [...prev, userEntry])
+    setLoading(true)
+
+    try {
+      const historyForApi = [...messages, userEntry].map(({ role, text }) => ({ role, text }))
+      const result = await sendChatMessage({ messages: historyForApi })
+
+      const assistantEntry = createMessage('assistant', result.response || '')
+      setMessages((prev) => [...prev, assistantEntry])
+    } catch (err) {
+      console.error(err)
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleVoiceHistorySync = (historyMessages) => {
+    setMessages(historyMessages.slice(-100).map((msg) => createMessage(msg.role, msg.text)))
+  }
+
+  const handleClearHistory = () => {
+    try {
+      if (typeof window !== 'undefined') {
+        window.localStorage.removeItem(STORAGE_KEY)
+      }
+    } catch (err) {
+      console.warn('Failed to clear chat history', err)
+    }
+
+    setMessages([createMessage('assistant', INITIAL_GREETING)])
+    setError(null)
+    setLoading(false)
+  }
+
+  const normalizedPath = currentPath.endsWith('/') && currentPath.length > 1 ? currentPath.slice(0, -1) : currentPath
 
   if (normalizedPath === '/admin') {
-    return <AdminDashboard />;
+    return <AdminDashboard />
   }
 
   if (normalizedPath === '/blog' || normalizedPath.startsWith('/blog/')) {
-    return <Blog />;
+    return <Blog />
   }
 
+  const disabledAssistant = Boolean(configError) || !config
+
   return (
-    <div className="relative min-h-screen text-white overflow-x-hidden">
-      <div className="global-gradient pointer-events-none fixed inset-0 -z-30" />
-      <div id="particles-js" className="particles-overlay" />
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-slate-900/95 backdrop-blur-sm z-50 border-b border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#0D0D0F] text-[#F4F4F5]">
+      <nav className="sticky top-0 z-40 border-b border-[#2A2A35]/80 bg-[#0D0D0F]/90 backdrop-blur">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between py-4">
-            <div className="text-2xl font-bold text-cyan-400">Tim Robinson</div>
-            <div className="hidden md:flex items-center gap-8">
-              <div className="flex items-center gap-8">
-                <a href="#about" className="hover:text-cyan-400 transition-colors">About</a>
-                <a href="#services" className="hover:text-cyan-400 transition-colors">Services</a>
-                <a href="#success-stories" className="hover:text-cyan-400 transition-colors">Success Stories</a>
-                <a href="/blog" className="hover:text-cyan-400 transition-colors">Blog</a>
-                <a href="#contact" className="hover:text-cyan-400 transition-colors">Contact</a>
-              </div>
+            <a href="#top" className="text-lg font-semibold tracking-tight">
+              Tim Robinson
+              <span className="ml-2 text-xs uppercase tracking-[0.3em] text-[#A78BFA]">AI Foresight</span>
+            </a>
+            <div className="hidden md:flex items-center gap-6 text-sm text-[#A1A1AA]">
+              <a href="#track-record" className="hover:text-white transition-colors">Track record</a>
+              <a href="#projects" className="hover:text-white transition-colors">Projects</a>
+              <a href="#assistant" className="hover:text-white transition-colors">AI Assistant</a>
+              <a href="#engagement" className="hover:text-white transition-colors">Engage</a>
+              <a href="#insights" className="hover:text-white transition-colors">Insights</a>
+            </div>
+            <div className="hidden md:flex items-center gap-3">
               <Button
                 href={bookingLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-cyan-400 hover:bg-cyan-500 text-slate-900"
+                className="bg-gradient-to-r from-[#7C3AED] to-[#9F67FA] text-white hover:opacity-90"
               >
-                <Calendar className="h-4 w-4 mr-2" />
-                Book a Call
+                Start a conversation
               </Button>
             </div>
-
-            <div className="md:hidden flex items-center gap-3">
-              <Button
-                href={bookingLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-cyan-400 hover:bg-cyan-500 text-slate-900 px-3 py-2 text-sm font-semibold"
-              >
-                <Calendar className="h-4 w-4 mr-1" />
-                Call
-              </Button>
-              <button
-                type="button"
-                onClick={() => setMobileMenuOpen((prev) => !prev)}
-                className="inline-flex items-center justify-center rounded-md border border-slate-700 bg-slate-800/70 p-2 text-slate-100 hover:text-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400"
-                aria-label="Toggle navigation"
-                aria-expanded={mobileMenuOpen}
-              >
-                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              className="md:hidden text-[#F4F4F5]"
+              aria-label="Toggle navigation"
+            >
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
           </div>
-
           {mobileMenuOpen && (
-            <div className="md:hidden pb-4">
-              <div className="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/95 p-6">
-                {[
-                  { href: '#about', label: 'About' },
-                  { href: '#services', label: 'Services' },
-                  { href: '#success-stories', label: 'Success Stories' },
-                  { href: '/blog', label: 'Blog' },
-                  { href: '#contact', label: 'Contact' }
-                ].map((item) => (
-                  <a
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block text-base font-medium text-slate-200 hover:text-cyan-400 transition-colors"
-                  >
-                    {item.label}
-                  </a>
-                ))}
-                <Button
-                  href={bookingLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full bg-cyan-400 hover:bg-cyan-500 text-slate-900"
-                >
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Book a Call
-                </Button>
-              </div>
+            <div className="md:hidden pb-4 space-y-2 text-sm text-[#A1A1AA]">
+              <a href="#track-record" className="block hover:text-white">Track record</a>
+              <a href="#projects" className="block hover:text-white">Projects</a>
+              <a href="#assistant" className="block hover:text-white">AI Assistant</a>
+              <a href="#engagement" className="block hover:text-white">Engage</a>
+              <a href="#insights" className="block hover:text-white">Insights</a>
+              <a href="#contact" className="block hover:text-white">Contact</a>
             </div>
           )}
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-28 sm:pt-32">
-        <div className="relative z-10 w-full max-w-4xl mx-auto text-center px-5 sm:px-6 lg:px-8">
-          <Badge className="inline-flex items-center justify-center mb-6 bg-cyan-400/20 text-cyan-400 border-cyan-400/30 text-[0.65rem] sm:text-xs px-4 py-1" data-aos="fade-up">
-            20+ Years Experience • 3+ Years AI Expertise
-          </Badge>
-          <h1 className="mx-auto max-w-[22rem] sm:max-w-[36rem] text-3xl sm:text-5xl md:text-7xl font-bold leading-snug sm:leading-tight mb-6 bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent" data-aos="fade-up" data-aos-delay="100">
-            Unlock Your Business Potential with Practical AI
-          </h1>
-          <p className="mx-auto max-w-[24rem] sm:max-w-[40rem] text-sm sm:text-lg md:text-2xl text-slate-300 mb-8" data-aos="fade-up" data-aos-delay="200">
-            I help small and medium-sized businesses drive growth, automate processes, and delight customers through strategic AI solutions that deliver measurable ROI.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center" data-aos="fade-up" data-aos-delay="300">
-               <Button
-              href={bookingLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackEvent('clicked_book_call', { location: 'hero' })}
-              size="lg"
-              className="w-full sm:w-auto bg-cyan-400 hover:bg-cyan-500 text-slate-900 text-sm sm:text-base md:text-lg px-5 sm:px-6 md:px-8 py-3 md:py-4"
-            >
-              <Calendar className="h-5 w-5 mr-2" />
-              Book a Strategy Call
-            </Button>
-            <Button
-              href="https://survey.agilist.co.uk"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackEvent('clicked_take_assessment', { location: 'hero' })}
-              size="lg"
-              variant="outline"
-              className="w-full sm:w-auto border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-slate-900 text-sm sm:text-base md:text-lg px-5 sm:px-6 md:px-8 py-3 md:py-4"
-            >
-              Take the AI Readiness Assessment
-              <ArrowRight className="h-5 w-5 ml-2" />
-            </Button>
-          </div>
-
-          <div
-            className="mt-16 bg-slate-900/80 border border-slate-800 rounded-3xl backdrop-blur-sm p-8 md:p-10"
-            data-aos="fade-up"
-            data-aos-delay="400"
-          >
-            <div className="flex flex-col md:flex-row items-center gap-8 text-left">
-              <div className="w-full md:w-1/3 max-w-sm mx-auto">
-                <img
-                  src={bookCover}
-                  alt="The Generative Organization book cover"
-                  className="w-full rounded-2xl border border-slate-700 shadow-lg"
-                />
+      <header id="top" className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,_rgba(124,58,237,0.18),_transparent_65%)]" />
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 relative">
+          <div className="max-w-3xl" data-aos="fade-up">
+            <p className="text-xs uppercase tracking-[0.35em] text-[#A78BFA]">Tim Robinson • UK</p>
+            <h1 className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight">
+              AI foresight. I see what&apos;s coming.
+            </h1>
+            <p className="mt-4 text-lg sm:text-xl text-[#A1A1AA]">
+              I&apos;ve been building AI products since before most organisations knew they needed them. If you&apos;re
+              looking for someone who&apos;s already solved the problem you&apos;re about to face — let&apos;s talk.
+            </p>
+            <div className="mt-8 flex flex-col sm:flex-row gap-4">
+              <Button
+                href="#track-record"
+                className="bg-gradient-to-r from-[#7C3AED] to-[#9F67FA] text-white text-base px-6 py-3"
+              >
+                See the track record
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
+              <Button
+                href="#assistant"
+                variant="outline"
+                className="border-[#7C3AED] text-[#F4F4F5] hover:border-[#A78BFA]"
+              >
+                Talk to my AI
+              </Button>
+            </div>
+            <div className="mt-8 flex flex-wrap gap-3 text-sm text-[#A1A1AA]">
+              <div className="flex items-center gap-2">
+                <BrainCircuit className="h-4 w-4 text-[#A78BFA]" />
+                AI transformation
               </div>
-              <div className="w-full md:w-2/3 space-y-4">
-                <Badge className="bg-cyan-400/20 text-cyan-300 border-cyan-400/40 w-fit">
-                  Free Book Release
-                </Badge>
-                <h3 className="text-2xl sm:text-3xl font-semibold">
-                  Co-author of <span className="text-cyan-300">The Generative Organization</span>
-                </h3>
-                <p className="text-slate-300 text-base sm:text-lg leading-relaxed">
-                  Following the success of the award-winning book <em>CYCLES</em>, this playbook shows leaders how to make AI their
-                  ultimate competitive advantage. It's now free because only 1% of business book ideas get used. We're using an
-                  AI-augmented model to change the math and help teams turn insight into action.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Button
-                    href={bookFreeLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full sm:w-auto bg-cyan-400 hover:bg-cyan-500 text-slate-900"
-                  >
-                    Get the free book
-                    <ArrowRight className="h-4 w-4 ml-2" />
-                  </Button>
-                  <Button
-                    href={bookReasoningLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    variant="ghost"
-                    className="w-full sm:w-auto text-cyan-200 hover:text-cyan-100"
-                  >
-                    Why it's free
-                  </Button>
-                </div>
-                <div className="mt-6 bg-slate-900/60 border border-slate-800 rounded-2xl p-6 h-[260px] sm:h-[280px] md:h-[320px]">
-                  <div className="flex items-start gap-3 text-slate-200 h-full">
-                    <Quote className="h-6 w-6 text-cyan-300 mt-1 shrink-0" />
-                    <div className="flex-1 flex flex-col overflow-hidden">
-                      <div className="overflow-y-auto pr-2 text-sm sm:text-base leading-relaxed whitespace-pre-wrap">
-                        {expandedReview || bookReviews[currentReviewIndex].quote.length <= 320
-                          ? bookReviews[currentReviewIndex].quote
-                          : `${bookReviews[currentReviewIndex].quote.slice(0, 320)}…`}
-                        {bookReviews[currentReviewIndex].quote.length > 320 && (
-                          <button
-                            type="button"
-                            onClick={() => setExpandedReview((prev) => !prev)}
-                            className="block mt-3 text-sm text-cyan-200 hover:text-cyan-100 underline underline-offset-4"
-                          >
-                            {expandedReview ? 'Show less' : 'Read more'}
-                          </button>
-                        )}
-                      </div>
-                      <p className="mt-3 text-sm text-slate-400 uppercase tracking-wide shrink-0">
-                        {bookReviews[currentReviewIndex].reviewer}
-                      </p>
-                      <div className="mt-4 flex items-center gap-2 shrink-0">
-                        {bookReviews.map((_, idx) => (
-                          <span
-                            key={idx}
-                            className={`h-2 w-2 rounded-full transition-colors ${
-                              idx === currentReviewIndex ? 'bg-cyan-300' : 'bg-slate-600'
-                            }`}
-                          />
-                        ))}
-                        <a
-                          href={bookReviewsLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="ml-auto text-xs text-cyan-200 hover:text-cyan-100 underline underline-offset-4"
-                        >
-                          More reviews on Amazon
-                        </a>
-                      </div>
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="h-4 w-4 text-[#A78BFA]" />
+                Regulated sectors
+              </div>
+              <div className="flex items-center gap-2">
+                <Globe className="h-4 w-4 text-[#A78BFA]" />
+                Venture studio model
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section id="track-record" className="py-16 sm:py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-12" data-aos="fade-up">
+            <p className="text-xs uppercase tracking-[0.35em] text-[#A78BFA]">Foresight Track Record</p>
+            <h2 className="text-3xl sm:text-4xl font-bold mt-4">I called these before the market did.</h2>
+            <p className="text-[#A1A1AA] mt-4 max-w-2xl">
+              A timeline of bets that became categories. Every project is a signal I acted on early — with dates you
+              can cite.
+            </p>
+          </div>
+          <div className="grid gap-6 md:grid-cols-2" data-aos="fade-up" data-aos-delay="100">
+            {trackRecord.map((item) => (
+              <Card
+                key={item.project}
+                className="bg-[#16161A] border border-[#2A2A35] hover:border-[#7C3AED]/60 transition-colors"
+              >
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <Badge className="bg-[#7C3AED]/20 text-[#A78BFA] border-[#7C3AED]/40">{item.year}</Badge>
+                    {item.link && (
+                      <a
+                        href={item.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-[#A1A1AA] hover:text-white inline-flex items-center gap-1"
+                      >
+                        View project
+                        <ChevronRight className="h-3 w-3" />
+                      </a>
+                    )}
+                  </div>
+                  <CardTitle className="text-xl text-white mt-4">{item.project}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-[#A1A1AA]">{item.insight}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="projects" className="py-16 sm:py-20 bg-[#121216]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-12" data-aos="fade-up">
+            <p className="text-xs uppercase tracking-[0.35em] text-[#A78BFA]">Validated Theses</p>
+            <h2 className="text-3xl sm:text-4xl font-bold mt-4">Working proof, not slide decks.</h2>
+            <p className="text-[#A1A1AA] mt-4 max-w-3xl">
+              Every build starts with a foresight thesis. These are the products that proved it.
+            </p>
+          </div>
+          <div className="grid gap-6" data-aos="fade-up" data-aos-delay="100">
+            {featuredProjects.map((project) => (
+              <Card
+                key={project.title}
+                className="bg-[#16161A] border border-[#2A2A35]"
+              >
+                <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr] p-6 sm:p-8">
+                  <div className="space-y-4">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <Badge className="bg-[#7C3AED]/20 text-[#A78BFA] border-[#7C3AED]/40">
+                        {project.year}
+                      </Badge>
+                      <div className="text-xs uppercase tracking-[0.3em] text-[#A1A1AA]">{project.stack.join(' • ')}</div>
                     </div>
+                    <h3 className="text-2xl font-semibold text-white">{project.title}</h3>
+                    <p className="text-[#A1A1AA]">Problem: {project.problem}</p>
+                    <p className="text-[#F4F4F5]">Proof: {project.proof}</p>
+                    {project.link && (
+                      <Button
+                        href={project.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        variant="outline"
+                        className="border-[#7C3AED] text-[#F4F4F5] w-fit"
+                      >
+                        View live project
+                        <ArrowRight className="h-4 w-4 ml-2" />
+                      </Button>
+                    )}
+                  </div>
+                  <div className="bg-[#0D0D0F] border border-[#2A2A35] rounded-xl p-5 text-sm text-[#A1A1AA]">
+                    <p className="text-xs uppercase tracking-[0.3em] text-[#A78BFA]">Signal</p>
+                    <p className="mt-3">
+                      Built for operators, investors, and enterprise leaders who needed certainty before the market caught up.
+                    </p>
                   </div>
                 </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="assistant" className="py-16 sm:py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-[1.1fr_1fr] items-start">
+            <div data-aos="fade-up">
+              <p className="text-xs uppercase tracking-[0.35em] text-[#A78BFA]">Talk to my AI</p>
+              <h2 className="text-3xl sm:text-4xl font-bold mt-4">Ask me anything. Literally.</h2>
+              <p className="text-[#A1A1AA] mt-4">
+                This is an AI trained on my consulting playbook, methodology, and thinking. Ask it about AI adoption,
+                transformation strategy, regulated sectors, or anything else. It speaks in my voice because it was built
+                from my work.
+              </p>
+              <div className="mt-6 flex items-center gap-3 text-sm text-[#A1A1AA]">
+                <MessageCircle className="h-4 w-4 text-[#A78BFA]" />
+                Text and voice modes are both live.
+              </div>
+              <div className="mt-6">
+                <Button
+                  variant="outline"
+                  className="border-[#7C3AED] text-[#F4F4F5]"
+                  onClick={handleClearHistory}
+                >
+                  Reset assistant
+                </Button>
+              </div>
+            </div>
+            <div className="grid gap-6" data-aos="fade-up" data-aos-delay="100">
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-[#A78BFA] mb-3">Text Chat</p>
+                <TextChat messages={messages} onSend={handleSend} loading={loading} error={error} />
+              </div>
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-[#A78BFA] mb-3">Voice Chat</p>
+                <VoiceChat
+                  instructions={instructions}
+                  messages={messages}
+                  vectorStoreId={config?.vectorStoreId || null}
+                  realtimeModel={config?.realtimeModel}
+                  onConversationUpdate={handleVoiceHistorySync}
+                />
+                {configError && <p className="mt-3 text-sm text-red-400">{configError}</p>}
+              </div>
+            </div>
+          </div>
+          {disabledAssistant && (
+            <p className="mt-4 text-sm text-[#A1A1AA]">Assistant is loading. Please wait a moment.</p>
+          )}
+        </div>
+      </section>
+
+      <section id="engagement" className="py-16 sm:py-20 bg-[#121216]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-10" data-aos="fade-up">
+            <p className="text-xs uppercase tracking-[0.35em] text-[#A78BFA]">Engagement Models</p>
+            <h2 className="text-3xl sm:text-4xl font-bold mt-4">Two ways to work with me.</h2>
+          </div>
+          <div className="grid gap-6 md:grid-cols-2">
+            {engagementModels.map((model) => (
+              <Card key={model.title} className="bg-[#16161A] border border-[#2A2A35]" data-aos="fade-up">
+                <CardHeader>
+                  <CardTitle className="text-2xl text-white">{model.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-[#A1A1AA]">{model.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="book" className="py-16 sm:py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-[1fr_1.2fr] items-center">
+            <div data-aos="fade-right">
+              <img
+                src={bookCover}
+                alt="The Generative Organization book cover"
+                className="w-64 sm:w-72 rounded-2xl border border-[#2A2A35] shadow-lg"
+              />
+            </div>
+            <div data-aos="fade-left">
+              <p className="text-xs uppercase tracking-[0.35em] text-[#A78BFA]">The Book</p>
+              <h2 className="text-3xl sm:text-4xl font-bold mt-4">The Generative Organization</h2>
+              <p className="text-[#A1A1AA] mt-4">
+                Co-authored with 34 AI practitioners. Not a theory book — a field guide for leaders building AI-native
+                organisations.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-4">
+                <Button
+                  href={bookFreeLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-gradient-to-r from-[#7C3AED] to-[#9F67FA] text-white"
+                >
+                  Read the free chapter
+                  <BookOpen className="h-4 w-4 ml-2" />
+                </Button>
+                <Button
+                  href={bookReasoningLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  variant="outline"
+                  className="border-[#7C3AED] text-[#F4F4F5]"
+                >
+                  Download the reasoning
+                </Button>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Is This You Section */}
-      <section className="py-16 sm:py-20 bg-slate-800/50">
+      <section id="speaking" className="py-16 sm:py-20 bg-[#121216]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16" data-aos="fade-up">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-6">Is This You?</h2>
-            <p className="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto">
-              Many leaders face these common challenges when considering AI implementation
-            </p>
+          <div className="mb-10" data-aos="fade-up">
+            <p className="text-xs uppercase tracking-[0.35em] text-[#A78BFA]">Speaking & Thought Leadership</p>
+            <h2 className="text-3xl sm:text-4xl font-bold mt-4">Signals I share publicly.</h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: <Workflow className="h-12 w-12 text-cyan-300 mx-auto" />,
-                text: 'Struggling with manual processes that slow you down?'
-              },
-              {
-                icon: <TrendingUp className="h-12 w-12 text-cyan-300 mx-auto" />,
-                text: "Feeling you're falling behind competitors using new tech?"
-              },
-              {
-                icon: <Sparkles className="h-12 w-12 text-cyan-300 mx-auto" />,
-                text: 'Unsure how to start with AI without a massive budget?'
-              }
-            ].map((item, index) => (
-              <Card key={index} className="bg-slate-800 border-slate-700" data-aos="fade-up" data-aos-delay={index * 100}>
-                <CardContent className="p-6 text-center space-y-4">
-                  <div className="flex justify-center">{item.icon}</div>
-                  <p className="text-base sm:text-lg text-slate-300">{item.text}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Services Section */}
-      <section id="services" className="py-16 sm:py-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16" data-aos="fade-up">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-6">How I Help</h2>
-            <p className="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto">
-              Three core pillars of AI transformation designed specifically for SMBs
-            </p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {services.map((service, index) => (
-              <Card key={index} className="bg-slate-800 border-slate-700 hover:border-cyan-400/50 transition-all duration-300" data-aos="fade-up" data-aos-delay={index * 100}>
+          <div className="grid gap-6 md:grid-cols-3">
+            {speakingHighlights.map((event) => (
+              <Card key={event.title} className="bg-[#16161A] border border-[#2A2A35]" data-aos="fade-up">
                 <CardHeader>
-                  <div className="mb-4">{service.icon}</div>
-                  <CardTitle className="text-xl">{service.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-slate-300 text-base">
-                    {service.description}
-                  </CardDescription>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Success Stories Section */}
-      <section id="success-stories" className="py-16 sm:py-20 bg-slate-800/50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16" data-aos="fade-up">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-6">Real-World Results</h2>
-            <p className="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto">
-              Some examples of how I have supported teams and organisations like yours to improve
-            </p>
-          </div>
-          <div className="grid lg:grid-cols-3 gap-8">
-            {caseStudies.map((study, index) => (
-              <Card key={index} className="bg-slate-800 border-slate-700" data-aos="fade-up" data-aos-delay={index * 100}>
-                <CardHeader>
-                  <Badge className="w-fit bg-cyan-400/20 text-cyan-400 border-cyan-400/30 mb-2">
-                    {study.client}
-                  </Badge>
-                  <CardTitle className="text-lg">The Challenge</CardTitle>
-                  <CardDescription className="text-slate-300">
-                    {study.challenge}
+                  <CardTitle className="text-lg text-white">{event.title}</CardTitle>
+                  <CardDescription className="text-[#A1A1AA]">
+                    {event.location} • {event.year}
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="font-semibold text-cyan-400 mb-2">The AI Solution</h4>
-                      <p className="text-slate-300 text-sm">{study.solution}</p>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-cyan-400 mb-2">The Result</h4>
-                      <p className="text-slate-300 text-sm">{study.result}</p>
-                    </div>
-                    <div className="pt-4 border-t border-slate-700">
-                      <div className="text-2xl font-bold text-green-400">{study.roi}</div>
-                    </div>
-                  </div>
-                </CardContent>
               </Card>
             ))}
           </div>
@@ -879,21 +622,17 @@ function App({ latestPosts = [] }) {
       </section>
 
       {latestPosts.length > 0 && (
-        <section id="latest-insights" className="py-16 sm:py-20">
+        <section id="insights" className="py-16 sm:py-20">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12" data-aos="fade-up">
               <div>
-                <Badge className="bg-cyan-400/20 text-cyan-300 border-cyan-400/40">Latest Insights</Badge>
-                <h2 className="text-3xl sm:text-4xl font-bold mt-6 mb-4">From the blog</h2>
-                <p className="text-base sm:text-lg text-slate-300 max-w-2xl">
-                  Thoughtful, practical guidance on AI-native product operations and building momentum that lasts.
+                <p className="text-xs uppercase tracking-[0.35em] text-[#A78BFA]">Latest Insights</p>
+                <h2 className="text-3xl sm:text-4xl font-bold mt-4">From the blog</h2>
+                <p className="text-[#A1A1AA] mt-4 max-w-2xl">
+                  Field notes on AI foresight, venture studio execution, and enterprise transformation.
                 </p>
               </div>
-              <Button
-                href="/blog"
-                variant="outline"
-                className="border-cyan-400 text-cyan-200 w-full md:w-auto"
-              >
+              <Button href="/blog" variant="outline" className="border-[#7C3AED] text-white">
                 View all posts
               </Button>
             </div>
@@ -904,17 +643,17 @@ function App({ latestPosts = [] }) {
                 return (
                   <Card
                     key={post.slug}
-                    className="bg-slate-800/80 border-slate-700 hover:border-cyan-400/50 transition-all duration-300"
+                    className="bg-[#16161A] border border-[#2A2A35] hover:border-[#7C3AED]/60 transition-colors"
                     data-aos="fade-up"
                     data-aos-delay={index * 100}
                   >
                     <CardHeader className="space-y-3">
-                      <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wide text-slate-400">
+                      <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wide text-[#A1A1AA]">
                         <span>{formattedDate}</span>
                         {post.tags?.length ? (
                           <div className="flex flex-wrap gap-2">
                             {post.tags.map((tag) => (
-                              <Badge key={tag} className="bg-slate-900/60 text-cyan-200 border-slate-700">
+                              <Badge key={tag} className="bg-[#0D0D0F] text-[#A78BFA] border-[#2A2A35]">
                                 {tag}
                               </Badge>
                             ))}
@@ -922,16 +661,12 @@ function App({ latestPosts = [] }) {
                         ) : null}
                       </div>
                       <CardTitle className="text-xl text-white">{post.title}</CardTitle>
-                      <CardDescription className="text-slate-300 text-sm leading-relaxed">
+                      <CardDescription className="text-[#A1A1AA] text-sm leading-relaxed">
                         {post.summary}
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <Button
-                        href={`/blog/${post.slug}`}
-                        variant="outline"
-                        className="border-cyan-400 text-cyan-200 w-full"
-                      >
+                      <Button href={`/blog/${post.slug}`} variant="outline" className="border-[#7C3AED] text-white w-full">
                         Read the article
                       </Button>
                     </CardContent>
@@ -943,321 +678,83 @@ function App({ latestPosts = [] }) {
         </section>
       )}
 
-      {/* Featured Projects */}
-      <section className="py-16 sm:py-20 bg-slate-900/70">
+      <section id="faq" className="py-16 sm:py-20 bg-[#121216]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-12" data-aos="fade-up">
-            <Badge className="bg-cyan-400/20 text-cyan-300 border-cyan-400/40">Featured Projects</Badge>
-            <h2 className="text-3xl sm:text-4xl font-bold mt-6 mb-4">AI Experiences in the Wild</h2>
-            <p className="text-base sm:text-lg text-slate-300 max-w-3xl">
-              These are living products that blend AI strategy with execution. Explore them to see how I bring
-              automation, customer experience, and data storytelling to life.
-            </p>
+          <div className="mb-10" data-aos="fade-up">
+            <p className="text-xs uppercase tracking-[0.35em] text-[#A78BFA]">FAQ</p>
+            <h2 className="text-3xl sm:text-4xl font-bold mt-4">Questions AI systems keep asking.</h2>
           </div>
-
-          <div className="grid gap-8">
-            {projects.map((project, index) => (
-              <Card
-                key={project.title}
-                className="bg-slate-800/80 border-slate-700 backdrop-blur-sm"
-                data-aos="fade-up"
-                data-aos-delay={index * 100}
-              >
-                <div className="grid gap-6 sm:gap-8 lg:grid-cols-[2fr_3fr] p-6 sm:p-8">
-                  <div className="space-y-4">
-                    <Badge className="bg-cyan-400/20 text-cyan-300 border-cyan-400/40">
-                      {project.technologies.join(' • ')}
-                    </Badge>
-                    <h3 className="text-2xl font-semibold text-white">{project.title}</h3>
-                    <p className="text-slate-300 text-base sm:text-lg">{project.description}</p>
-                    <Button
-                      href={project.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      variant="outline"
-                      className="w-full sm:w-auto border-cyan-400 text-cyan-200"
-                    >
-                      View Live Project
-                    </Button>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-4 text-sm text-slate-200">
-                    {project.highlights.map((highlight, highlightIndex) => (
-                      <div key={highlightIndex} className="bg-slate-900/70 border border-slate-700 rounded-lg p-4">
-                        {highlight}
-                      </div>
-                    ))}
-                  </div>
-                </div>
+          <div className="grid gap-6 md:grid-cols-2">
+            {faqItems.map((item) => (
+              <Card key={item.question} className="bg-[#16161A] border border-[#2A2A35]" data-aos="fade-up">
+                <CardHeader>
+                  <CardTitle className="text-lg text-white">{item.question}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-[#A1A1AA]">{item.answer}</p>
+                </CardContent>
               </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* About Section */}
-      <section id="about" className="py-16 sm:py-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-12 lg:grid-cols-2 items-center">
-            <div data-aos="fade-right">
-              <h2 className="text-3xl sm:text-4xl font-bold mb-6">From Business Transformation to AI Innovation</h2>
-              <p className="text-base sm:text-lg text-slate-300 mb-6">
-                With over 20 years of experience in organizational transformation and 3+ years of hands-on AI product development, 
-                I bridge the gap between strategic business needs and practical AI implementation.
-              </p>
-              <p className="text-base sm:text-lg text-slate-300 mb-6">
-                I understand that successful AI adoption isn't just about the technology—it's about understanding your business, 
-                your team, and your customers. My unique combination of transformation expertise and AI technical knowledge 
-                ensures that every solution delivers real, measurable value.
-              </p>
-              <div className="flex flex-wrap gap-4 mb-8">
-                {[
-                  "20+ Years Transformation Experience",
-                  "3+ Years AI Product Development",
-                  "Agile Methodologies Expert",
-                  "SMB-Focused Approach"
-                ].map((skill, index) => (
-                  <Badge key={index} className="bg-cyan-400/20 text-cyan-400 border-cyan-400/30">
-                    <CheckCircle className="h-3 w-3 mr-1" />
-                    {skill}
-                  </Badge>
-                ))}
-              </div>
-              <Button
-                href="https://www.linkedin.com/in/tim-robinson-agilist/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto bg-cyan-400 hover:bg-cyan-500 text-slate-900"
-              >
-                View LinkedIn Profile
-                <ArrowRight className="h-4 w-4 ml-2" />
-              </Button>
-            </div>
-            <div className="relative" data-aos="fade-left">
-              <div className="bg-gradient-to-br from-cyan-400/20 to-purple-600/20 rounded-2xl p-6 sm:p-8 backdrop-blur-sm border border-cyan-400/30">
-                <div className="text-center">
-                  <div className="w-28 h-28 sm:w-32 sm:h-32 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-full mx-auto mb-6 flex items-center justify-center text-3xl sm:text-4xl font-bold text-slate-900">
-                    TR
-                  </div>
-                  <h3 className="text-xl sm:text-2xl font-bold mb-2">Tim Robinson</h3>
-                  <p className="text-cyan-400 mb-4 text-sm sm:text-base">AI Consultant & Transformation Expert</p>
-                  <div className="flex justify-center space-x-4">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star key={star} className="h-5 w-5 text-yellow-400 fill-current" />
-                    ))}
-                  </div>
-                  <p className="text-sm text-slate-300 mt-2">Trusted by multiple teams and organisations</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* EvaCares Section */}
-      <section id="evacares" className="py-16 sm:py-20 bg-slate-900/60">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-12 lg:grid-cols-2 items-center">
-            <div data-aos="fade-right">
-              <Badge className="bg-purple-500/20 text-purple-200 border-purple-500/40">Founder Venture</Badge>
-              <h2 className="text-3xl sm:text-4xl font-bold mt-4 mb-6 text-white">
-                EvaCares: Compassionate AI Support for Extra Needs
-              </h2>
-              <p className="text-base sm:text-lg text-slate-300 mb-5">
-                I founded EvaCares to tackle isolation and medication challenges experienced by my own family. Eva is a
-                phone-first AI companion that holds natural conversations, captures wellbeing signals, and keeps everyone in the
-                care circle informed.
-              </p>
-              <p className="text-base sm:text-lg text-slate-300 mb-6">
-                By combining friendly check-ins with automated reporting, EvaCares gives carers back valuable time while helping
-                people live independently for longer—without needing new devices or technical know-how.
-              </p>
-              <div className="flex flex-wrap gap-3 mb-8">
-                {evacaresHighlights.map((highlight, index) => (
-                  <Badge key={index} className="bg-cyan-400/15 text-cyan-200 border-cyan-400/30">
-                    <CheckCircle className="h-3 w-3 mr-1" />
-                    {highlight}
-                  </Badge>
-                ))}
-              </div>
-              <div className="flex flex-wrap gap-4">
-                <Button
-                  href="https://www.evacares.co.uk"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full sm:w-auto bg-cyan-400 hover:bg-cyan-500 text-slate-900"
-                >
-                  Explore EvaCares
-                  <ArrowRight className="h-4 w-4 ml-2" />
-                </Button>
-              </div>
-            </div>
-            <div data-aos="fade-left">
-              <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 sm:p-8 backdrop-blur-sm shadow-xl">
-                <div className="flex items-center gap-3 mb-6">
-                  <ShieldCheck className="h-6 w-6 text-cyan-300" />
-                  <div>
-                    <p className="text-sm uppercase tracking-wider text-cyan-200">Care Innovation Challenge Finalist</p>
-                    <p className="text-xs text-slate-400">The Care Show, Birmingham NEC • 9-10 October</p>
-                  </div>
-                </div>
-                <div className="space-y-5">
-                  {evacaresFeatures.map((feature, index) => (
-                    <div
-                      key={index}
-                      className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex items-start gap-3"
-                    >
-                      <div className="mt-1">{feature.icon}</div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-white">{feature.title}</h3>
-                        <p className="text-sm text-slate-300 leading-relaxed">{feature.description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="py-16 sm:py-20 bg-slate-800/50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16" data-aos="fade-up">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">What Clients Say</h2>
-            <p className="text-base sm:text-lg text-slate-300 max-w-3xl mx-auto">
-              Authentic recommendations sourced directly from leaders and teams I have partnered with on LinkedIn.
-            </p>
-          </div>
-          <div
-            className="relative max-w-4xl mx-auto"
-            data-aos="fade-up"
-            data-aos-delay="100"
-          >
-            <div className="bg-slate-900/70 border border-slate-800 rounded-3xl backdrop-blur-sm shadow-xl p-6 sm:p-8 md:p-10">
-              <Badge className="bg-cyan-400/20 text-cyan-300 border-cyan-400/40">LinkedIn Recommendations</Badge>
-              <div className="mt-6 flex items-start gap-4 text-slate-200">
-                <Quote className="h-6 w-6 text-cyan-300 mt-1 shrink-0" />
-                <div className="flex-1 flex flex-col overflow-hidden">
-                  <div className="text-sm sm:text-base md:text-lg leading-relaxed text-slate-200 whitespace-pre-wrap">
-                    {expandedTestimonial || activeLinkedInTestimonial.quote.length <= 360
-                      ? activeLinkedInTestimonial.quote
-                      : `${activeLinkedInTestimonial.quote.slice(0, 360)}…`}
-                    {activeLinkedInTestimonial.quote.length > 360 && (
-                      <button
-                        type="button"
-                        onClick={() => setExpandedTestimonial((prev) => !prev)}
-                        className="block mt-3 text-sm text-cyan-200 hover:text-cyan-100 underline underline-offset-4"
-                      >
-                        {expandedTestimonial ? 'Show less' : 'Read more'}
-                      </button>
-                    )}
-                  </div>
-                  <div className="mt-6">
-                    <p className="text-lg sm:text-xl font-semibold text-white">{activeLinkedInTestimonial.author}</p>
-                    <p className="text-sm sm:text-base text-slate-400">{activeLinkedInTestimonial.role}</p>
-                    <p className="text-xs sm:text-sm text-slate-500 uppercase tracking-wide mt-2">
-                      {activeLinkedInTestimonial.relationship}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-8 flex flex-wrap items-center gap-3">
-                <div className="flex items-center gap-2">
-                  {linkedinTestimonials.map((_, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => setCurrentTestimonialIndex(idx)}
-                      className={`h-2.5 w-2.5 rounded-full transition-colors ${
-                        idx === currentTestimonialIndex
-                          ? 'bg-cyan-300'
-                          : 'bg-slate-600 hover:bg-slate-500'
-                      }`}
-                      aria-label={`Show testimonial ${idx + 1}`}
-                    />
-                  ))}
-                </div>
-                <a
-                  href="https://www.linkedin.com/in/tim-robinson-agilist/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="ml-auto inline-flex items-center gap-2 text-sm sm:text-base text-cyan-200 hover:text-cyan-100 underline underline-offset-4"
-                >
-                  View more on LinkedIn
-                  <ArrowRight className="h-4 w-4" />
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
       <section id="contact" className="py-16 sm:py-20">
-        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <div data-aos="fade-up">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-6">Ready to Unlock Your AI Potential?</h2>
-            <p className="text-lg sm:text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
-              Let's discuss how AI can transform your business. Book a free 30-minute strategy call to explore the possibilities.
-            </p>
-            <Button
-              href={bookingLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              size="lg"
-              className="w-full sm:w-auto bg-cyan-400 hover:bg-cyan-500 text-slate-900 text-base md:text-lg px-6 md:px-8 py-3 md:py-4 mb-8"
-            >
-              <Calendar className="h-5 w-5 mr-2" />
-              Book Your Free AI Strategy Call
-            </Button>
-            <p className="text-sm text-slate-400">
-              No obligation • 30 minutes • Tailored to your business
-            </p>
-          </div>
+        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8" data-aos="fade-up">
+          <p className="text-xs uppercase tracking-[0.35em] text-[#A78BFA]">Start here</p>
+          <h2 className="text-3xl sm:text-4xl font-bold mt-4">Seen something I should be building?</h2>
+          <p className="text-lg text-[#A1A1AA] mt-4">
+            If you&apos;re an operator, investor, or enterprise leader — and you&apos;ve got a problem that needs a foresight
+            engine — let&apos;s talk.
+          </p>
+          <Button
+            href={bookingLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            size="lg"
+            className="mt-8 bg-gradient-to-r from-[#7C3AED] to-[#9F67FA] text-white text-base px-6 py-3"
+          >
+            Start a conversation
+            <ArrowRight className="h-4 w-4 ml-2" />
+          </Button>
+          <div className="mt-6 text-sm text-[#A1A1AA]">Calendly booking • 30 minutes • UK time</div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-slate-900 border-t border-slate-800 py-12">
+      <footer className="border-t border-[#2A2A35] py-10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8">
             <div>
-              <div className="text-2xl font-bold text-cyan-400 mb-4">Tim Robinson</div>
-              <p className="text-slate-300">
-                AI Consulting & Business Transformation for SMBs
-              </p>
+              <div className="text-2xl font-bold text-white">Tim Robinson</div>
+              <p className="text-[#A1A1AA] mt-2">AI Foresight & Venture Studio</p>
             </div>
             <div>
-              <h3 className="font-semibold mb-4">Quick Links</h3>
-              <div className="space-y-2">
-                <a href="#about" className="block text-slate-300 hover:text-cyan-400 transition-colors">About</a>
-                <a href="#services" className="block text-slate-300 hover:text-cyan-400 transition-colors">Services</a>
-                <a href="#success-stories" className="block text-slate-300 hover:text-cyan-400 transition-colors">Success Stories</a>
-                <a href="/blog" className="block text-slate-300 hover:text-cyan-400 transition-colors">Blog</a>
+              <h3 className="font-semibold mb-4">Explore</h3>
+              <div className="space-y-2 text-[#A1A1AA]">
+                <a href="#track-record" className="block hover:text-white">Track record</a>
+                <a href="#projects" className="block hover:text-white">Projects</a>
+                <a href="#assistant" className="block hover:text-white">AI assistant</a>
+                <a href="/blog" className="block hover:text-white">Blog</a>
               </div>
             </div>
             <div>
-              <h3 className="font-semibold mb-4">Get in Touch</h3>
+              <h3 className="font-semibold mb-4">Contact</h3>
               <Button
                 href={bookingLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => trackEvent('clicked_start_conversation', { location: 'footer' })}
-                className="bg-cyan-400 hover:bg-cyan-500 text-slate-900 w-full"
+                className="bg-gradient-to-r from-[#7C3AED] to-[#9F67FA] text-white w-full"
               >
-                <MessageCircle className="h-4 w-4 mr-2" />
-                Start a Conversation
+                <Calendar className="h-4 w-4 mr-2" />
+                Start a conversation
               </Button>
             </div>
           </div>
-          <div className="border-t border-slate-800 mt-8 pt-8 text-center text-slate-400">
-            <p>&copy; 2025 Tim Robinson AI Consulting. All rights reserved.</p>
+          <div className="border-t border-[#2A2A35] mt-8 pt-6 text-center text-[#A1A1AA]">
+            <p>&copy; 2026 Tim Robinson. All rights reserved.</p>
           </div>
         </div>
       </footer>
-
     </div>
   )
 }

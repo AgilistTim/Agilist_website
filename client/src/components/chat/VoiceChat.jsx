@@ -7,7 +7,7 @@ import { Mic, MicOff, Loader2, Volume2, RefreshCw } from 'lucide-react'
 
 const DEFAULT_NAME = "Tim's AI Assistant"
 const DEFAULT_GREETING =
-  "Hi there! I'm Tim's AI assistant. Ask how AI can accelerate your business and I'll tailor recommendations for SMB leaders."
+  "Hi there! I'm Tim's AI assistant. Ask about AI transformation, foresight, or regulated sectors and I'll respond in Tim's voice."
 const LOCKED_VOICE = 'marin'
 const VOICE_OPENING_DIRECTIVE =
   "Always open a fresh voice session by speaking first: greet the listener, introduce yourself as Tim's AI assistant, explain you can draw on Tim's consulting playbook, and invite their first question. Keep it warm and concise."
@@ -274,34 +274,32 @@ export function VoiceChat({ instructions, messages, vectorStoreId, realtimeModel
   const depsReady = Boolean(realtimeDeps?.RealtimeAgent && realtimeDeps?.RealtimeSession)
 
   return (
-    <Card className="bg-slate-800 border-slate-700">
+    <Card className="bg-[#16161A] border-[#2A2A35]">
       <CardContent className="space-y-4">
         <div className="flex items-center gap-2">
-          <Badge className="bg-cyan-400/20 text-cyan-300 border-cyan-400/40">
+          <Badge className="bg-[#7C3AED]/20 text-[#A78BFA] border-[#7C3AED]/40">
             <Volume2 className="h-3 w-3 mr-1" />
-            Live AI Voice
+            Live Voice
           </Badge>
         </div>
-        <div className="space-y-2 text-sm text-slate-300">
-          <p>
-            Start a realtime conversation with Tim's consulting playbook. Grant microphone access to enable voice.
-          </p>
+        <div className="space-y-2 text-sm text-[#A1A1AA]">
+          <p>Start a realtime conversation with Tim's consulting playbook. Grant microphone access to enable voice.</p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
           {isIdle && !depsReady && (
-            <Button disabled className="bg-cyan-400/60 text-slate-900" size="lg">
+            <Button disabled className="bg-[#7C3AED]/60 text-white" size="lg">
               <Loader2 className="h-5 w-5 mr-2 animate-spin" />
               Loading Voice Tools
             </Button>
           )}
           {isIdle && depsReady && (
-            <Button onClick={startVoice} className="bg-cyan-400 text-slate-900 hover:bg-cyan-500" size="lg">
+            <Button onClick={startVoice} className="bg-[#7C3AED] text-white hover:bg-[#6D28D9]" size="lg">
               <Mic className="h-5 w-5 mr-2" />
               Start Voice Chat
             </Button>
           )}
           {isConnecting && (
-            <Button disabled className="bg-cyan-400/60 text-slate-900" size="lg">
+            <Button disabled className="bg-[#7C3AED]/60 text-white" size="lg">
               <Loader2 className="h-5 w-5 mr-2 animate-spin" />
               Connecting…
             </Button>
@@ -312,7 +310,7 @@ export function VoiceChat({ instructions, messages, vectorStoreId, realtimeModel
                 <MicOff className="h-5 w-5 mr-2" />
                 Stop Voice Chat
               </Button>
-              <Button onClick={handleReset} variant="outline" className="border-slate-600 text-slate-300" size="lg">
+              <Button onClick={handleReset} variant="outline" className="border-[#2A2A35] text-[#A1A1AA]" size="lg">
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Reset Conversation
               </Button>
@@ -320,7 +318,7 @@ export function VoiceChat({ instructions, messages, vectorStoreId, realtimeModel
           )}
         </div>
         {error && <p className="text-sm text-red-400">{error}</p>}
-        <div className="bg-slate-900 border border-slate-700 rounded-lg p-4 h-32 overflow-y-auto text-sm text-slate-200">
+        <div className="bg-[#0D0D0F] border border-[#2A2A35] rounded-lg p-4 h-32 overflow-y-auto text-sm text-[#F4F4F5]">
           {transcript ? transcript : 'Assistant transcript will appear here during the conversation.'}
         </div>
       </CardContent>

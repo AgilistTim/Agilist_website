@@ -49,17 +49,17 @@ const Blog = () => {
   };
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center text-cyan-400">Loading insights...</div>;
+    return <div className="min-h-screen flex items-center justify-center text-[#A78BFA]">Loading insights...</div>;
   }
 
   if (selectedPost) {
     return (
-      <div className="min-h-screen bg-slate-950 text-white pt-24 pb-16 px-4">
+      <div className="min-h-screen bg-[#0D0D0F] text-[#F4F4F5] pt-24 pb-16 px-4">
         <article className="max-w-3xl mx-auto">
           <Button 
             onClick={() => setSelectedPost(null)} 
             variant="ghost" 
-            className="mb-8 text-slate-400 hover:text-cyan-400"
+            className="mb-8 text-[#A1A1AA] hover:text-white"
           >
             <ArrowLeft className="mr-2 h-4 w-4" /> Back to Blog
           </Button>
@@ -68,19 +68,19 @@ const Blog = () => {
             <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white leading-tight">
               {selectedPost.title}
             </h1>
-            <div className="flex flex-wrap items-center gap-6 text-slate-400 text-sm">
+            <div className="flex flex-wrap items-center gap-6 text-[#A1A1AA] text-sm">
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-cyan-400" />
+                <Calendar className="h-4 w-4 text-[#A78BFA]" />
                 {selectedPost.date}
               </div>
               <div className="flex items-center gap-2">
-                <User className="h-4 w-4 text-cyan-400" />
+                <User className="h-4 w-4 text-[#A78BFA]" />
                 {selectedPost.author}
               </div>
             </div>
           </header>
 
-          <div className="prose prose-invert prose-cyan max-w-none">
+          <div className="prose prose-invert max-w-none">
             <ReactMarkdown>{selectedPost.content}</ReactMarkdown>
           </div>
         </article>
@@ -89,13 +89,13 @@ const Blog = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white pt-24 pb-16 px-4">
+    <div className="min-h-screen bg-[#0D0D0F] text-[#F4F4F5] pt-24 pb-16 px-4">
       <div className="max-w-6xl mx-auto">
         <header className="text-center mb-16">
-          <Badge className="bg-cyan-400/20 text-cyan-300 border-cyan-400/40 mb-4">Blog</Badge>
+          <Badge className="bg-[#7C3AED]/20 text-[#A78BFA] border-[#7C3AED]/40 mb-4">Blog</Badge>
           <h1 className="text-4xl md:text-5xl font-bold mb-6">Latest Insights</h1>
-          <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-            Practical guidance on AI-native product operations, organizational transformation, and building momentum.
+          <p className="text-xl text-[#A1A1AA] max-w-2xl mx-auto">
+            Practical guidance on AI foresight, transformation strategy, and venture studio execution.
           </p>
         </header>
 
@@ -103,22 +103,22 @@ const Blog = () => {
           {posts.map((post) => (
             <Card 
               key={post.slug} 
-              className="bg-slate-900 border-slate-800 hover:border-cyan-400/50 transition-all cursor-pointer group"
+              className="bg-[#16161A] border-[#2A2A35] hover:border-[#7C3AED]/50 transition-all cursor-pointer group"
               onClick={() => handlePostClick(post)}
             >
               <CardHeader>
-                <div className="text-xs text-cyan-400 mb-2 uppercase tracking-widest font-semibold">
+                <div className="text-xs text-[#A78BFA] mb-2 uppercase tracking-widest font-semibold">
                   {post.date}
                 </div>
-                <CardTitle className="text-2xl group-hover:text-cyan-400 transition-colors">
+                <CardTitle className="text-2xl group-hover:text-[#A78BFA] transition-colors">
                   {post.title}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-slate-400 line-clamp-3 mb-6">
+                <p className="text-[#A1A1AA] line-clamp-3 mb-6">
                   {post.content.substring(0, 150)}...
                 </p>
-                <Button variant="link" className="p-0 text-cyan-400 hover:text-cyan-300">
+                <Button variant="link" className="p-0 text-[#A78BFA] hover:text-white">
                   Read More <ArrowLeft className="ml-2 h-4 w-4 rotate-180" />
                 </Button>
               </CardContent>

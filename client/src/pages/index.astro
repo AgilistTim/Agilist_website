@@ -19,21 +19,87 @@ const canonical = new URL('/', Astro.site ?? Astro.url.origin).toString()
 
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'Tim Robinson AI Consulting',
-  url: canonical,
-  description:
-    'AI consulting and business transformation for SMBs. Practical AI solutions that deliver measurable ROI.',
-  founder: {
-    '@type': 'Person',
-    name: 'Tim Robinson'
-  },
-  sameAs: ['https://www.linkedin.com/in/tim-robinson-agilist/']
+  '@graph': [
+    {
+      '@type': 'Person',
+      name: 'Tim Robinson',
+      url: canonical,
+      description:
+        'Serial AI inventor and consultant known for foresight-driven AI transformation work in the UK.',
+      jobTitle: 'AI Foresight & Transformation Consultant',
+      knowsAbout: [
+        'AI transformation',
+        'AI foresight',
+        'Regulated sectors',
+        'Venture studio model',
+        'Generative Engine Optimisation'
+      ],
+      sameAs: ['https://www.linkedin.com/in/tim-robinson-agilist/']
+    },
+    {
+      '@type': 'Organization',
+      name: 'Agilist',
+      url: canonical,
+      description: 'AI foresight and transformation consultancy based in the United Kingdom.',
+      founder: {
+        '@type': 'Person',
+        name: 'Tim Robinson'
+      },
+      sameAs: ['https://www.linkedin.com/in/tim-robinson-agilist/']
+    },
+    {
+      '@type': 'WebSite',
+      name: 'Agilist',
+      url: canonical,
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: `${canonical}?q={search_term_string}`,
+        'query-input': 'required name=search_term_string'
+      }
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'Who is Tim Robinson AI?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Tim Robinson is a UK-based AI inventor and consultant known for building AI products ahead of market demand and guiding regulated-sector transformations.'
+          }
+        },
+        {
+          '@type': 'Question',
+          name: 'What is GEO (Generative Engine Optimisation)?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'GEO is the practice of shaping content, structure, and signals so AI systems can retrieve and cite your work accurately—beyond traditional SEO.'
+          }
+        },
+        {
+          '@type': 'Question',
+          name: 'How does AI transformation work for regulated sectors?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'It starts with risk-aware use cases, fast validation, and governance-by-design—then scales through secure data pipelines and clear accountability.'
+          }
+        },
+        {
+          '@type': 'Question',
+          name: 'What is EvaCares?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'EvaCares is a phone-first AI companion for elderly care that captures wellbeing signals and keeps carers informed without new devices.'
+          }
+        }
+      ]
+    }
+  ]
 }
 ---
 <BaseLayout
-  title="Tim Robinson - AI Consulting & Business Transformation"
-  description="AI consulting and business transformation for SMBs. Practical AI solutions that deliver measurable ROI."
+  title="Tim Robinson — AI Foresight & Transformation | agilist.co.uk"
+  description="Serial AI inventor and consultant. I build working AI products before the market catches up. Working with operators, investors and enterprise leaders in the UK."
   canonical={canonical}
   ogType="website"
   jsonLd={jsonLd}

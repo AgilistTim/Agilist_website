@@ -31,7 +31,7 @@ export function TextChat({ messages, onSend, loading, error }) {
           href={match}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-cyan-200 underline underline-offset-4 hover:text-cyan-100"
+          className="text-[#A78BFA] underline underline-offset-4 hover:text-white"
         >
           {match}
         </a>
@@ -59,12 +59,12 @@ export function TextChat({ messages, onSend, loading, error }) {
   }
 
   return (
-    <Card className="bg-slate-800 border-slate-700">
+    <Card className="bg-[#16161A] border-[#2A2A35]">
       <CardContent className="p-0 flex flex-col h-[420px]">
         <div className="px-5 pt-5 flex items-center gap-2">
-          <Badge className="bg-cyan-400/20 text-cyan-300 border-cyan-400/40">
+          <Badge className="bg-[#7C3AED]/20 text-[#A78BFA] border-[#7C3AED]/40">
             <MessageCircle className="h-3 w-3 mr-1" />
-            AI Strategy Chat
+            Text Chat
           </Badge>
         </div>
         <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
@@ -76,8 +76,8 @@ export function TextChat({ messages, onSend, loading, error }) {
               <div
                 className={`max-w-[80%] rounded-lg px-4 py-3 text-sm leading-relaxed shadow-sm ${
                   message.role === 'user'
-                    ? 'bg-cyan-400 text-slate-900'
-                    : 'bg-slate-700/80 text-slate-100 border border-slate-600'
+                    ? 'bg-[#7C3AED] text-white'
+                    : 'bg-[#0D0D0F] text-[#F4F4F5] border border-[#2A2A35]'
                 }`}
               >
                 <div className="flex items-center gap-2 mb-2 text-xs uppercase tracking-wide opacity-70">
@@ -94,23 +94,23 @@ export function TextChat({ messages, onSend, loading, error }) {
           ))}
           {loading && (
             <div className="flex justify-start">
-              <div className="bg-slate-700/80 border border-slate-600 rounded-lg px-4 py-3 text-sm text-slate-200 flex items-center gap-2">
+              <div className="bg-[#0D0D0F] border border-[#2A2A35] rounded-lg px-4 py-3 text-sm text-[#A1A1AA] flex items-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin" />
                 Thinking...
               </div>
             </div>
           )}
         </div>
-        <form onSubmit={handleSubmit} className="border-t border-slate-700 p-4">
+        <form onSubmit={handleSubmit} className="border-t border-[#2A2A35] p-4">
           <div className="flex gap-2">
             <Input
               value={value}
               onChange={(event) => setValue(event.target.value)}
-              placeholder="Ask how AI can transform your business..."
-              className="bg-slate-900 border-slate-700 text-white"
+              placeholder="Ask about AI foresight or transformation..."
+              className="bg-[#0D0D0F] border-[#2A2A35] text-white"
               disabled={loading}
             />
-            <Button type="submit" disabled={loading} className="bg-cyan-400 hover:bg-cyan-500 text-slate-900">
+            <Button type="submit" disabled={loading} className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white">
               <Send className="h-4 w-4" />
             </Button>
           </div>
