@@ -7,7 +7,7 @@ import { TextChat } from '@/components/chat/TextChat.jsx'
 import { VoiceChat } from '@/components/chat/VoiceChat.jsx'
 import { getAgentConfig, sendChatMessage } from '@/lib/api.js'
 
-const INITIAL_GREETING = `Hi there! I'm Tim's AI consulting assistant. Ask me how AI can boost automation, speed to market, or customer experience and I'll respond with proven strategies tailored to SMBs.`
+const INITIAL_GREETING = `Hi! I'm Tim's AI assistant. Ask me about AI transformation, foresight, or how to work with Tim.`
 const STORAGE_KEY = 'agilist_chat_history'
 
 function loadStoredMessages() {
@@ -124,38 +124,39 @@ export default function ChatBot() {
       <div className="fixed bottom-6 right-6 z-50">
         <Button
           onClick={() => setIsOpen((prev) => !prev)}
-          className="bg-cyan-400 hover:bg-cyan-500 text-slate-900 rounded-full w-14 h-14 shadow-lg pulse-cyan"
+          className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-full px-4 py-3 shadow-lg pulse-purple flex items-center gap-2"
           aria-expanded={isOpen}
           aria-label={isOpen ? 'Close AI assistant' : 'Open AI assistant'}
         >
-          {isOpen ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
+          {isOpen ? <X className="h-5 w-5" /> : <MessageCircle className="h-5 w-5" />}
+          <span className="text-sm font-semibold">Ask Tim&apos;s AI →</span>
         </Button>
       </div>
 
       {isOpen && (
         <div className="fixed bottom-24 right-6 w-[380px] lg:w-[420px] z-50">
-          <Card className="bg-slate-900 border-slate-700 shadow-xl flex flex-col">
-            <CardHeader className="bg-gradient-to-r from-cyan-400 to-purple-600 text-slate-900 rounded-t-lg">
+          <Card className="bg-[#0D0D0F] border-[#2A2A35] shadow-xl flex flex-col">
+            <CardHeader className="bg-gradient-to-r from-[#7C3AED] to-[#9F67FA] text-white rounded-t-lg">
               <CardTitle className="flex items-center justify-between text-lg">
                 <span className="flex items-center gap-2">
-                  <span className="w-8 h-8 bg-slate-900 rounded-full flex items-center justify-center text-cyan-400 font-bold text-sm">
+                  <span className="w-8 h-8 bg-[#0D0D0F] rounded-full flex items-center justify-center text-[#A78BFA] font-bold text-sm">
                     AI
                   </span>
                   Tim's AI Assistant
                 </span>
-                <Badge className="bg-slate-900/40 text-slate-900">
+                <Badge className="bg-white/20 text-white border-white/30">
                   {mode === 'text' ? 'Text' : 'Voice'} mode
                 </Badge>
               </CardTitle>
-              <p className="text-sm text-slate-800">
+              <p className="text-sm text-white/80">
                 Powered by OpenAI realtime voice and RAG over Tim's consulting playbook
               </p>
             </CardHeader>
-            <CardContent className="bg-slate-900 border-b border-slate-800 p-4 pt-6">
+            <CardContent className="bg-[#0D0D0F] border-b border-[#2A2A35] p-4 pt-6">
               <div className="flex flex-wrap items-center gap-2">
                 <Button
                   variant={mode === 'text' ? 'default' : 'outline'}
-                  className={mode === 'text' ? 'bg-cyan-400 text-slate-900 hover:bg-cyan-500' : ''}
+                  className={mode === 'text' ? 'bg-[#7C3AED] text-white hover:bg-[#6D28D9]' : 'border-[#2A2A35] text-white'}
                   onClick={() => setMode('text')}
                   disabled={disabled}
                 >
@@ -164,7 +165,7 @@ export default function ChatBot() {
                 </Button>
                 <Button
                   variant={mode === 'voice' ? 'default' : 'outline'}
-                  className={mode === 'voice' ? 'bg-cyan-400 text-slate-900 hover:bg-cyan-500' : ''}
+                  className={mode === 'voice' ? 'bg-[#7C3AED] text-white hover:bg-[#6D28D9]' : 'border-[#2A2A35] text-white'}
                   onClick={() => setMode('voice')}
                   disabled={disabled}
                 >
@@ -174,7 +175,7 @@ export default function ChatBot() {
                 <Button
                   variant="ghost"
                   onClick={handleClearHistory}
-                  className="ml-auto text-slate-200 hover:text-white"
+                  className="ml-auto text-[#A1A1AA] hover:text-white"
                 >
                   Clear history
                 </Button>

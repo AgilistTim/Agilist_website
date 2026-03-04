@@ -2,13 +2,14 @@ import { forwardRef } from 'react'
 import { cn } from '@/lib/utils.js'
 
 const baseStyles =
-  'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-cyan-400 disabled:pointer-events-none disabled:opacity-50'
+  'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#7C3AED] focus-visible:ring-offset-[#0D0D0F] disabled:pointer-events-none disabled:opacity-50'
 
 const variants = {
-  default: 'bg-cyan-400 text-slate-900 hover:bg-cyan-500',
-  outline: 'border border-slate-600 text-cyan-400 hover:border-cyan-400 hover:bg-cyan-400/10',
-  secondary: 'bg-slate-700 text-white hover:bg-slate-600',
-  ghost: 'hover:bg-slate-800 hover:text-white'
+  default: 'bg-[#7C3AED] text-white hover:bg-[#6D28D9]',
+  outline: 'border border-[#7C3AED] text-[#F4F4F5] hover:border-[#A78BFA] hover:bg-[#7C3AED]/10',
+  secondary: 'bg-[#16161A] text-white hover:bg-[#1F1F24]',
+  ghost: 'hover:bg-[#16161A] hover:text-white',
+  link: 'bg-transparent text-[#A78BFA] hover:text-white underline underline-offset-4'
 }
 
 const sizes = {

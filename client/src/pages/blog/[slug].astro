@@ -13,7 +13,8 @@ export async function getStaticPaths() {
 const { post } = Astro.props
 const { Content } = await post.render()
 
-const canonical = new URL(`/blog/${post.slug}`, Astro.site ?? Astro.url.origin).toString()
+// Use LinkedIn URL as canonical if this is a cross-post, otherwise use this page
+const canonical = post.data.canonicalUrl || post.data.linkedinUrl || new URL(`/blog/${post.slug}`, Astro.site ?? Astro.url.origin).toString()
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -27,7 +28,7 @@ const jsonLd = {
   },
   publisher: {
     '@type': 'Organization',
-    name: 'Tim Robinson AI Consulting'
+    name: 'Agilist'
   },
   mainEntityOfPage: canonical,
   url: canonical
@@ -40,31 +41,31 @@ const dateFormatter = new Intl.DateTimeFormat('en-GB', {
 })
 ---
 <BaseLayout
-  title={`${post.data.title} | Tim Robinson AI Consulting`}
+  title={`${post.data.title} | Tim Robinson — AI Foresight & Transformation`}
   description={post.data.summary}
   canonical={canonical}
   ogType="article"
   jsonLd={jsonLd}
 >
-  <div class="min-h-screen bg-slate-900 text-white">
-    <nav class="fixed top-0 w-full bg-slate-900/95 backdrop-blur-sm z-50 border-b border-slate-800">
+  <div class="min-h-screen bg-[#0D0D0F] text-[#F4F4F5]">
+    <nav class="fixed top-0 w-full bg-[#0D0D0F]/95 backdrop-blur-sm z-50 border-b border-[#2A2A35]">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-wrap items-center justify-between gap-4 py-4">
-          <a href="/" class="text-2xl font-bold text-cyan-400">Tim Robinson</a>
+          <a href="/" class="text-2xl font-bold text-white">Tim Robinson</a>
           <div class="hidden md:flex space-x-8 text-sm">
-            <a href="/#about" class="hover:text-cyan-400 transition-colors">About</a>
-            <a href="/#services" class="hover:text-cyan-400 transition-colors">Services</a>
-            <a href="/#success-stories" class="hover:text-cyan-400 transition-colors">Success Stories</a>
-            <a href="/blog" class="text-cyan-200">Blog</a>
-            <a href="/#contact" class="hover:text-cyan-400 transition-colors">Contact</a>
+            <a href="/#track-record" class="hover:text-white transition-colors">Track record</a>
+            <a href="/#projects" class="hover:text-white transition-colors">Projects</a>
+            <a href="/#assistant" class="hover:text-white transition-colors">AI assistant</a>
+            <a href="/blog" class="text-[#A78BFA]">Blog</a>
+            <a href="/#contact" class="hover:text-white transition-colors">Contact</a>
           </div>
           <a
-            href="https://tanagra.youcanbook.me"
+            href="https://calendly.com/agilist/quick-chat"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex items-center justify-center rounded-md bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-cyan-500"
+            class="inline-flex items-center justify-center rounded-md bg-gradient-to-r from-[#7C3AED] to-[#9F67FA] px-4 py-2 text-sm font-semibold text-white"
           >
-            Book a Call
+            Start a conversation
           </a>
         </div>
       </div>
@@ -72,14 +73,14 @@ const dateFormatter = new Intl.DateTimeFormat('en-GB', {
 
     <main class="pt-28 pb-16 sm:pt-32">
       <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <a href="/blog" class="text-sm text-cyan-200 hover:text-cyan-100">&lt;- Back to all posts</a>
+        <a href="/blog" class="text-sm text-[#A78BFA] hover:text-white">&lt;- Back to all posts</a>
         <h1 class="text-3xl sm:text-4xl font-bold mt-4">{post.data.title}</h1>
-        <div class="mt-4 flex flex-wrap items-center gap-3 text-xs uppercase tracking-wide text-slate-400">
+        <div class="mt-4 flex flex-wrap items-center gap-3 text-xs uppercase tracking-wide text-[#A1A1AA]">
           <span>{dateFormatter.format(post.data.date)}</span>
           {post.data.tags?.length ? (
             <div class="flex flex-wrap gap-2">
               {post.data.tags.map((tag) => (
-                <span class="rounded-full bg-slate-800 px-3 py-1 text-[11px] text-cyan-200">{tag}</span>
+                <span class="rounded-full bg-[#16161A] px-3 py-1 text-[11px] text-[#A78BFA]">{tag}</span>
               ))}
             </div>
           ) : null}
@@ -90,35 +91,35 @@ const dateFormatter = new Intl.DateTimeFormat('en-GB', {
       </div>
     </main>
 
-    <footer class="bg-slate-900 border-t border-slate-800 py-12">
+    <footer class="border-t border-[#2A2A35] py-12">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid md:grid-cols-3 gap-8">
           <div>
-            <div class="text-2xl font-bold text-cyan-400 mb-4">Tim Robinson</div>
-            <p class="text-slate-300">AI Consulting & Business Transformation for SMBs</p>
+            <div class="text-2xl font-bold text-white mb-4">Tim Robinson</div>
+            <p class="text-[#A1A1AA]">AI Foresight & Venture Studio</p>
           </div>
           <div>
             <h3 class="font-semibold mb-4">Quick Links</h3>
             <div class="space-y-2">
-              <a href="/#about" class="block text-slate-300 hover:text-cyan-400 transition-colors">About</a>
-              <a href="/#services" class="block text-slate-300 hover:text-cyan-400 transition-colors">Services</a>
-              <a href="/blog" class="block text-slate-300 hover:text-cyan-400 transition-colors">Blog</a>
+              <a href="/#track-record" class="block text-[#A1A1AA] hover:text-white transition-colors">Track record</a>
+              <a href="/#projects" class="block text-[#A1A1AA] hover:text-white transition-colors">Projects</a>
+              <a href="/blog" class="block text-[#A1A1AA] hover:text-white transition-colors">Blog</a>
             </div>
           </div>
           <div>
             <h3 class="font-semibold mb-4">Get in Touch</h3>
             <a
-              href="https://tanagra.youcanbook.me"
+              href="https://calendly.com/agilist/quick-chat"
               target="_blank"
               rel="noopener noreferrer"
-              class="inline-flex items-center justify-center rounded-md bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-cyan-500 w-full"
+              class="inline-flex items-center justify-center rounded-md bg-gradient-to-r from-[#7C3AED] to-[#9F67FA] px-4 py-2 text-sm font-semibold text-white w-full"
             >
               Start a Conversation
             </a>
           </div>
         </div>
-        <div class="border-t border-slate-800 mt-8 pt-8 text-center text-slate-400">
-          <p>&copy; 2025 Tim Robinson AI Consulting. All rights reserved.</p>
+        <div class="border-t border-[#2A2A35] mt-8 pt-8 text-center text-[#A1A1AA]">
+          <p>&copy; 2026 Tim Robinson. All rights reserved.</p>
         </div>
       </div>
     </footer>

@@ -156,9 +156,9 @@ The survey isn't about selling you something. It's about understanding your situ
 
 If you're ready to understand where your operating model is constrained, take the survey below.
 
-<div class="mt-10 rounded-2xl border border-slate-700 bg-slate-900/60 p-6">
+<div class="mt-10 rounded-2xl border border-[#2A2A35] bg-[#16161A] p-6">
   <h3 class="text-lg font-semibold text-white">Take the AI-Native Ops Diagnostic Survey</h3>
-  <p class="mt-2 text-sm text-slate-300">Understand where your operating model is constrained and what leverage point would make the biggest difference.</p>
-  <a class="mt-4 inline-flex items-center justify-center rounded-md bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-cyan-500" href="https://survey.agilist.co.uk/s/from-incremental-to-sustainable-advantage" target="_blank" rel="noopener noreferrer">Take the Survey</a>
-  <p class="mt-3 text-xs text-slate-400">You'll receive a written assessment reflecting your specific bottleneck, your readiness for change, and the leverage point most likely to unlock progress right now.</p>
+  <p class="mt-2 text-sm text-[#A1A1AA]">Understand where your operating model is constrained and what leverage point would make the biggest difference.</p>
+  <a class="mt-4 inline-flex items-center justify-center rounded-md bg-[#7C3AED] px-4 py-2 text-sm font-semibold text-white hover:bg-[#6D28D9]" href="https://survey.agilist.co.uk/s/from-incremental-to-sustainable-advantage" target="_blank" rel="noopener noreferrer">Take the Survey</a>
+  <p class="mt-3 text-xs text-[#A1A1AA]">You'll receive a written assessment reflecting your specific bottleneck, your readiness for change, and the leverage point most likely to unlock progress right now.</p>
 </div>

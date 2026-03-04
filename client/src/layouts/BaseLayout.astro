@@ -13,10 +13,10 @@ const {
   noIndex = false
 } = Astro.props
 
-const metaTitle = title || 'Tim Robinson - AI Consulting & Business Transformation'
+const metaTitle = title || 'Tim Robinson — AI Foresight & Transformation | agilist.co.uk'
 const metaDescription =
   description ||
-  'AI consulting and business transformation for SMBs. Practical AI solutions that deliver measurable ROI.'
+  'Serial AI inventor and consultant. I build working AI products before the market catches up. Working with operators, investors and enterprise leaders in the UK.'
 
 const baseUrl = Astro.site ?? new URL(Astro.url.origin)
 const canonicalUrl = canonical || new URL(Astro.url.pathname, baseUrl).toString()
@@ -47,7 +47,7 @@ const ogImageUrl = ogImage || null
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
       rel="stylesheet"
     />
 
@@ -61,7 +61,7 @@ const ogImageUrl = ogImage || null
     <script src="/posthog-init.js" is:inline></script>
 
   </head>
-  <body class="bg-slate-900 text-white">
+  <body class="bg-[#0D0D0F] text-[#F4F4F5]">
     <slot />
     <ChatBot client:only="react" />
   </body>
