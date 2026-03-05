@@ -5,8 +5,13 @@ const POSTHOG_HOST = import.meta.env.PUBLIC_POSTHOG_HOST || 'https://app.posthog
 
 let initialized = false
 
+function hasConsent() {
+  if (typeof window === 'undefined') return false
+  return window.localStorage.getItem('cookie_consent') === 'accepted'
+}
+
 export function initAnalytics() {
-  if (initialized || !POSTHOG_KEY) {
+  if (initialized || !POSTHOG_KEY || !hasConsent()) {
     return
   }
 

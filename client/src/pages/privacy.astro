@@ -1,0 +1,114 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+
+const canonical = new URL('/privacy', Astro.site ?? Astro.url.origin).toString()
+---
+<BaseLayout
+  title="Privacy Policy — Tim Robinson | agilist.co.uk"
+  description="How we collect, use, and protect your data on agilist.co.uk."
+  canonical={canonical}
+  ogType="website"
+>
+  <div class="min-h-screen bg-[#0D0D0F] text-[#F4F4F5]">
+    <nav class="sticky top-0 z-40 border-b border-[#2A2A35]/80 bg-[#0D0D0F]/90 backdrop-blur">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between py-4">
+          <a href="/" class="text-lg font-semibold tracking-tight">
+            Tim Robinson
+            <span class="ml-2 text-xs uppercase tracking-[0.3em] text-[#A78BFA]">AI Foresight</span>
+          </a>
+          <a href="/" class="text-sm text-[#A1A1AA] hover:text-white transition-colors">&larr; Back to site</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+      <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Privacy Policy</h1>
+      <p class="mt-2 text-sm text-[#A1A1AA]">Last updated: 5 March 2026</p>
+
+      <div class="mt-10 space-y-10 text-[#A1A1AA] leading-relaxed">
+
+        <section>
+          <h2 class="text-xl font-semibold text-white mb-3">Who we are</h2>
+          <p>This website (<strong class="text-[#F4F4F5]">agilist.co.uk</strong>) is operated by Tim Robinson, a UK-based AI consultant. For data protection purposes, Tim Robinson is the data controller.</p>
+          <p class="mt-2">Contact: <a href="mailto:tim@agilist.co.uk" class="text-[#A78BFA] underline underline-offset-2">tim@agilist.co.uk</a></p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-semibold text-white mb-3">What data we collect</h2>
+
+          <h3 class="text-lg font-medium text-[#F4F4F5] mt-4 mb-2">Analytics (PostHog)</h3>
+          <p>With your consent, we use <strong class="text-[#F4F4F5]">PostHog</strong> to understand how visitors use the site. This includes page views, button clicks, and interaction events. PostHog may set cookies and collect your IP address, browser type, and device information.</p>
+          <p class="mt-2"><strong class="text-[#F4F4F5]">Analytics are only activated after you accept cookies.</strong> If you decline, no tracking data is collected.</p>
+          <p class="mt-2">PostHog data is processed in the US. See <a href="https://posthog.com/privacy" target="_blank" rel="noopener noreferrer" class="text-[#A78BFA] underline underline-offset-2">PostHog's privacy policy</a>.</p>
+
+          <h3 class="text-lg font-medium text-[#F4F4F5] mt-4 mb-2">AI Assistant (text and voice chat)</h3>
+          <p>When you use the AI assistant, your messages are sent to <strong class="text-[#F4F4F5]">OpenAI</strong> for processing. This includes:</p>
+          <ul class="mt-2 list-disc list-inside space-y-1">
+            <li>Text messages you type in the chat</li>
+            <li>Audio from voice conversations (processed via OpenAI's Realtime API)</li>
+          </ul>
+          <p class="mt-2">Your conversation history is stored in your browser's <strong class="text-[#F4F4F5]">localStorage</strong> (up to 100 messages) so it persists between visits. This data stays on your device and is not sent to our servers for storage. You can clear it at any time using the "Reset assistant" button.</p>
+          <p class="mt-2">We do not store your chat conversations on our servers. Messages are passed through to OpenAI in real time and are not logged.</p>
+          <p class="mt-2">See <a href="https://openai.com/policies/privacy-policy" target="_blank" rel="noopener noreferrer" class="text-[#A78BFA] underline underline-offset-2">OpenAI's privacy policy</a>.</p>
+
+          <h3 class="text-lg font-medium text-[#F4F4F5] mt-4 mb-2">Google Fonts</h3>
+          <p>We load fonts (Inter and Plus Jakarta Sans) from Google Fonts. This means your browser makes requests to Google's servers, which may log your IP address. See <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" class="text-[#A78BFA] underline underline-offset-2">Google's privacy policy</a>.</p>
+
+          <h3 class="text-lg font-medium text-[#F4F4F5] mt-4 mb-2">Booking (Calendly)</h3>
+          <p>When you click a booking link, you are taken to <strong class="text-[#F4F4F5]">Calendly</strong>. We do not share any data with Calendly until you choose to book. Any information you provide on Calendly is governed by <a href="https://calendly.com/privacy" target="_blank" rel="noopener noreferrer" class="text-[#A78BFA] underline underline-offset-2">Calendly's privacy policy</a>.</p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-semibold text-white mb-3">Lawful basis for processing</h2>
+          <ul class="list-disc list-inside space-y-1">
+            <li><strong class="text-[#F4F4F5]">Consent</strong> — Analytics tracking (PostHog) only runs after you accept cookies.</li>
+            <li><strong class="text-[#F4F4F5]">Legitimate interest</strong> — Processing chat messages through OpenAI to provide the AI assistant service you've chosen to use.</li>
+            <li><strong class="text-[#F4F4F5]">Legitimate interest</strong> — Loading fonts for site functionality.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-semibold text-white mb-3">Data retention</h2>
+          <ul class="list-disc list-inside space-y-1">
+            <li><strong class="text-[#F4F4F5]">Analytics</strong> — Retained by PostHog per their data retention policies.</li>
+            <li><strong class="text-[#F4F4F5]">Chat history</strong> — Stored in your browser until you clear it. Not retained on our servers.</li>
+            <li><strong class="text-[#F4F4F5]">Voice data</strong> — Processed in real time by OpenAI. Not stored by us.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-semibold text-white mb-3">International transfers</h2>
+          <p>Data processed by PostHog and OpenAI may be transferred to and stored in the United States. Both services maintain appropriate safeguards for international data transfers.</p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-semibold text-white mb-3">Your rights (GDPR)</h2>
+          <p>Under UK GDPR, you have the right to:</p>
+          <ul class="mt-2 list-disc list-inside space-y-1">
+            <li>Access the personal data we hold about you</li>
+            <li>Rectify inaccurate personal data</li>
+            <li>Erase your personal data</li>
+            <li>Restrict or object to processing</li>
+            <li>Data portability</li>
+            <li>Withdraw consent at any time (for analytics, click "Manage cookies" in the site footer)</li>
+          </ul>
+          <p class="mt-2">To exercise any of these rights, contact <a href="mailto:tim@agilist.co.uk" class="text-[#A78BFA] underline underline-offset-2">tim@agilist.co.uk</a>.</p>
+          <p class="mt-2">You also have the right to lodge a complaint with the <a href="https://ico.org.uk/" target="_blank" rel="noopener noreferrer" class="text-[#A78BFA] underline underline-offset-2">Information Commissioner's Office (ICO)</a>.</p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-semibold text-white mb-3">Changes to this policy</h2>
+          <p>We may update this policy from time to time. The "last updated" date at the top will reflect any changes.</p>
+        </section>
+
+      </div>
+    </main>
+
+    <footer class="border-t border-[#2A2A35] py-10">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-[#A1A1AA]">
+        <p>&copy; 2026 Tim Robinson. All rights reserved.</p>
+      </div>
+    </footer>
+  </div>
+</BaseLayout>

@@ -117,22 +117,13 @@ function App({ latestPosts = [] }) {
 
   const featuredProjects = [
     {
-      title: 'EvaCares',
-      year: '2023',
-      problem: 'Isolation and fragmented care signals in elderly support.',
-      proof: 'Phone-first AI companion delivering wellbeing insights without new devices.',
-      stack: ['Voice AI', 'RAG', 'Telephony', 'React'],
-      link: 'https://www.evacares.co.uk',
-      signal: 'Voice AI would become critical infrastructure for care — not through apps, but by meeting the elderly where they already are: on the phone.'
-    },
-    {
       title: 'Project Bias',
       year: '2024',
       problem: 'Investment committees miss hidden cognitive bias in high-stakes decisions.',
       proof: 'Bias fingerprinting engine that surfaces blind spots before capital is allocated.',
       stack: ['Next.js', 'OpenAI', 'Chart.js', 'Auth0'],
       link: 'https://www.mybias.co.uk',
-      signal: 'High-stakes decisions needed real-time cognitive bias detection. Built before decision intelligence became a category.'
+      signal: 'High-stakes decisions needed real-time cognitive bias detection — not as a training exercise, but embedded in the live decision flow.'
     },
     {
       title: 'GEO (Generative Engine Optimisation)',
@@ -140,16 +131,16 @@ function App({ latestPosts = [] }) {
       problem: 'Traditional SEO breaks when AI answers replace search results.',
       proof: 'Frameworks and tooling that optimise for AI retrieval, not page rank.',
       stack: ['LLMs', 'Search', 'Content systems'],
-      signal: 'Called in 2023: AI would replace traditional search. Two years before "GEO" became an industry term.'
+      signal: 'Called in 2023: AI would replace traditional search. Built a working tool that scrapes, analyses, and provides detailed guidance on content refactoring with competitor analysis — two years before "GEO" became an industry term.'
     },
     {
       title: 'Delphi Decision Co-Pilot',
       year: '2024',
-      problem: 'Strategy teams need faster synthesis of competing signals.',
-      proof: 'Scenario modelling with AI summaries that move decisions from debate to action.',
+      problem: 'Strategy teams drown in competing signals and default to the loudest voice in the room.',
+      proof: 'Multi-round AI Delphi engine that produces cited consensus positions, convergence metrics, four epistemic stress tests, and a full post-consensus pipeline — counterfactual risk, oppositional case, assumption exposure, decision forks, regime splits, and a 12-month reality check. Outputs a Decision Canvas with reversibility assessment and monitoring plan. Machine-readable JSON, human-readable Markdown, and downloadable PDF.',
       stack: ['TypeScript', 'LangGraph', 'PostgreSQL'],
       link: 'https://github.com/AgilistTim/Delphi',
-      signal: 'Strategic planning needed AI that could model scenarios and synthesize competing signals — not just summarize documents.'
+      signal: 'Strategic decisions needed AI that could stress-test reasoning, decompose uncertainty, and score evidence quality — not just summarise documents.'
     },
     {
       title: 'PodGuide',
@@ -159,6 +150,15 @@ function App({ latestPosts = [] }) {
       stack: ['GPT-4.1', 'ElevenLabs', 'Next.js'],
       link: 'https://podguide.agilist.co.uk/',
       signal: 'Podcast production would shift from post-production editing to AI-assisted live interview. Built the full lifecycle before the market saw the gap.'
+    },
+    {
+      title: 'EvaCares',
+      year: '2023',
+      problem: 'Isolation and fragmented care signals in elderly support.',
+      proof: 'Phone-first AI companion delivering wellbeing insights without new devices.',
+      stack: ['Voice AI', 'RAG', 'Telephony', 'React'],
+      link: 'https://www.evacares.co.uk',
+      signal: 'Voice AI would become critical infrastructure for care — not through apps, but by meeting the elderly where they already are: on the phone.'
     },
     {
       title: 'OBD-AI',
@@ -174,13 +174,53 @@ function App({ latestPosts = [] }) {
   const engagementModels = [
     {
       title: 'Partner Track',
+      subtitle: 'For operators and investors',
       description:
-        'I generate the thesis. I build the POC. You handle commercialisation. We split the upside. This is how EvaCares was built, and how I want to build the next five.'
+        'I generate the thesis. I build the POC. You handle commercialisation. We split the upside.',
+      details: [
+        'Foresight-led thesis generation',
+        'Working prototype in weeks, not quarters',
+        'Shared equity or revenue-share structure',
+        'Full-stack AI build: models, UX, infrastructure'
+      ],
+      whoItsFor: 'Operators and investors who want a technical co-founder for their next AI venture.',
+      cta: 'Explore a partnership'
     },
     {
       title: 'Engage Track',
+      subtitle: 'For enterprise and regulated-sector leaders',
       description:
-        "You have an AI challenge. I've probably already solved a version of it. Fixed-scope engagements, fast validation, no long retainers."
+        "Fixed-scope engagements that move you from uncertainty to a working pilot. No long retainers — just outcomes.",
+      details: [
+        '4–12 week scoped engagements',
+        'Healthcare, financial services, public sector, legal',
+        'Strategy through to working prototype',
+        'Governance-by-design for regulated environments'
+      ],
+      whoItsFor: 'Senior leaders in regulated sectors who need AI clarity without a six-month consulting runway.',
+      cta: 'Scope an engagement'
+    }
+  ]
+
+  const caseStudies = [
+    {
+      sector: 'Healthcare',
+      label: 'EHCP & ICP Plan Compliance',
+      challenge: 'Writing and assessing ICP and EHCP plans is time-consuming, error-prone, and carries real regulatory risk. Sector experts knew the problem but had no scalable solution.',
+      outcome: 'Built plan-checking tools that let users upload a written plan and get structured feedback on regulatory alignment and user-centricity — reducing risk, cutting assessment time, and improving auditability.',
+      context: 'Built through EvaCares, validated with healthcare professionals who understood both the clinical and compliance dimensions.'
+    },
+    {
+      sector: 'Enterprise',
+      label: 'AI-Native Product Operations',
+      challenge: 'Product teams were operating with fragmented processes, inconsistent decision-making, and no AI governance framework.',
+      outcome: 'Redesigned internal product operations to an AI-native structure — governance, discovery, decision-making, and delivery. Embedded a Microsoft Teams agent with a prompt catalogue that gave teams real-time guidance and reinforced the agreed governance in the flow of work.'
+    },
+    {
+      sector: 'Public Sector & SME',
+      label: 'AI Capability Building',
+      challenge: 'Teams knew AI mattered but lacked the knowledge and frameworks to adopt it safely.',
+      outcome: 'Delivered targeted AI training that built practical capability and embedded safe, governed adoption — not just awareness.'
     }
   ]
 
@@ -219,12 +259,12 @@ function App({ latestPosts = [] }) {
     {
       question: 'How does AI transformation work for regulated sectors?',
       answer:
-        'It starts with risk-aware use cases, fast validation, and governance-by-design—then scales through secure data pipelines and clear accountability.'
+        'It starts with risk-aware use cases, fast validation, and governance-by-design — then scales through secure data pipelines and clear accountability. Tim works across healthcare, financial services, public sector, and legal, building AI that meets compliance requirements from the first prototype.'
     },
     {
-      question: 'What is EvaCares?',
+      question: 'What regulated sectors does Tim work in?',
       answer:
-        'EvaCares is a phone-first AI companion for elderly care that captures wellbeing signals and keeps carers informed without new devices.'
+        'Tim works across healthcare, financial services, public sector, and legal — sectors where governance, compliance, and data sensitivity are non-negotiable. Every engagement is designed around regulated-environment constraints from day one.'
     }
   ]
 
@@ -355,14 +395,15 @@ function App({ latestPosts = [] }) {
               Tim Robinson
               <span className="ml-2 text-xs uppercase tracking-[0.3em] text-[#A78BFA]">AI Foresight</span>
             </a>
-            <div className="hidden md:flex items-center gap-6 text-sm text-[#A1A1AA]">
+            <div className="hidden lg:flex items-center gap-6 text-sm text-[#A1A1AA]">
               <a href="#track-record" className="hover:text-white transition-colors">Track record</a>
               <a href="#projects" className="hover:text-white transition-colors">Projects</a>
               <a href="#assistant" className="hover:text-white transition-colors">AI Assistant</a>
               <a href="#engagement" className="hover:text-white transition-colors">Engage</a>
+              <a href="#case-studies" className="hover:text-white transition-colors">Case studies</a>
               <a href="#insights" className="hover:text-white transition-colors">Insights</a>
             </div>
-            <div className="hidden md:flex items-center gap-3">
+            <div className="hidden lg:flex items-center gap-3">
               <Button
                 href={bookingLink}
                 target="_blank"
@@ -376,18 +417,19 @@ function App({ latestPosts = [] }) {
             <button
               type="button"
               onClick={() => setMobileMenuOpen((prev) => !prev)}
-              className="md:hidden text-[#F4F4F5]"
+              className="lg:hidden text-[#F4F4F5]"
               aria-label="Toggle navigation"
             >
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
           {mobileMenuOpen && (
-            <div className="md:hidden pb-4 space-y-2 text-sm text-[#A1A1AA]">
+            <div className="lg:hidden pb-4 space-y-2 text-sm text-[#A1A1AA]">
               <a href="#track-record" className="block hover:text-white">Track record</a>
               <a href="#projects" className="block hover:text-white">Projects</a>
               <a href="#assistant" className="block hover:text-white">AI Assistant</a>
               <a href="#engagement" className="block hover:text-white">Engage</a>
+              <a href="#case-studies" className="block hover:text-white">Case studies</a>
               <a href="#insights" className="block hover:text-white">Insights</a>
               <a href="#contact" className="block hover:text-white">Contact</a>
             </div>
@@ -404,8 +446,9 @@ function App({ latestPosts = [] }) {
               AI foresight. I see what&apos;s coming.
             </h1>
             <p className="mt-4 text-lg sm:text-xl text-[#A1A1AA]">
-              I&apos;ve been building AI products since before most organisations knew they needed them. If you&apos;re
-              looking for someone who&apos;s already solved the problem you&apos;re about to face — let&apos;s talk.
+              I&apos;ve been advising on AI since before most organisations knew they needed it — and I build
+              working examples to prove it. If you&apos;re looking for someone who&apos;s already solved the problem
+              you&apos;re about to face — let&apos;s talk.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
               <Button
@@ -426,20 +469,59 @@ function App({ latestPosts = [] }) {
             <div className="mt-8 flex flex-wrap gap-3 text-sm text-[#A1A1AA]">
               <div className="flex items-center gap-2">
                 <BrainCircuit className="h-4 w-4 text-[#A78BFA]" />
-                AI transformation
-              </div>
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="h-4 w-4 text-[#A78BFA]" />
-                Regulated sectors
+                Advisory
               </div>
               <div className="flex items-center gap-2">
                 <Globe className="h-4 w-4 text-[#A78BFA]" />
-                Venture studio model
+                Prototyping
+              </div>
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="h-4 w-4 text-[#A78BFA]" />
+                AI Governance
               </div>
             </div>
           </div>
         </div>
       </header>
+
+      <section className="py-16 sm:py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-8 lg:grid-cols-[1fr_auto] items-center" data-aos="fade-up">
+            <div className="flex justify-center lg:hidden">
+              <img
+                src="/tim-robinson.jpg"
+                alt="Tim Robinson"
+                className="w-40 h-40 sm:w-48 sm:h-48 rounded-2xl object-cover border border-[#2A2A35]"
+              />
+            </div>
+            <div className="border-l-4 border-[#7C3AED] pl-6 sm:pl-8">
+              <p className="text-xs uppercase tracking-[0.35em] text-[#A78BFA] mb-4">Why I do this</p>
+              <blockquote className="text-lg sm:text-xl text-[#F4F4F5] leading-relaxed space-y-4">
+                <p>
+                  Most AI consultants sell strategy decks. I test mine.
+                </p>
+                <p>
+                  I&apos;ve built EHCP compliance tools used by healthcare professionals, redesigned product operations
+                  for an enterprise brand, and delivered AI capability programmes across public sector and SME clients.
+                  The pattern is always the same: strategy is cheap, proof is what moves people.
+                </p>
+                <p>
+                  I work at the intersection of strategic advisory and hands-on validation — because an AI strategy
+                  that hasn&apos;t survived contact with a real system, a real regulator, or a real team isn&apos;t
+                  a strategy yet.
+                </p>
+              </blockquote>
+            </div>
+            <div className="hidden lg:flex justify-end">
+              <img
+                src="/tim-robinson.jpg"
+                alt="Tim Robinson"
+                className="w-48 h-48 rounded-2xl object-cover border border-[#2A2A35]"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section id="track-record" className="py-16 sm:py-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -547,8 +629,8 @@ function App({ latestPosts = [] }) {
               <h2 className="text-3xl sm:text-4xl font-bold mt-4">Ask me anything. Literally.</h2>
               <p className="text-[#A1A1AA] mt-4">
                 This is an AI trained on my consulting playbook, methodology, and thinking. Ask it about AI adoption,
-                transformation strategy, regulated sectors, or anything else. It speaks in my voice because it was built
-                from my work.
+                transformation strategy, regulated sectors, or anything else. It reflects my thinking because it was
+                trained on my consulting playbook.
               </p>
               <div className="mt-6 flex items-center gap-3 text-sm text-[#A1A1AA]">
                 <MessageCircle className="h-4 w-4 text-[#A78BFA]" />
@@ -594,14 +676,68 @@ function App({ latestPosts = [] }) {
             <p className="text-xs uppercase tracking-[0.35em] text-[#A78BFA]">Engagement Models</p>
             <h2 className="text-3xl sm:text-4xl font-bold mt-4">Two ways to work with me.</h2>
           </div>
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-2 items-stretch">
             {engagementModels.map((model) => (
-              <Card key={model.title} className="bg-[#16161A] border border-[#2A2A35]" data-aos="fade-up">
+              <Card key={model.title} className="bg-[#16161A] border border-[#2A2A35] !flex !flex-col h-full" data-aos="fade-up">
                 <CardHeader>
-                  <CardTitle className="text-2xl text-white">{model.title}</CardTitle>
+                  <p className="text-xs uppercase tracking-[0.3em] text-[#A78BFA]">{model.subtitle}</p>
+                  <CardTitle className="text-2xl text-white mt-2">{model.title}</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-4 flex-grow">
                   <p className="text-[#A1A1AA]">{model.description}</p>
+                  <ul className="space-y-2">
+                    {model.details.map((detail) => (
+                      <li key={detail} className="flex items-start gap-2 text-sm text-[#A1A1AA]">
+                        <ChevronRight className="h-4 w-4 text-[#A78BFA] mt-0.5 shrink-0" />
+                        {detail}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="text-sm italic text-[#A1A1AA]">{model.whoItsFor}</p>
+                </CardContent>
+                <div className="p-6 pt-0">
+                  <Button
+                    href={bookingLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => analytics.bookingLinkClicked(`engagement-${model.title}`)}
+                    className="bg-gradient-to-r from-[#7C3AED] to-[#9F67FA] text-white w-full"
+                  >
+                    {model.cta}
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </Button>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="case-studies" className="py-16 sm:py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-10" data-aos="fade-up">
+            <p className="text-xs uppercase tracking-[0.35em] text-[#A78BFA]">Case Studies</p>
+            <h2 className="text-3xl sm:text-4xl font-bold mt-4">Real problems. Real outcomes.</h2>
+          </div>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {caseStudies.map((study) => (
+              <Card key={study.sector} className="bg-[#16161A] border border-[#2A2A35] flex flex-col" data-aos="fade-up">
+                <CardHeader>
+                  <Badge className="bg-[#7C3AED]/20 text-[#A78BFA] border-[#7C3AED]/40 w-fit">{study.sector}</Badge>
+                  <CardTitle className="text-lg text-white mt-2">{study.label}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3 flex-1">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.3em] text-[#A78BFA] mb-1">Challenge</p>
+                    <p className="text-sm text-[#A1A1AA]">{study.challenge}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.3em] text-[#A78BFA] mb-1">What I did</p>
+                    <p className="text-sm text-[#F4F4F5]">{study.outcome}</p>
+                  </div>
+                  {study.context && (
+                    <p className="text-xs italic text-[#A1A1AA]">{study.context}</p>
+                  )}
                 </CardContent>
               </Card>
             ))}
@@ -612,7 +748,7 @@ function App({ latestPosts = [] }) {
       <section id="book" className="py-16 sm:py-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid gap-10 lg:grid-cols-[1fr_1.2fr] items-center">
-            <div data-aos="fade-right">
+            <div className="flex justify-center lg:justify-start" data-aos="fade-right">
               <img
                 src={bookCover}
                 alt="The Generative Organization book cover"
@@ -660,10 +796,10 @@ function App({ latestPosts = [] }) {
               As AI Advisor in Residence at SETsquared Bath, I share insights through events, articles, and conversations.
             </p>
           </div>
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {publicSignals.map((item) => (
-              <Card key={item.title} className="bg-[#16161A] border border-[#2A2A35]" data-aos="fade-up">
-                <CardHeader>
+              <Card key={item.title} className="bg-[#16161A] border border-[#2A2A35] flex flex-col" data-aos="fade-up">
+                <CardHeader className="flex-1">
                   <CardTitle className="text-lg text-white">{item.title}</CardTitle>
                   <CardDescription className="text-[#A1A1AA]">
                     {item.description}
@@ -703,17 +839,17 @@ function App({ latestPosts = [] }) {
               </Button>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-3">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {latestPosts.map((post, index) => {
                 const formattedDate = post.date ? dateFormatter.format(new Date(post.date)) : ''
                 return (
                   <Card
                     key={post.slug}
-                    className="bg-[#16161A] border border-[#2A2A35] hover:border-[#7C3AED]/60 transition-colors"
+                    className="bg-[#16161A] border border-[#2A2A35] hover:border-[#7C3AED]/60 transition-colors flex flex-col"
                     data-aos="fade-up"
                     data-aos-delay={index * 100}
                   >
-                    <CardHeader className="space-y-3">
+                    <CardHeader className="space-y-3 flex-1">
                       <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wide text-[#A1A1AA]">
                         <span>{formattedDate}</span>
                         {post.tags?.length ? (
@@ -823,8 +959,21 @@ function App({ latestPosts = [] }) {
               </Button>
             </div>
           </div>
-          <div className="border-t border-[#2A2A35] mt-8 pt-6 text-center text-[#A1A1AA]">
+          <div className="border-t border-[#2A2A35] mt-8 pt-6 text-center text-[#A1A1AA] space-y-2">
             <p>&copy; 2026 Tim Robinson. All rights reserved.</p>
+            <div className="flex justify-center gap-4 text-xs">
+              <a href="/privacy" className="hover:text-white transition-colors">Privacy policy</a>
+              <button
+                type="button"
+                onClick={() => {
+                  localStorage.removeItem('cookie_consent')
+                  window.location.reload()
+                }}
+                className="hover:text-white transition-colors"
+              >
+                Manage cookies
+              </button>
+            </div>
           </div>
         </div>
       </footer>

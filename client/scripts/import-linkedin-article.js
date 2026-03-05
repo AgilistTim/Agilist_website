@@ -10,7 +10,7 @@
  * It will prompt you for the article details and create a markdown file.
  */
 
-import { writeFile, mkdir } from 'fs/promises';
+import { writeFile } from 'fs/promises';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import readline from 'readline';

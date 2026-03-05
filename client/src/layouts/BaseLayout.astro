@@ -2,6 +2,7 @@
 import '../index.css'
 import '../App.css'
 import ChatBot from '../components/ChatBot.jsx'
+import CookieConsent from '../components/CookieConsent.jsx'
 
 const {
   title,
@@ -57,12 +58,17 @@ const ogImageUrl = ogImage || null
 
     <script is:inline>
       window.POSTHOG_KEY = import.meta.env.PUBLIC_POSTHOG_KEY;
+      if (window.POSTHOG_KEY && localStorage.getItem('cookie_consent') === 'accepted') {
+        var s = document.createElement('script');
+        s.src = '/posthog-init.js';
+        document.head.appendChild(s);
+      }
     </script>
-    <script src="/posthog-init.js" is:inline></script>
 
   </head>
   <body class="bg-[#0D0D0F] text-[#F4F4F5]">
     <slot />
     <ChatBot client:only="react" />
+    <CookieConsent client:only="react" />
   </body>
 </html>
