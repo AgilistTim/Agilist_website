@@ -1,10 +1,10 @@
-const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_PAT;
+const GITHUB_TOKEN = import.meta.env.PUBLIC_GITHUB_PAT || import.meta.env.VITE_GITHUB_PAT;
 const REPO_OWNER = 'AgilistTim';
 const REPO_NAME = 'Agilist_website';
 const BRANCH = 'main';
 
 export const savePostToGithub = async (filename, content, commitMessage) => {
-  const path = `client/public/content/blog/${filename}`;
+  const path = `client/src/content/blog/${filename}`;
   const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`;
 
   try {
