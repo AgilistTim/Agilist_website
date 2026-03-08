@@ -52,6 +52,45 @@ h6 {
   animation: pulse-purple 2s infinite;
 }
 
+/* Calculator range sliders */
+.calc-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  background: #2A2A35;
+  border-radius: 9999px;
+  cursor: pointer;
+}
+
+.calc-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #7C3AED;
+  border: 2px solid #0D0D0F;
+  box-shadow: 0 0 6px rgba(124, 58, 237, 0.5);
+}
+
+.calc-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #7C3AED;
+  border: 2px solid #0D0D0F;
+  box-shadow: 0 0 6px rgba(124, 58, 237, 0.5);
+}
+
+.calc-slider-green::-webkit-slider-thumb {
+  background: #34d399;
+  box-shadow: 0 0 6px rgba(52, 211, 153, 0.5);
+}
+
+.calc-slider-green::-moz-range-thumb {
+  background: #34d399;
+  box-shadow: 0 0 6px rgba(52, 211, 153, 0.5);
+}
+
 /* Blog content typography */
 .blog-content h2 {
   font-size: 1.875rem;

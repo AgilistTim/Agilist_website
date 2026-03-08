@@ -1,0 +1,106 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import LLMCostCalculator from '../../components/LLMCostCalculator.jsx'
+
+const canonical = new URL('/tools/cost-calculator', Astro.site ?? Astro.url.origin).toString()
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'LLM Cost Calculator — Cloud API vs Self-Hosted',
+  url: canonical,
+  description:
+    'Compare the real cost of cloud LLM APIs (OpenAI, Anthropic, Google) versus self-hosted inference. Includes hardware amortisation, electricity, and token caching savings.',
+  applicationCategory: 'BusinessApplication',
+  creator: {
+    '@type': 'Person',
+    name: 'Tim Robinson',
+    url: 'https://agilist.co.uk'
+  }
+}
+---
+<BaseLayout
+  title="LLM Cost Calculator — Cloud API vs Self-Hosted | Tim Robinson"
+  description="Compare the real cost of cloud LLM APIs (OpenAI, Anthropic, Google) versus self-hosted inference. Includes hardware amortisation, electricity, and token caching savings."
+  canonical={canonical}
+  ogType="website"
+  jsonLd={jsonLd}
+>
+  <div class="min-h-screen bg-[#0D0D0F] text-[#F4F4F5]">
+    <nav class="fixed top-0 w-full bg-[#0D0D0F]/95 backdrop-blur-sm z-50 border-b border-[#2A2A35]">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap items-center justify-between gap-4 py-4">
+          <a href="/" class="text-2xl font-bold text-white">Tim Robinson</a>
+          <div class="hidden md:flex space-x-8 text-sm">
+            <a href="/#track-record" class="hover:text-white transition-colors text-[#A1A1AA]">Track record</a>
+            <a href="/#projects" class="hover:text-white transition-colors text-[#A1A1AA]">Projects</a>
+            <a href="/#assistant" class="hover:text-white transition-colors text-[#A1A1AA]">AI assistant</a>
+            <a href="/blog" class="hover:text-white transition-colors text-[#A1A1AA]">Blog</a>
+            <a href="/tools/cost-calculator" class="text-[#A78BFA]">Cost calculator</a>
+            <a href="/#contact" class="hover:text-white transition-colors text-[#A1A1AA]">Contact</a>
+          </div>
+          <a
+            href="https://calendly.com/agilist/quick-chat"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center rounded-md bg-gradient-to-r from-[#7C3AED] to-[#9F67FA] px-4 py-2 text-sm font-semibold text-white"
+          >
+            Start a conversation
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="pt-28 pb-12 sm:pt-32 sm:pb-16">
+      <section class="pb-8 sm:pb-12">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p class="text-sm uppercase tracking-[0.35em] text-[#A78BFA]">Interactive Tool</p>
+          <h1 class="text-4xl sm:text-5xl font-bold mt-4">LLM Cost Calculator</h1>
+          <p class="text-base sm:text-lg text-[#A1A1AA] mt-4 max-w-3xl">
+            Should you use cloud APIs or run models locally? Compare real costs side by side —
+            including hardware amortisation, electricity, and token caching savings.
+          </p>
+        </div>
+      </section>
+
+      <section class="pb-16 sm:pb-24">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <LLMCostCalculator client:only="react" />
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-[#2A2A35] py-12">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-3 gap-8">
+          <div>
+            <div class="text-2xl font-bold text-white mb-4">Tim Robinson</div>
+            <p class="text-[#A1A1AA]">AI Foresight & Venture Studio</p>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-4">Quick Links</h3>
+            <div class="space-y-2">
+              <a href="/#track-record" class="block text-[#A1A1AA] hover:text-white transition-colors">Track record</a>
+              <a href="/#projects" class="block text-[#A1A1AA] hover:text-white transition-colors">Projects</a>
+              <a href="/blog" class="block text-[#A1A1AA] hover:text-white transition-colors">Blog</a>
+            </div>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-4">Get in Touch</h3>
+            <a
+              href="https://calendly.com/agilist/quick-chat"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center rounded-md bg-gradient-to-r from-[#7C3AED] to-[#9F67FA] px-4 py-2 text-sm font-semibold text-white w-full"
+            >
+              Start a Conversation
+            </a>
+          </div>
+        </div>
+        <div class="border-t border-[#2A2A35] mt-8 pt-8 text-center text-[#A1A1AA]">
+          <p>&copy; 2026 Tim Robinson. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+</BaseLayout>

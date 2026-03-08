@@ -1,0 +1,96 @@
+{
+  "lastUpdated": "2026-03-08",
+  "providers": {
+    "openai": {
+      "name": "OpenAI",
+      "models": [
+        { "id": "gpt-4.1", "name": "GPT-4.1", "input": 2.0, "output": 8.0, "context": "1M", "cacheDiscount": 0.75 },
+        { "id": "gpt-4.1-mini", "name": "GPT-4.1 Mini", "input": 0.4, "output": 1.6, "context": "1M", "cacheDiscount": 0.75 },
+        { "id": "gpt-4.1-nano", "name": "GPT-4.1 Nano", "input": 0.1, "output": 0.4, "context": "1M", "cacheDiscount": 0.75 },
+        { "id": "gpt-4o", "name": "GPT-4o", "input": 2.5, "output": 10.0, "context": "128K", "cacheDiscount": 0.5 },
+        { "id": "gpt-4o-mini", "name": "GPT-4o Mini", "input": 0.15, "output": 0.6, "context": "128K", "cacheDiscount": 0.5 },
+        { "id": "o3", "name": "o3 (Reasoning)", "input": 2.0, "output": 8.0, "context": "200K", "cacheDiscount": 0.75 },
+        { "id": "o4-mini", "name": "o4-mini (Reasoning)", "input": 1.1, "output": 4.4, "context": "200K", "cacheDiscount": 0.75 }
+      ]
+    },
+    "anthropic": {
+      "name": "Anthropic",
+      "models": [
+        { "id": "claude-opus-4", "name": "Claude Opus 4", "input": 15.0, "output": 75.0, "context": "200K", "cacheDiscount": 0.9 },
+        { "id": "claude-sonnet-4", "name": "Claude Sonnet 4", "input": 3.0, "output": 15.0, "context": "200K", "cacheDiscount": 0.9 },
+        { "id": "claude-haiku-3.5", "name": "Claude Haiku 3.5", "input": 0.8, "output": 4.0, "context": "200K", "cacheDiscount": 0.9 }
+      ]
+    },
+    "google": {
+      "name": "Google",
+      "models": [
+        { "id": "gemini-2.5-pro", "name": "Gemini 2.5 Pro", "input": 1.25, "output": 10.0, "context": "1M", "cacheDiscount": 0.9 },
+        { "id": "gemini-2.5-flash", "name": "Gemini 2.5 Flash", "input": 0.30, "output": 2.5, "context": "1M", "cacheDiscount": 0.9 },
+        { "id": "gemini-2.0-flash", "name": "Gemini 2.0 Flash", "input": 0.1, "output": 0.4, "context": "1M", "cacheDiscount": 0.75 }
+      ]
+    }
+  },
+  "hardware": [
+    {
+      "id": "rtx-4090",
+      "name": "NVIDIA RTX 4090",
+      "cost": 1600,
+      "watts": 450,
+      "vram": "24 GB",
+      "maxParams": "13B",
+      "tokensPerSec": 80,
+      "note": "Consumer GPU — good for 7B–13B models"
+    },
+    {
+      "id": "rtx-5090",
+      "name": "NVIDIA RTX 5090",
+      "cost": 2000,
+      "watts": 575,
+      "vram": "32 GB",
+      "maxParams": "30B",
+      "tokensPerSec": 120,
+      "note": "Latest consumer GPU — runs 13B–30B models"
+    },
+    {
+      "id": "mac-studio-m4",
+      "name": "Mac Studio M4 Ultra (192 GB)",
+      "cost": 6000,
+      "watts": 200,
+      "vram": "192 GB unified",
+      "maxParams": "70B+",
+      "tokensPerSec": 60,
+      "note": "Unified memory — can load large models, slower inference"
+    },
+    {
+      "id": "a100-40",
+      "name": "NVIDIA A100 40 GB",
+      "cost": 10000,
+      "watts": 400,
+      "vram": "40 GB",
+      "maxParams": "30B",
+      "tokensPerSec": 150,
+      "note": "Data-center grade — fast inference up to 30B"
+    },
+    {
+      "id": "h100",
+      "name": "NVIDIA H100 80 GB",
+      "cost": 30000,
+      "watts": 700,
+      "vram": "80 GB",
+      "maxParams": "70B",
+      "tokensPerSec": 300,
+      "note": "Top-tier — runs 70B models at high throughput"
+    },
+    {
+      "id": "cloud-gpu",
+      "name": "Cloud GPU Rental (A100)",
+      "cost": 0,
+      "watts": 0,
+      "vram": "80 GB",
+      "maxParams": "70B",
+      "tokensPerSec": 150,
+      "hourlyRate": 2.0,
+      "note": "Pay-per-hour — no upfront cost, ~$2/hr"
+    }
+  ]
+}
