@@ -1,32 +1,267 @@
 {
-  "lastUpdated": "2026-03-08",
+  "lastUpdated": "2025-04-16",
   "providers": {
     "openai": {
       "name": "OpenAI",
       "models": [
-        { "id": "gpt-4.1", "name": "GPT-4.1", "input": 2.0, "output": 8.0, "context": "1M", "cacheDiscount": 0.75 },
-        { "id": "gpt-4.1-mini", "name": "GPT-4.1 Mini", "input": 0.4, "output": 1.6, "context": "1M", "cacheDiscount": 0.75 },
-        { "id": "gpt-4.1-nano", "name": "GPT-4.1 Nano", "input": 0.1, "output": 0.4, "context": "1M", "cacheDiscount": 0.75 },
-        { "id": "gpt-4o", "name": "GPT-4o", "input": 2.5, "output": 10.0, "context": "128K", "cacheDiscount": 0.5 },
-        { "id": "gpt-4o-mini", "name": "GPT-4o Mini", "input": 0.15, "output": 0.6, "context": "128K", "cacheDiscount": 0.5 },
-        { "id": "o3", "name": "o3 (Reasoning)", "input": 2.0, "output": 8.0, "context": "200K", "cacheDiscount": 0.75 },
-        { "id": "o4-mini", "name": "o4-mini (Reasoning)", "input": 1.1, "output": 4.4, "context": "200K", "cacheDiscount": 0.75 }
+        {
+          "id": "gpt-5.4",
+          "name": "GPT-5.4",
+          "input": 2.5,
+          "output": 15,
+          "context": "1.05M",
+          "cacheDiscount": 0.9
+        },
+        {
+          "id": "gpt-5.4-pro",
+          "name": "GPT-5.4 Pro",
+          "input": 30,
+          "output": 180,
+          "context": "1.05M",
+          "cacheDiscount": 0.9
+        },
+        {
+          "id": "gpt-5.2",
+          "name": "GPT-5.2",
+          "input": 1.75,
+          "output": 14,
+          "context": "128K",
+          "cacheDiscount": 0.9
+        },
+        {
+          "id": "gpt-5.1",
+          "name": "GPT-5.1",
+          "input": 1.25,
+          "output": 10,
+          "context": "128K",
+          "cacheDiscount": 0.9
+        },
+        {
+          "id": "gpt-5",
+          "name": "GPT-5",
+          "input": 1.25,
+          "output": 10,
+          "context": "128K",
+          "cacheDiscount": 0.9
+        },
+        {
+          "id": "gpt-5-mini",
+          "name": "GPT-5 Mini",
+          "input": 0.25,
+          "output": 2,
+          "context": "128K",
+          "cacheDiscount": 0.9
+        },
+        {
+          "id": "gpt-5-nano",
+          "name": "GPT-5 Nano",
+          "input": 0.05,
+          "output": 0.4,
+          "context": "128K",
+          "cacheDiscount": 0.9
+        },
+        {
+          "id": "gpt-4.1",
+          "name": "GPT-4.1",
+          "input": 2,
+          "output": 8,
+          "context": "128K",
+          "cacheDiscount": 0.75
+        },
+        {
+          "id": "gpt-4.1-mini",
+          "name": "GPT-4.1 Mini",
+          "input": 0.4,
+          "output": 1.6,
+          "context": "128K",
+          "cacheDiscount": 0.75
+        },
+        {
+          "id": "gpt-4.1-nano",
+          "name": "GPT-4.1 Nano",
+          "input": 0.1,
+          "output": 0.4,
+          "context": "128K",
+          "cacheDiscount": 0.75
+        },
+        {
+          "id": "gpt-4o",
+          "name": "GPT-4o",
+          "input": 2.5,
+          "output": 10,
+          "context": "128K",
+          "cacheDiscount": 0.5
+        },
+        {
+          "id": "gpt-4o-mini",
+          "name": "GPT-4o Mini",
+          "input": 0.15,
+          "output": 0.6,
+          "context": "128K",
+          "cacheDiscount": 0.5
+        },
+        {
+          "id": "o3-pro",
+          "name": "o3-pro (Reasoning)",
+          "input": 20,
+          "output": 80,
+          "context": "200K",
+          "cacheDiscount": 0.75
+        },
+        {
+          "id": "o3",
+          "name": "o3 (Reasoning)",
+          "input": 2,
+          "output": 8,
+          "context": "200K",
+          "cacheDiscount": 0.75
+        },
+        {
+          "id": "o4-mini",
+          "name": "o4-mini (Reasoning)",
+          "input": 1.1,
+          "output": 4.4,
+          "context": "200K",
+          "cacheDiscount": 0.75
+        }
       ]
     },
     "anthropic": {
       "name": "Anthropic",
       "models": [
-        { "id": "claude-opus-4", "name": "Claude Opus 4", "input": 15.0, "output": 75.0, "context": "200K", "cacheDiscount": 0.9 },
-        { "id": "claude-sonnet-4", "name": "Claude Sonnet 4", "input": 3.0, "output": 15.0, "context": "200K", "cacheDiscount": 0.9 },
-        { "id": "claude-haiku-3.5", "name": "Claude Haiku 3.5", "input": 0.8, "output": 4.0, "context": "200K", "cacheDiscount": 0.9 }
+        {
+          "id": "claude-opus-4.6",
+          "name": "Claude Opus 4.6",
+          "input": 5,
+          "output": 25,
+          "context": "200K",
+          "cacheDiscount": 0.9
+        },
+        {
+          "id": "claude-opus-4.5",
+          "name": "Claude Opus 4.5",
+          "input": 5,
+          "output": 25,
+          "context": "200K",
+          "cacheDiscount": 0.9
+        },
+        {
+          "id": "claude-opus-4.1",
+          "name": "Claude Opus 4.1",
+          "input": 15,
+          "output": 75,
+          "context": "200K",
+          "cacheDiscount": 0.9
+        },
+        {
+          "id": "claude-opus-4",
+          "name": "Claude Opus 4",
+          "input": 15,
+          "output": 75,
+          "context": "200K",
+          "cacheDiscount": 0.9
+        },
+        {
+          "id": "claude-sonnet-4.6",
+          "name": "Claude Sonnet 4.6",
+          "input": 3,
+          "output": 15,
+          "context": "200K",
+          "cacheDiscount": 0.9
+        },
+        {
+          "id": "claude-sonnet-4.5",
+          "name": "Claude Sonnet 4.5",
+          "input": 3,
+          "output": 15,
+          "context": "200K",
+          "cacheDiscount": 0.9
+        },
+        {
+          "id": "claude-sonnet-4",
+          "name": "Claude Sonnet 4",
+          "input": 3,
+          "output": 15,
+          "context": "200K",
+          "cacheDiscount": 0.9
+        },
+        {
+          "id": "claude-haiku-4.5",
+          "name": "Claude Haiku 4.5",
+          "input": 1,
+          "output": 5,
+          "context": "200K",
+          "cacheDiscount": 0.9
+        },
+        {
+          "id": "claude-haiku-3.5",
+          "name": "Claude Haiku 3.5",
+          "input": 0.8,
+          "output": 4,
+          "context": "200K",
+          "cacheDiscount": 0.9
+        }
       ]
     },
     "google": {
       "name": "Google",
       "models": [
-        { "id": "gemini-2.5-pro", "name": "Gemini 2.5 Pro", "input": 1.25, "output": 10.0, "context": "1M", "cacheDiscount": 0.9 },
-        { "id": "gemini-2.5-flash", "name": "Gemini 2.5 Flash", "input": 0.30, "output": 2.5, "context": "1M", "cacheDiscount": 0.9 },
-        { "id": "gemini-2.0-flash", "name": "Gemini 2.0 Flash", "input": 0.1, "output": 0.4, "context": "1M", "cacheDiscount": 0.75 }
+        {
+          "id": "gemini-3.1-pro",
+          "name": "Gemini 3.1 Pro",
+          "input": 2,
+          "output": 12,
+          "context": "1M",
+          "cacheDiscount": 0.9
+        },
+        {
+          "id": "gemini-3.1-flash-lite",
+          "name": "Gemini 3.1 Flash-Lite",
+          "input": 0.25,
+          "output": 1.5,
+          "context": "1M",
+          "cacheDiscount": 0.9
+        },
+        {
+          "id": "gemini-2.5-pro",
+          "name": "Gemini 2.5 Pro",
+          "input": 1.25,
+          "output": 10,
+          "context": "1M",
+          "cacheDiscount": 0.9
+        },
+        {
+          "id": "gemini-2.5-flash",
+          "name": "Gemini 2.5 Flash",
+          "input": 0.3,
+          "output": 2.5,
+          "context": "1M",
+          "cacheDiscount": 0.9
+        },
+        {
+          "id": "gemini-2.5-flash-lite",
+          "name": "Gemini 2.5 Flash-Lite",
+          "input": 0.1,
+          "output": 0.4,
+          "context": "1M",
+          "cacheDiscount": 0.9
+        },
+        {
+          "id": "gemini-2.0-flash",
+          "name": "Gemini 2.0 Flash",
+          "input": 0.1,
+          "output": 0.4,
+          "context": "1M",
+          "cacheDiscount": 0.75
+        },
+        {
+          "id": "gemini-2.0-flash-lite",
+          "name": "Gemini 2.0 Flash-Lite",
+          "input": 0.075,
+          "output": 0.3,
+          "context": "1M",
+          "cacheDiscount": 0.75
+        }
       ]
     }
   },
@@ -89,7 +324,7 @@
       "vram": "80 GB",
       "maxParams": "70B",
       "tokensPerSec": 150,
-      "hourlyRate": 2.0,
+      "hourlyRate": 2,
       "note": "Pay-per-hour — no upfront cost, ~$2/hr"
     }
   ]
