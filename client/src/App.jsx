@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import AdminDashboard from './components/AdminDashboard'
 import Blog from './components/Blog'
 import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
@@ -377,7 +376,9 @@ function App({ latestPosts = [] }) {
   const normalizedPath = currentPath.endsWith('/') && currentPath.length > 1 ? currentPath.slice(0, -1) : currentPath
 
   if (normalizedPath === '/admin') {
-    return <AdminDashboard />
+    // Admin page is handled by admin.astro with proper server-side auth
+    window.location.href = '/admin'
+    return null
   }
 
   if (normalizedPath === '/blog' || normalizedPath.startsWith('/blog/')) {

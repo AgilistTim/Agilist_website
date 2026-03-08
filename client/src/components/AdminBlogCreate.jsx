@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Button } from './ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
-import { savePostToGithub } from '../utils/githubCms'
+import { useAdminAuth } from './AdminAuth.jsx'
 import { PenLine, CheckCircle, AlertCircle, Loader2 } from 'lucide-react'
 
 function slugify(text) {
@@ -14,6 +14,7 @@ function slugify(text) {
 }
 
 export function AdminBlogCreate({ apiBaseUrl }) {
+  const { authFetch } = useAdminAuth()
   const [title, setTitle] = useState('')
   const [slug, setSlug] = useState('')
   const [slugEdited, setSlugEdited] = useState(false)
@@ -79,16 +80,31 @@ export function AdminBlogCreate({ apiBaseUrl }) {
     const fileContent = buildFrontmatter() + '\n' + content
 
     try {
-      await savePostToGithub(filename, fileContent, `Add blog post: ${title}`)
+      // 1. Publish to GitHub via server proxy
+      const publishRes = await authFetch(`${apiBaseUrl}/api/admin/publish-blog`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          filename,
+          content: fileContent,
+          commitMessage: `Add blog post: ${title}`,
+        }),
+      })
 
+      if (!publishRes.ok) {
+        const err = await publishRes.json().catch(() => ({}))
+        throw new Error(err.error || 'Failed to publish to GitHub')
+      }
+
+      // 2. Optionally upload to vector store
       if (uploadToVectorStore && apiBaseUrl) {
         setMessage('Committed to GitHub. Uploading to vector store...')
-        const response = await fetch(`${apiBaseUrl}/api/upload-blog-to-vectorstore`, {
+        const vectorRes = await authFetch(`${apiBaseUrl}/api/admin/upload-to-vectorstore`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ content: fileContent, fileName: filename }),
         })
-        if (!response.ok) {
+        if (!vectorRes.ok) {
           throw new Error('GitHub commit succeeded but vector store upload failed')
         }
       }

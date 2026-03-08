@@ -42,3 +42,22 @@ services:
         value: alloy,breeze,coral,marin,sage,verse
       - key: OPENAI_AGENT_INSTRUCTIONS
         sync: false
+      # Admin authentication (set values in Render dashboard)
+      - key: ADMIN_PASSWORD_HASH
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRY
+        value: 2h
+      # GitHub integration (moved from client — server-side only)
+      - key: GITHUB_PAT
+        sync: false
+      - key: GITHUB_REPO_OWNER
+        value: AgilistTim
+      - key: GITHUB_REPO_NAME
+        value: Agilist_website
+      - key: GITHUB_BRANCH
+        value: main
+      # CORS restriction
+      - key: ALLOWED_ORIGINS
+        value: https://www.agilist.co.uk,https://agilist.co.uk

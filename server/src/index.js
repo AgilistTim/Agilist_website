@@ -2,6 +2,9 @@ import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import OpenAI from 'openai'
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
+import rateLimit from 'express-rate-limit'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -30,6 +33,7 @@ function resolveAgentInstructionsFromFile(filePath) {
   }
 }
 
+// ── OpenAI / Agent config ──────────────────────────────────────────────
 const PORT = process.env.PORT || 4000
 const VECTOR_STORE_ID = process.env.OPENAI_VECTOR_STORE_ID
 const REALTIME_MODEL =
@@ -46,6 +50,20 @@ const AGENT_INSTRUCTIONS =
   process.env.OPENAI_AGENT_INSTRUCTIONS ||
   `You are Tim Robinson's AI consulting assistant. Blend executive-level clarity with practical, ROI-focused recommendations for SMB leaders evaluating AI adoption. Always ground advice in Tim's experience, and reference the consulting playbook when relevant.`
 
+// ── Admin / Auth config ────────────────────────────────────────────────
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH
+const JWT_SECRET = process.env.JWT_SECRET
+const JWT_EXPIRY = process.env.JWT_EXPIRY || '2h'
+const GITHUB_PAT = process.env.GITHUB_PAT
+const GITHUB_REPO_OWNER = process.env.GITHUB_REPO_OWNER || 'AgilistTim'
+const GITHUB_REPO_NAME = process.env.GITHUB_REPO_NAME || 'Agilist_website'
+const GITHUB_BRANCH = process.env.GITHUB_BRANCH || 'main'
+
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',').map((s) => s.trim())
+  : ['https://www.agilist.co.uk', 'https://agilist.co.uk']
+
+// ── Startup diagnostics ────────────────────────────────────────────────
 console.log('[agent-config] Environment overview:', {
   hasApiKey: Boolean(process.env.OPENAI_API_KEY),
   realtimeModel: process.env.OPENAI_REALTIME_MODEL,
@@ -59,12 +77,78 @@ console.log('[agent-config] Environment overview:', {
 if (!process.env.OPENAI_API_KEY) {
   console.warn('Warning: OPENAI_API_KEY is not set. API requests will fail.')
 }
+if (!ADMIN_PASSWORD_HASH) {
+  console.warn('Warning: ADMIN_PASSWORD_HASH is not set. Admin login will be disabled.')
+}
+if (!JWT_SECRET) {
+  console.warn('Warning: JWT_SECRET is not set. Admin login will be disabled.')
+}
+if (!GITHUB_PAT) {
+  console.warn('Warning: GITHUB_PAT is not set. Blog publishing will fail.')
+}
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+// Use a placeholder key to avoid constructor crash — actual calls will fail gracefully
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || 'not-configured' })
 
+// ── Express app ────────────────────────────────────────────────────────
 const app = express()
-app.use(cors())
+
+// CORS — restrict to known origins (+ localhost in dev)
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (server-to-server, curl, health checks)
+      if (!origin) return callback(null, true)
+      if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true)
+      // In development, also allow localhost
+      if (process.env.NODE_ENV !== 'production' && origin.startsWith('http://localhost')) {
+        return callback(null, true)
+      }
+      callback(new Error('CORS: Origin not allowed'))
+    },
+    credentials: true
+  })
+)
+
 app.use(express.json())
+
+// ── Rate limiter for login ─────────────────────────────────────────────
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // 5 attempts per window
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many login attempts. Try again in 15 minutes.' }
+})
+
+// ── Auth middleware ────────────────────────────────────────────────────
+function requireAdmin(req, res, next) {
+  const authHeader = req.headers.authorization
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Authentication required.' })
+  }
+
+  const token = authHeader.slice(7)
+
+  if (!JWT_SECRET) {
+    return res.status(503).json({ error: 'Authentication is not configured on this server.' })
+  }
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET)
+    req.admin = decoded
+    next()
+  } catch (err) {
+    if (err.name === 'TokenExpiredError') {
+      return res.status(401).json({ error: 'Session expired. Please log in again.' })
+    }
+    return res.status(401).json({ error: 'Invalid token.' })
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// PUBLIC ENDPOINTS
+// ═══════════════════════════════════════════════════════════════════════
 
 app.get('/health', (_req, res) => {
   res.json({ ok: true })
@@ -217,7 +301,121 @@ app.post('/api/voice-token', async (req, res) => {
   }
 })
 
-app.post('/api/upload-blog-to-vectorstore', async (req, res) => {
+// ═══════════════════════════════════════════════════════════════════════
+// ADMIN ENDPOINTS (JWT-protected)
+// ═══════════════════════════════════════════════════════════════════════
+
+// ── Login ──────────────────────────────────────────────────────────────
+app.post('/api/admin/login', loginLimiter, async (req, res) => {
+  try {
+    const { password } = req.body || {}
+
+    if (!password) {
+      return res.status(400).json({ error: 'Password is required.' })
+    }
+
+    if (!ADMIN_PASSWORD_HASH || !JWT_SECRET) {
+      return res.status(503).json({ error: 'Admin authentication is not configured.' })
+    }
+
+    const isValid = await bcrypt.compare(password, ADMIN_PASSWORD_HASH)
+
+    if (!isValid) {
+      return res.status(401).json({ error: 'Invalid password.' })
+    }
+
+    const token = jwt.sign(
+      { role: 'admin', iat: Math.floor(Date.now() / 1000) },
+      JWT_SECRET,
+      { expiresIn: JWT_EXPIRY }
+    )
+
+    res.json({ token, expiresIn: JWT_EXPIRY })
+  } catch (error) {
+    console.error('Login error:', error)
+    res.status(500).json({ error: 'Login failed.' })
+  }
+})
+
+// ── Verify token ───────────────────────────────────────────────────────
+app.get('/api/admin/verify', requireAdmin, (_req, res) => {
+  res.json({ valid: true })
+})
+
+// ── Publish blog to GitHub ─────────────────────────────────────────────
+app.post('/api/admin/publish-blog', requireAdmin, async (req, res) => {
+  try {
+    const { filename, content, commitMessage } = req.body || {}
+
+    if (!filename || !content) {
+      return res.status(400).json({ error: 'filename and content are required.' })
+    }
+
+    if (!GITHUB_PAT) {
+      return res.status(503).json({ error: 'GitHub integration is not configured.' })
+    }
+
+    // Sanitize filename to prevent path traversal
+    const safeFilename = filename.replace(/[^a-zA-Z0-9._-]/g, '-')
+    if (safeFilename !== filename) {
+      console.warn(`[publish-blog] Filename sanitized: "${filename}" -> "${safeFilename}"`)
+    }
+
+    const filePath = `client/src/content/blog/${safeFilename}`
+    const apiUrl = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/contents/${filePath}`
+    const message = commitMessage || `Add blog post: ${safeFilename}`
+
+    // 1. Check if file already exists (to get SHA for updates)
+    let sha
+    const getRes = await fetch(apiUrl, {
+      headers: {
+        Authorization: `token ${GITHUB_PAT}`,
+        Accept: 'application/vnd.github.v3+json'
+      }
+    })
+
+    if (getRes.ok) {
+      const data = await getRes.json()
+      sha = data.sha
+    }
+
+    // 2. Create or update the file
+    const body = {
+      message,
+      content: Buffer.from(content, 'utf-8').toString('base64'),
+      branch: GITHUB_BRANCH
+    }
+    if (sha) body.sha = sha
+
+    const putRes = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: {
+        Authorization: `token ${GITHUB_PAT}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    })
+
+    if (!putRes.ok) {
+      const errorData = await putRes.json().catch(() => ({}))
+      throw new Error(errorData.message || `GitHub API returned ${putRes.status}`)
+    }
+
+    const result = await putRes.json()
+
+    res.json({
+      success: true,
+      htmlUrl: result.content?.html_url,
+      sha: result.content?.sha
+    })
+  } catch (error) {
+    console.error('Publish blog error:', error)
+    res.status(500).json({ error: error.message || 'Failed to publish blog.' })
+  }
+})
+
+// ── Upload to vector store ─────────────────────────────────────────────
+app.post('/api/admin/upload-to-vectorstore', requireAdmin, async (req, res) => {
   try {
     const { content, fileName } = req.body || {}
 
@@ -252,6 +450,15 @@ app.post('/api/upload-blog-to-vectorstore', async (req, res) => {
     res.status(500).json({ error: error.message || 'Failed to upload to vector store' })
   }
 })
+
+// ── Tombstone: old unprotected endpoint ────────────────────────────────
+app.post('/api/upload-blog-to-vectorstore', (_req, res) => {
+  res.status(410).json({
+    error: 'This endpoint has been removed. Use /api/admin/upload-to-vectorstore with authentication.'
+  })
+})
+
+// ═══════════════════════════════════════════════════════════════════════
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`)

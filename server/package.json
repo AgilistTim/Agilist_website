@@ -10,10 +10,13 @@
     "upload-blogs": "node scripts/upload-blogs-to-vectorstore.js"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.19.2",
+    "express-rate-limit": "^8.3.0",
     "glob": "^11.0.0",
+    "jsonwebtoken": "^9.0.3",
     "openai": "^4.73.0"
   }
 }

@@ -1,26 +1,14 @@
 import { useState } from 'react'
 import { Button } from './ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
+import { useAdminAuth } from './AdminAuth.jsx'
 import { Upload, FileText, CheckCircle, AlertCircle, Loader2 } from 'lucide-react'
 
 export function AdminBlogUpload({ apiBaseUrl }) {
+  const { authFetch } = useAdminAuth()
   const [file, setFile] = useState(null)
   const [status, setStatus] = useState('idle')
   const [message, setMessage] = useState('')
-  const [password, setPassword] = useState('')
-  const [authenticated, setAuthenticated] = useState(false)
-
-  const handlePasswordSubmit = (e) => {
-    e.preventDefault()
-    // Check password from environment variable
-    const adminPassword = import.meta.env.PUBLIC_ADMIN_PASSWORD || 'admin123'
-    if (password === adminPassword) {
-      setAuthenticated(true)
-      setMessage('')
-    } else {
-      setMessage('Incorrect password')
-    }
-  }
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files?.[0]
@@ -44,15 +32,16 @@ export function AdminBlogUpload({ apiBaseUrl }) {
       const content = await file.text()
       const fileName = file.name
 
-      // Upload to vector store via API
-      const response = await fetch(`${apiBaseUrl}/api/upload-blog-to-vectorstore`, {
+      // Upload to vector store via authenticated API
+      const response = await authFetch(`${apiBaseUrl}/api/admin/upload-to-vectorstore`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content, fileName })
       })
 
       if (!response.ok) {
-        throw new Error('Upload failed')
+        const err = await response.json().catch(() => ({}))
+        throw new Error(err.error || 'Upload failed')
       }
 
       const result = await response.json()
@@ -68,37 +57,6 @@ export function AdminBlogUpload({ apiBaseUrl }) {
       setStatus('error')
       setMessage(`Upload failed: ${error.message}`)
     }
-  }
-
-  if (!authenticated) {
-    return (
-      <Card className="max-w-md mx-auto mt-8 bg-[#16161A] border-[#2A2A35]">
-        <CardHeader>
-          <CardTitle className="text-white">Admin Access</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handlePasswordSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="password" className="block text-sm text-[#A1A1AA] mb-2">
-                Enter admin password
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 bg-[#0D0D0F] border border-[#2A2A35] rounded text-white"
-                placeholder="Password"
-              />
-            </div>
-            {message && <p className="text-sm text-red-400">{message}</p>}
-            <Button type="submit" className="w-full bg-[#7C3AED] text-white hover:bg-[#6D28D9]">
-              Login
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    )
   }
 
   return (
