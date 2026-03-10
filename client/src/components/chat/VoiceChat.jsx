@@ -7,7 +7,7 @@ import { Mic, MicOff, Loader2, Volume2, RefreshCw } from 'lucide-react'
 
 const DEFAULT_NAME = "Tim's AI Assistant"
 const DEFAULT_GREETING =
-  "Hi there! I'm Tim's AI assistant. Ask about AI transformation, foresight, or regulated sectors and I'll respond in Tim's voice."
+  "Hi there! I'm Tim's AI assistant. Ask about organisational transformation, AI adoption, or how to work with Tim — and I'll respond in Tim's voice."
 const LOCKED_VOICE = 'marin'
 const VOICE_OPENING_DIRECTIVE =
   "VOICE MODE - CRITICAL: You MUST keep ALL voice responses to 2-3 sentences MAXIMUM. Never exceed 50 words per response. Speak in short, complete thoughts. For opening: One sentence greeting + invitation to speak. For all other responses: One insight + one question, nothing more. Be conversational and brief above all else."

@@ -95,7 +95,7 @@ const Blog = () => {
           <Badge className="bg-[#7C3AED]/20 text-[#A78BFA] border-[#7C3AED]/40 mb-4">Blog</Badge>
           <h1 className="text-4xl md:text-5xl font-bold mb-6">Latest Insights</h1>
           <p className="text-xl text-[#A1A1AA] max-w-2xl mx-auto">
-            Practical guidance on AI foresight, transformation strategy, and venture studio execution.
+            Thinking on organisational transformation, operating model design, and applied AI.
           </p>
         </header>
 

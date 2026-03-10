@@ -140,7 +140,7 @@ export function TextChat({ messages, onSend, loading, error }) {
             <Input
               value={value}
               onChange={(event) => setValue(event.target.value)}
-              placeholder="Ask about AI foresight or transformation..."
+              placeholder="Ask about transformation, AI, or how to work with Tim..."
               className="bg-[#0D0D0F] border-[#2A2A35] text-white"
               disabled={loading}
             />

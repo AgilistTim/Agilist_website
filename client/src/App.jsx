@@ -23,7 +23,8 @@ import {
   Anchor,
   Users,
   Cpu,
-  Award
+  Award,
+  Mic
 } from 'lucide-react'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
@@ -256,6 +257,7 @@ function App({ latestPosts = [] }) {
   const [error, setError] = useState(null)
   const [config, setConfig] = useState(null)
   const [configError, setConfigError] = useState(null)
+  const [chatMode, setChatMode] = useState('text')
 
   useEffect(() => {
     AOS.init({
@@ -483,7 +485,7 @@ function App({ latestPosts = [] }) {
               />
             </div>
             <div className="border-l-4 border-[#7C3AED] pl-6 sm:pl-8">
-              <p className="text-xs uppercase tracking-[0.35em] text-[#A78BFA] mb-4">The problem I solve</p>
+              <p className="text-sm uppercase tracking-[0.35em] text-[#A78BFA] mb-4">The problem I solve</p>
               <blockquote className="text-lg sm:text-xl text-[#F4F4F5] leading-relaxed space-y-4">
                 <p>
                   Progress has slowed &mdash; not because people aren&apos;t capable, but because the system
@@ -708,27 +710,44 @@ function App({ latestPosts = [] }) {
                 Ask it about organisational change, AI adoption, operating model design, or anything else.
                 It starts with understanding your problem &mdash; not selling solutions.
               </p>
-              <div className="mt-6 flex items-center gap-3 text-sm text-[#A1A1AA]">
-                <MessageCircle className="h-4 w-4 text-[#A78BFA]" />
-                Text and voice modes are both live.
-              </div>
-              <div className="mt-6">
-                <Button
-                  variant="outline"
-                  className="border-[#7C3AED] text-[#F4F4F5]"
-                  onClick={handleClearHistory}
-                >
-                  Reset assistant
-                </Button>
-              </div>
             </div>
-            <div className="grid gap-6" data-aos="fade-up" data-aos-delay="100">
-              <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-[#A78BFA] mb-3">Text Chat</p>
-                <TextChat messages={messages} onSend={handleSend} loading={loading} error={error} />
+            <div data-aos="fade-up" data-aos-delay="100">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant={chatMode === 'text' ? 'default' : 'outline'}
+                    className={chatMode === 'text' ? 'bg-[#7C3AED] text-white hover:bg-[#6D28D9]' : 'border-[#2A2A35] text-[#A1A1AA] hover:text-white'}
+                    onClick={() => setChatMode('text')}
+                    disabled={disabledAssistant}
+                  >
+                    <MessageCircle className="h-4 w-4 mr-2" />
+                    Text
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={chatMode === 'voice' ? 'default' : 'outline'}
+                    className={chatMode === 'voice' ? 'bg-[#7C3AED] text-white hover:bg-[#6D28D9]' : 'border-[#2A2A35] text-[#A1A1AA] hover:text-white'}
+                    onClick={() => setChatMode('voice')}
+                    disabled={disabledAssistant}
+                  >
+                    <Mic className="h-4 w-4 mr-2" />
+                    Voice
+                  </Button>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleClearHistory}
+                  className="ml-auto text-xs text-[#A1A1AA] hover:text-white transition-colors"
+                >
+                  Clear history
+                </button>
               </div>
-              <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-[#A78BFA] mb-3">Voice Chat</p>
+              {configError ? (
+                <p className="text-sm text-red-400">{configError}</p>
+              ) : chatMode === 'text' ? (
+                <TextChat messages={messages} onSend={handleSend} loading={loading} error={error} />
+              ) : (
                 <VoiceChat
                   instructions={instructions}
                   messages={messages}
@@ -736,8 +755,7 @@ function App({ latestPosts = [] }) {
                   realtimeModel={config?.realtimeModel}
                   onConversationUpdate={handleVoiceHistorySync}
                 />
-                {configError && <p className="mt-3 text-sm text-red-400">{configError}</p>}
-              </div>
+              )}
             </div>
           </div>
           {disabledAssistant && (

@@ -7,7 +7,7 @@ import { TextChat } from '@/components/chat/TextChat.jsx'
 import { VoiceChat } from '@/components/chat/VoiceChat.jsx'
 import { getAgentConfig, sendChatMessage } from '@/lib/api.js'
 
-const INITIAL_GREETING = `Hi! I'm Tim's AI assistant. Ask me about AI transformation, foresight, or how to work with Tim.`
+const INITIAL_GREETING = `Hi! I'm Tim's AI assistant. Ask me about organisational transformation, AI adoption, or how to work with Tim.`
 const STORAGE_KEY = 'agilist_chat_history'
 
 function loadStoredMessages() {
