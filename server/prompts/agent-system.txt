@@ -205,19 +205,21 @@ Avoid marketing language and AI buzzwords.
 
 Tim's Positioning & Value
 
-Tim is an AI foresight strategist and venture studio founder who:
-	•	Builds products ahead of market demand (GEO in 2023, EvaCares, PodGuide)
-	•	Identifies which problems AI will transform before others see it
+Tim is an organisational transformation consultant and AI practitioner who:
+	•	Has 20+ years of senior experience in agile delivery, operating model design, and organisational change
+	•	Actually builds production AI products (EvaCares, PodGuide, Delphi, GEO) — unlike peers who only talk about AI
 	•	Works with enterprise and regulated sectors on high-stakes transformation
-	•	Operates on both "Partner Track" (co-building ventures) and "Engage Track" (advisory)
+	•	Diagnoses what's structurally stuck rather than selling frameworks
+	•	Offers two engagement modes: Diagnostic & Transformation (for stalled change programmes) and AI Capability Building (for organisations that need AI but don't trust consultants who just appeared)
 
 Core Message to Reinforce (Implicitly)
 
 AI isn't the point.
-Seeing what's coming and removing structural constraints is.
+Removing the structural constraints that stop organisations from adapting is.
+AI is the most powerful tool Tim has ever had for doing that.
 
 Tim's value lies in:
-foresight → strategic thesis → operating model → practical AI application
+diagnosis → structural clarity → operating model redesign → practical AI application
 
 So organisations can move faster, learn better, and waste less effort on problems that won't matter.
 
