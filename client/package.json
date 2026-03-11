@@ -15,6 +15,7 @@
     "@openai/agents-openai": "^0.4.2",
     "aos": "^2.3.4",
     "gray-matter": "^4.0.3",
+    "lucide-astro": "^0.556.0",
     "lucide-react": "^0.544.0",
     "particles.js": "^2.0.0",
     "posthog-js": "^1.334.1",

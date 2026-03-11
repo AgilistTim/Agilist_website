@@ -13,6 +13,8 @@ The core insight: discovery processes don't lag because teams lack research capa
 
 This is "a crisis of judgement, not execution," the primary constraint on developing high-velocity, high-impact products. Traditional solutions—frameworks, templates, and rituals—address symptoms rather than root causes.
 
+Research bears this out. CB Insights' analysis of 101 startup post-mortems (2021) found that "no market need" was the leading cause of failure, cited in 35% of cases—a failure of discovery, not execution. The Standish Group's CHAOS Report (2020) paints a similar picture in enterprise software: only 31% of projects are considered successful, with inadequate requirements discovery among the top contributors to failure.
+
 ## The Five Core Discovery Activities
 
 I identify five recurring activities in effective product team discovery:
@@ -24,6 +26,8 @@ I identify five recurring activities in effective product team discovery:
 5. **Commit:** Choosing a direction, allocating resources, and proceeding with confidence
 
 The central thesis: **AI dramatically lowers the cost of running them.** Rather than introducing novel practices, AI acts as an accelerant for existing discovery work.
+
+As Marty Cagan argues in *Inspired* (2018), at least half of product ideas simply won't work—making rapid, low-cost discovery essential rather than optional. Teresa Torres' *Continuous Discovery Habits* (2021) formalises this as a discipline: teams that test assumptions weekly rather than quarterly systematically outperform those treating discovery as a phase-gate activity.
 
 ## How AI Transforms Discovery
 
@@ -38,6 +42,8 @@ Rather than choosing a single research path (a "high-stakes bet"), teams can rap
 ### Explore Phase Evolution
 
 Manual interview processes expand dramatically. AI can generate synthetic personas, analyze competitor approaches within minutes, and synthesize vast qualitative data, enabling exploration of significantly larger possibility spaces.
+
+Steve Blank's seminal *Harvard Business Review* article, "Why the Lean Start-Up Changes Everything" (2013), argued that no business plan survives first contact with customers. AI extends this principle by making "contact"—through synthetic testing and rapid prototyping—orders of magnitude cheaper.
 
 ### Converge Phase Evolution
 
@@ -55,7 +61,7 @@ Convergence involves strategic choices about how reality reveals itself. Using a
 - **Job-to-Be-Done Lens:** Universal need for distributed team visibility
 - **Emotional Journey Lens:** Anxiety emerges when information findability falters
 
-This parallel-lens approach prevents premature commitment to single interpretations.
+This parallel-lens approach prevents premature commitment to single interpretations. It directly combats what Daniel Kahneman describes as "What You See Is All There Is" (WYSIATI) bias in *Thinking, Fast and Slow* (2011)—the tendency to construct coherent narratives from incomplete information. Multiple lenses force teams to confront incompleteness rather than paper over it.
 
 ## Three Discovery Failure Modes
 

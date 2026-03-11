@@ -18,6 +18,8 @@ $1,000 a month for an assistant that classified an active project as "going cold
 
 So I ran an experiment. I ripped out the agent framework entirely and replaced it with three things most people already have access to: **Claude**, **MCP server connections**, and **Cowork scheduled tasks**. No API keys for the core loop. No custom orchestration code. Just a thinner stack where the model talks directly to my tools.
 
+Anthropic's Model Context Protocol (MCP), released as an open standard in late 2024, enables AI models to connect directly to external data sources and tools through a universal interface. It eliminates the custom integration code that agent frameworks typically require — and with it, the token overhead of middleware decision-making.
+
 This is an ongoing experiment — I'm a couple of weeks in and still refining. But the economics have already flipped, and the output quality is better. Here's exactly what I've built and how you can replicate it.
 
 ---
@@ -26,7 +28,7 @@ This is an ongoing experiment — I'm a couple of weeks in and still refining. B
 
 Most AI agent frameworks follow the same pattern: you write a system prompt describing what you want, then the framework handles tool-calling, error recovery, state management, and scheduling. The framework is the brain's hands.
 
-The issue is twofold. First, those hands are clumsy — general-purpose frameworks hallucinate tool calls, lose context across sessions, and take the path of least resistance when they hit ambiguity. Second, and less discussed: **every operation costs tokens.** The framework's own decision-making about which tool to call, its retry logic when things fail, its state serialisation between turns — all of that is inference you're paying for that isn't actually doing your work.
+The issue is twofold. First, those hands are clumsy — general-purpose frameworks hallucinate tool calls, lose context across sessions, and take the path of least resistance when they hit ambiguity. Kanjun Qiu, CEO of Imbue (an AI research company focused on agents), noted in a 2024 interview that most agent failures stem not from model limitations but from brittle tool-calling abstractions layered on top of capable models. Second, and less discussed: **every operation costs tokens.** The framework's own decision-making about which tool to call, its retry logic when things fail, its state serialisation between turns — all of that is inference you're paying for that isn't actually doing your work.
 
 I tried to optimise my way out of it. Haiku for ingestion and classification, Sonnet for relationship reasoning, Opus only for strategic synthesis. Prompt caching on the system prompt. Daily budget caps. The spend came down, but so did the quality — proportionally. There was no sweet spot where I got a competent agent at a reasonable price. The middleware layer imposed a floor on both cost and unreliability.
 
@@ -151,6 +153,8 @@ The API spend on the COO function has gone to zero. Not reduced — gone. The mo
 I still use the Anthropic API for other projects (development work via Claude Code, for instance), but the operational COO system runs entirely within the Max subscription. Claude Code is also included in Max, so even the development tooling is covered.
 
 That's the economic insight: **subscription-based access to a frontier model with native tool integration is categorically cheaper than API-based access through an agent framework** — and it's also better, because the model sees your data directly rather than through a middleware translation layer. Even at $100/month for Max, I'm saving 90% compared to the agent framework approach.
+
+A16z's 2024 analysis of AI application economics found that for many AI-powered workflows, infrastructure and API costs consume 20–40% of revenue — a ratio that threatens viability at scale. Subscription-based model access with native integrations sidesteps this entirely for individual operators and small teams.
 
 ## Where I Am Now (This Is Still an Experiment)
 

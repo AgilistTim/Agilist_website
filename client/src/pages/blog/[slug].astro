@@ -33,13 +33,18 @@ const jsonLd = {
   headline: post.data.title,
   description: post.data.summary,
   datePublished: post.data.date.toISOString(),
+  dateModified: post.data.date.toISOString(),
+  keywords: post.data.tags?.join(', ') || undefined,
   author: {
     '@type': 'Person',
-    name: 'Tim Robinson'
+    name: 'Tim Robinson',
+    url: 'https://agilist.co.uk',
+    jobTitle: 'Transformation Consultant & AI Practitioner'
   },
   publisher: {
     '@type': 'Organization',
-    name: 'Agilist'
+    name: 'Agilist',
+    url: 'https://agilist.co.uk'
   },
   mainEntityOfPage: canonical,
   url: canonical

@@ -1,7 +1,24 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
-import App from '../App.jsx'
+import AssistantSection from '../components/AssistantSection.jsx'
 import { getCollection } from 'astro:content'
+import {
+  ArrowRight,
+  Calendar,
+  ChevronRight,
+  Menu,
+  X,
+  BookOpen,
+  Globe,
+  ShieldCheck,
+  BrainCircuit,
+  Search,
+  Wrench,
+  Anchor,
+  Users,
+  Cpu,
+  Award
+} from 'lucide-astro'
 
 const posts = await getCollection('blog', ({ data }) => !data.draft)
 const latestPosts = posts
@@ -16,6 +33,156 @@ const latestPosts = posts
   }))
 
 const canonical = new URL('/', Astro.site ?? Astro.url.origin).toString()
+
+const bookingLink = 'https://calendly.com/agilist/quick-chat'
+const bookFreeLink = 'https://books.genorg.ai'
+const bookReasoningLink = 'https://books.genorg.ai/pr'
+const bookCover = 'https://assets.lulu.com/cover_thumbs/v/8/v8mqjq4-front-shortedge-384.jpg'
+
+const dateFormatter = new Intl.DateTimeFormat('en-GB', {
+  day: '2-digit',
+  month: 'long',
+  year: 'numeric'
+})
+
+const credibilitySignals = [
+  { icon: 'Users', label: '20+ years in organisational transformation and agile delivery' },
+  { icon: 'BrainCircuit', label: 'AI Advisor in Residence, SETsquared Bath' },
+  { icon: 'BookOpen', label: 'Co-author, The Generative Organization (with Bryan Cassady)' },
+  { icon: 'Award', label: 'Trained several hundred people in AI adoption' },
+  { icon: 'Cpu', label: '7+ production AI products built and shipped' },
+  { icon: 'Anchor', label: 'Royal Navy veteran' }
+]
+
+const problemPatterns = [
+  {
+    title: 'The transformation that stalled',
+    description: 'You invested in agile, SAFe, or some flavour of transformation. Teams adopted the ceremonies but the underlying decision-making never changed. Progress slowed and people are tired.',
+    rootCause: 'The constraint is usually structural — information doesn\u2019t flow, decisions take too long, and feedback loops are broken. The framework wasn\u2019t the problem. The operating model was.'
+  },
+  {
+    title: 'AI adoption that\u2019s going nowhere',
+    description: 'You\u2019ve run pilots, done training, maybe built a chatbot. But nothing has stuck and the organisation is no more capable than it was six months ago.',
+    rootCause: 'AI tools bolted onto an operating model that wasn\u2019t designed for them won\u2019t create change. The model needs to evolve first — then AI accelerates it.'
+  },
+  {
+    title: 'Product teams hitting a ceiling',
+    description: 'You\u2019re shipping features but not fast enough. Learning but not systematically. Everyone\u2019s working hard, but effort doesn\u2019t translate cleanly into outcomes.',
+    rootCause: 'The constraint isn\u2019t effort or capability — it\u2019s how work, decisions, and learning actually flow. When those are misaligned, working harder makes things worse.'
+  },
+  {
+    title: 'The executive who can\u2019t get a straight answer',
+    description: 'You know something is wrong. Every consultant gives you a framework, not a diagnosis. You need someone who will tell you what they actually see.',
+    rootCause: 'Most consultants sell methodology. What you need is someone close enough to the work to see the real constraint — and direct enough to name it.'
+  }
+]
+
+const engagementModes = [
+  {
+    title: 'Diagnostic & Transformation',
+    subtitle: 'For leaders whose change has stalled',
+    description: 'I start with diagnosis, not solutions. Understanding what\u2019s structurally stuck before recommending what to change — because the wrong intervention at the wrong layer makes things worse.',
+    details: [
+      'Organisational and delivery diagnostics',
+      'Operating model redesign',
+      'Agile transformation and coaching',
+      'Leadership advisory',
+      'Day-rate or fixed-price outcomes'
+    ],
+    whoItsFor: 'Senior leaders who need clarity on what\u2019s structurally wrong — and someone who\u2019ll name it.'
+  },
+  {
+    title: 'AI Capability Building',
+    subtitle: 'For organisations ready to move beyond pilots',
+    description: 'Practical AI adoption that sticks. Not tool demos — real capability building embedded in how your teams already work. I\u2019ve trained hundreds and built the products to prove the approach works.',
+    details: [
+      'AI readiness assessments and training',
+      'Operating model redesign for AI-native working',
+      'Governance-by-design frameworks',
+      'Hands-on tool integration and workflow embedding'
+    ],
+    whoItsFor: 'Organisations that need AI capability, not just AI awareness — from someone who actually builds it.'
+  }
+]
+
+const builtProjects = [
+  {
+    title: 'EvaCares',
+    year: '2023',
+    description: 'Voice AI wellbeing calls for elderly people. Phone-first, no new devices needed. Born from a personal challenge — reducing isolation for my father.',
+    link: 'https://www.evacares.co.uk'
+  },
+  {
+    title: 'PodGuide',
+    year: '2026',
+    description: 'Full-lifecycle AI co-pilot for podcasters: episode planning, live interview modes including an autonomous AI interviewer, and 10+ content pieces per episode.',
+    link: 'https://podguide.agilist.co.uk/'
+  },
+  {
+    title: 'Delphi Decision Co-Pilot',
+    year: '2024',
+    description: 'Multi-round AI engine for strategic decisions. Produces cited consensus positions, epistemic stress tests, counterfactual risk analysis, and a full decision canvas.',
+    link: 'https://github.com/AgilistTim/Delphi'
+  },
+  {
+    title: 'OBD-AI',
+    year: '2026',
+    description: 'Vehicle diagnostics meets natural language. AI Mechanic correlates symptoms with live sensor data. Web Bluetooth — no app required.',
+    link: 'https://github.com/AgilistTim/OBD-AI'
+  },
+  {
+    title: 'GEO',
+    year: '2023',
+    description: 'Generative Engine Optimisation — built frameworks and tooling for AI retrieval before "GEO" was a category. Scrapes, analyses, and provides detailed guidance on content refactoring.',
+    link: null
+  },
+  {
+    title: 'LLM Cost Calculator',
+    year: '2026',
+    description: 'Interactive tool comparing real costs of cloud LLM APIs vs self-hosted inference. Hardware amortisation, electricity, and token caching savings.',
+    link: '/tools/cost-calculator'
+  }
+]
+
+const publicSignals = [
+  {
+    title: 'SETsquared Bath Sessions',
+    description: "As AI Advisor in Residence, you'll find me at First Thursday sessions and Third Thursday co-working at SETsquared Bath Innovation Centre.",
+    link: 'https://www.eventbrite.co.uk/e/first-thursday-in-march-at-setsquared-bath-innovation-centre-tickets-1982873027603?aff=oddtdtcreator#organizer-card',
+    linkText: 'View upcoming sessions'
+  },
+  {
+    title: 'Long-form Articles',
+    description: 'I share my thinking on transformation, organisational design, and applied AI through in-depth articles.',
+    link: 'https://www.linkedin.com/in/tim-robinson-agilist/recent-activity/articles/',
+    linkText: 'Read the articles'
+  },
+  {
+    title: 'Connect on LinkedIn',
+    description: 'Always happy to discuss transformation, AI adoption, and the messy problems that sit between the two.',
+    link: 'https://www.linkedin.com/in/tim-robinson-agilist/',
+    linkText: 'Connect with me'
+  }
+]
+
+const faqItems = [
+  {
+    question: 'What kind of organisations do you work with?',
+    answer: 'I work with organisations where progress has slowed — not because people aren\u2019t capable, but because the system has reached its limits. That might be a large enterprise whose transformation has stalled, or a smaller organisation trying to make AI stick. The common thread is: something structural needs to change.'
+  },
+  {
+    question: 'How is this different from a management consultancy?',
+    answer: 'I don\u2019t sell frameworks or methodology. I diagnose what\u2019s structurally stuck, name it clearly, and help you redesign how work, decisions, and learning actually flow. And unlike most consultants in this space, I actually build AI products — so the advice comes from practice, not theory.'
+  },
+  {
+    question: 'Do I need to have started an AI initiative already?',
+    answer: 'No. Some clients come to me because their AI adoption isn\u2019t landing. Others come because their transformation stalled long before AI entered the picture. I work at the intersection — the operating model problems are often the same regardless of whether AI is involved yet.'
+  },
+  {
+    question: 'What does a typical engagement look like?',
+    answer: 'It starts with a conversation. From there it might be a short diagnostic, a coaching engagement, a training programme, or an ongoing advisory relationship. I work on day-rate or fixed-price outcomes, and I start with diagnosis — not solutions.'
+  }
+]
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -36,6 +203,14 @@ const jsonLd = {
         'Product operations',
         'Systems thinking'
       ],
+      hasCredential: [
+        { '@type': 'EducationalOccupationalCredential', name: 'AI Advisor in Residence, SETsquared Bath' }
+      ],
+      memberOf: {
+        '@type': 'Organization',
+        name: 'SETsquared Bath',
+        description: 'University of Bath business incubator and innovation hub'
+      },
       sameAs: ['https://www.linkedin.com/in/tim-robinson-agilist/']
     },
     {
@@ -52,49 +227,28 @@ const jsonLd = {
     {
       '@type': 'WebSite',
       name: 'Agilist',
-      url: canonical,
-      potentialAction: {
-        '@type': 'SearchAction',
-        target: `${canonical}?q={search_term_string}`,
-        'query-input': 'required name=search_term_string'
-      }
+      url: canonical
+    },
+    {
+      '@type': 'Book',
+      name: 'The Generative Organization',
+      author: [
+        { '@type': 'Person', name: 'Tim Robinson' },
+        { '@type': 'Person', name: 'Bryan Cassady' }
+      ],
+      url: 'https://books.genorg.ai',
+      description: 'A field guide for leaders navigating organisational transformation with AI — practical patterns from practitioners who have done the work.'
     },
     {
       '@type': 'FAQPage',
-      mainEntity: [
-        {
-          '@type': 'Question',
-          name: 'What kind of organisations does Tim Robinson work with?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'Tim works with organisations where progress has slowed — not because people aren\'t capable, but because the system has reached its limits. From large enterprises whose transformation has stalled to smaller organisations making AI adoption stick.'
-          }
-        },
-        {
-          '@type': 'Question',
-          name: 'How is Tim Robinson different from a management consultancy?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'Tim diagnoses what\'s structurally stuck rather than selling frameworks. He identifies where friction is structural rather than personal, and redesigns how work, decisions, and learning actually flow. Unlike most consultants in this space, he also builds AI products — so the advice comes from practice, not theory.'
-          }
-        },
-        {
-          '@type': 'Question',
-          name: 'What is organisational transformation consulting?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'Organisational transformation consulting helps businesses redesign how they work when progress has stalled. It addresses structural constraints — information flow, decision latency, feedback loop breakdowns — rather than blaming people or adding more process.'
-          }
-        },
-        {
-          '@type': 'Question',
-          name: 'What does a typical engagement with Tim Robinson look like?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'It starts with a conversation. From there it might be a short diagnostic, a coaching engagement, a training programme, or an ongoing advisory relationship. Tim works on day-rate or fixed-price outcomes, and starts with diagnosis — not solutions.'
-          }
+      mainEntity: faqItems.map((item) => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: item.answer
         }
-      ]
+      }))
     }
   ]
 }
@@ -106,5 +260,551 @@ const jsonLd = {
   ogType="website"
   jsonLd={jsonLd}
 >
-  <App latestPosts={latestPosts} client:only="react" />
+  <div class="min-h-screen bg-[#0D0D0F] text-[#F4F4F5]">
+    <!-- Nav -->
+    <nav class="sticky top-0 z-40 border-b border-[#2A2A35]/80 bg-[#0D0D0F]/90 backdrop-blur">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between py-4">
+          <a href="#top" class="text-lg font-semibold tracking-tight">
+            Tim Robinson
+            <span class="ml-2 text-xs uppercase tracking-[0.3em] text-[#A78BFA]">Transformation & AI</span>
+          </a>
+          <div class="hidden lg:flex items-center gap-6 text-sm text-[#A1A1AA]">
+            <a href="#about" class="hover:text-white transition-colors">About</a>
+            <a href="#how-i-work" class="hover:text-white transition-colors">How I work</a>
+            <a href="#what-i-build" class="hover:text-white transition-colors">What I build</a>
+            <a href="#assistant" class="hover:text-white transition-colors">AI Assistant</a>
+            <a href="#thinking" class="hover:text-white transition-colors">Thinking</a>
+            <a href="/blog" class="hover:text-white transition-colors">Blog</a>
+          </div>
+          <div class="hidden lg:flex items-center gap-3">
+            <a
+              href={bookingLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center rounded-md bg-gradient-to-r from-[#7C3AED] to-[#9F67FA] px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+            >
+              Start a conversation
+            </a>
+          </div>
+          <button
+            type="button"
+            id="mobile-menu-btn"
+            class="lg:hidden text-[#F4F4F5]"
+            aria-label="Toggle navigation"
+          >
+            <Menu class="h-5 w-5" id="menu-icon-open" />
+            <X class="h-5 w-5 hidden" id="menu-icon-close" />
+          </button>
+        </div>
+        <div id="mobile-menu" class="lg:hidden pb-4 space-y-2 text-sm text-[#A1A1AA] hidden">
+          <a href="#about" class="block hover:text-white">About</a>
+          <a href="#how-i-work" class="block hover:text-white">How I work</a>
+          <a href="#what-i-build" class="block hover:text-white">What I build</a>
+          <a href="#assistant" class="block hover:text-white">AI Assistant</a>
+          <a href="#thinking" class="block hover:text-white">Thinking</a>
+          <a href="/blog" class="block hover:text-white">Blog</a>
+          <a href="#contact" class="block hover:text-white">Contact</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <header id="top" class="relative overflow-hidden">
+      <div class="absolute inset-0 bg-[linear-gradient(180deg,_rgba(124,58,237,0.18),_transparent_65%)]"></div>
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 relative">
+        <div class="max-w-3xl" data-aos="fade-up">
+          <p class="text-xs uppercase tracking-[0.35em] text-[#A78BFA]">Tim Robinson &bull; UK</p>
+          <h1 class="mt-6 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight">
+            I fix how organisations work.
+          </h1>
+          <p class="mt-4 text-lg sm:text-xl text-[#A1A1AA]">
+            20+ years in organisational transformation. AI is the most powerful tool I&apos;ve ever had for doing it.
+            I don&apos;t just advise on AI &mdash; I build it. If you&apos;re looking for someone who&apos;s been
+            solving these problems since before the hype, let&apos;s talk.
+          </p>
+          <div class="mt-8 flex flex-col sm:flex-row gap-4">
+            <a
+              href="#how-i-work"
+              class="inline-flex items-center justify-center rounded-md bg-gradient-to-r from-[#7C3AED] to-[#9F67FA] text-white text-base px-6 py-3 font-semibold hover:opacity-90 transition-opacity"
+            >
+              How I work
+              <ArrowRight class="h-4 w-4 ml-2" />
+            </a>
+            <a
+              href="#assistant"
+              class="inline-flex items-center justify-center rounded-md border border-[#7C3AED] text-[#F4F4F5] hover:border-[#A78BFA] px-6 py-3 text-base font-semibold transition-colors"
+            >
+              Talk to my AI
+            </a>
+          </div>
+          <div class="mt-8 flex flex-wrap gap-3 text-sm text-[#A1A1AA]">
+            <div class="flex items-center gap-2">
+              <Users class="h-4 w-4 text-[#A78BFA]" />
+              Transformation
+            </div>
+            <div class="flex items-center gap-2">
+              <Search class="h-4 w-4 text-[#A78BFA]" />
+              Diagnostics
+            </div>
+            <div class="flex items-center gap-2">
+              <BrainCircuit class="h-4 w-4 text-[#A78BFA]" />
+              AI
+            </div>
+            <div class="flex items-center gap-2">
+              <Wrench class="h-4 w-4 text-[#A78BFA]" />
+              Systems Design
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- The Problem I Solve -->
+    <section id="about" class="py-16 sm:py-20">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid gap-8 lg:grid-cols-[1fr_auto] items-center" data-aos="fade-up">
+          <div class="flex justify-center lg:hidden">
+            <img
+              src="/tim-robinson.jpg"
+              alt="Tim Robinson"
+              class="w-40 h-40 sm:w-48 sm:h-48 rounded-2xl object-cover border border-[#2A2A35]"
+            />
+          </div>
+          <div class="border-l-4 border-[#7C3AED] pl-6 sm:pl-8">
+            <p class="text-sm uppercase tracking-[0.35em] text-[#A78BFA] mb-4">The problem I solve</p>
+            <blockquote class="text-lg sm:text-xl text-[#F4F4F5] leading-relaxed space-y-4">
+              <p>
+                Progress has slowed &mdash; not because people aren&apos;t capable, but because the system
+                they&apos;re operating in has reached its limits.
+              </p>
+              <p>
+                Decisions take too long. Learning is slow. Effort doesn&apos;t translate cleanly into outcomes.
+                The friction is almost always structural, not personal &mdash; and working harder won&apos;t fix it.
+              </p>
+              <p>
+                I work where problems are messy, ownership is unclear, and simple answers have already
+                failed. I identify where the constraint actually sits, and I help redesign how work, decisions,
+                and learning flow.
+              </p>
+            </blockquote>
+          </div>
+          <div class="hidden lg:flex justify-end">
+            <img
+              src="/tim-robinson.jpg"
+              alt="Tim Robinson"
+              class="w-48 h-48 rounded-2xl object-cover border border-[#2A2A35]"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Credibility Signals -->
+    <section class="py-12 sm:py-16 bg-[#121216]">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-aos="fade-up">
+          {credibilitySignals.map((signal) => (
+            <div class="flex items-start gap-3 p-4 rounded-xl border border-[#2A2A35] bg-[#16161A]">
+              {signal.icon === 'Users' && <Users class="h-5 w-5 text-[#A78BFA] mt-0.5 shrink-0" />}
+              {signal.icon === 'BrainCircuit' && <BrainCircuit class="h-5 w-5 text-[#A78BFA] mt-0.5 shrink-0" />}
+              {signal.icon === 'BookOpen' && <BookOpen class="h-5 w-5 text-[#A78BFA] mt-0.5 shrink-0" />}
+              {signal.icon === 'Award' && <Award class="h-5 w-5 text-[#A78BFA] mt-0.5 shrink-0" />}
+              {signal.icon === 'Cpu' && <Cpu class="h-5 w-5 text-[#A78BFA] mt-0.5 shrink-0" />}
+              {signal.icon === 'Anchor' && <Anchor class="h-5 w-5 text-[#A78BFA] mt-0.5 shrink-0" />}
+              <p class="text-sm text-[#A1A1AA]">{signal.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Problem Patterns -->
+    <section id="patterns" class="py-16 sm:py-20">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mb-12" data-aos="fade-up">
+          <p class="text-xs uppercase tracking-[0.35em] text-[#A78BFA]">Patterns I Recognise</p>
+          <h2 class="text-3xl sm:text-4xl font-bold mt-4">Does this sound familiar?</h2>
+          <p class="text-[#A1A1AA] mt-4 max-w-2xl">
+            These are the problems I see again and again. The details change, but the structural patterns
+            underneath are remarkably consistent.
+          </p>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2" data-aos="fade-up" data-aos-delay="100">
+          {problemPatterns.map((pattern) => (
+            <div class="rounded-xl bg-[#16161A] border border-[#2A2A35] hover:border-[#7C3AED]/60 transition-colors p-6">
+              <h3 class="text-xl font-semibold text-white mb-3">{pattern.title}</h3>
+              <p class="text-[#A1A1AA] mb-3">{pattern.description}</p>
+              <p class="text-sm text-[#F4F4F5] border-l-2 border-[#7C3AED] pl-4">{pattern.rootCause}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- How I Work -->
+    <section id="how-i-work" class="py-16 sm:py-20 bg-[#121216]">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mb-10" data-aos="fade-up">
+          <p class="text-xs uppercase tracking-[0.35em] text-[#A78BFA]">How I Work</p>
+          <h2 class="text-3xl sm:text-4xl font-bold mt-4">Two ways to engage.</h2>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2 items-stretch">
+          {engagementModes.map((mode) => (
+            <div class="rounded-xl bg-[#16161A] border border-[#2A2A35] flex flex-col h-full" data-aos="fade-up">
+              <div class="p-6">
+                <p class="text-xs uppercase tracking-[0.3em] text-[#A78BFA]">{mode.subtitle}</p>
+                <h3 class="text-2xl font-semibold text-white mt-2">{mode.title}</h3>
+              </div>
+              <div class="px-6 pb-4 space-y-4 flex-grow">
+                <p class="text-[#A1A1AA]">{mode.description}</p>
+                <ul class="space-y-2">
+                  {mode.details.map((detail) => (
+                    <li class="flex items-start gap-2 text-sm text-[#A1A1AA]">
+                      <ChevronRight class="h-4 w-4 text-[#A78BFA] mt-0.5 shrink-0" />
+                      {detail}
+                    </li>
+                  ))}
+                </ul>
+                <p class="text-sm italic text-[#A1A1AA]">{mode.whoItsFor}</p>
+              </div>
+              <div class="p-6 pt-0">
+                <a
+                  href={bookingLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center justify-center w-full rounded-md bg-gradient-to-r from-[#7C3AED] to-[#9F67FA] text-white px-4 py-2 text-sm font-semibold hover:opacity-90 transition-opacity"
+                >
+                  Start a conversation
+                  <ArrowRight class="h-4 w-4 ml-2" />
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- What I Build -->
+    <section id="what-i-build" class="py-16 sm:py-20">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mb-12" data-aos="fade-up">
+          <p class="text-xs uppercase tracking-[0.35em] text-[#A78BFA]">What I Build</p>
+          <h2 class="text-3xl sm:text-4xl font-bold mt-4">I don&apos;t just advise on AI. I build it.</h2>
+          <p class="text-[#A1A1AA] mt-4 max-w-3xl">
+            These are products I&apos;ve built. They exist. You can use them. When I talk about AI,
+            it comes from practice — not slides.
+          </p>
+        </div>
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" data-aos="fade-up" data-aos-delay="100">
+          {builtProjects.map((project) => (
+            <div class="rounded-xl bg-[#16161A] border border-[#2A2A35] hover:border-[#7C3AED]/60 transition-colors flex flex-col">
+              <div class="p-6 flex-1">
+                <div class="flex items-center justify-between">
+                  <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-[#7C3AED]/20 text-[#A78BFA] border border-[#7C3AED]/40">
+                    {project.year}
+                  </span>
+                </div>
+                <h3 class="text-lg font-semibold text-white mt-3">{project.title}</h3>
+                <p class="text-[#A1A1AA] text-sm leading-relaxed mt-2">{project.description}</p>
+              </div>
+              {project.link && (
+                <div class="px-6 pb-6">
+                  <a
+                    href={project.link}
+                    target={project.link.startsWith('/') ? undefined : '_blank'}
+                    rel={project.link.startsWith('/') ? undefined : 'noopener noreferrer'}
+                    class="inline-flex items-center justify-center w-full rounded-md border border-[#7C3AED] text-[#F4F4F5] px-4 py-2 text-sm font-semibold hover:border-[#A78BFA] transition-colors"
+                  >
+                    View project
+                    <ArrowRight class="h-4 w-4 ml-2" />
+                  </a>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- The Book -->
+    <section id="book" class="py-16 sm:py-20 bg-[#121216]">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid gap-10 lg:grid-cols-[1fr_1.2fr] items-center">
+          <div class="flex justify-center lg:justify-start" data-aos="fade-right">
+            <img
+              src={bookCover}
+              alt="The Generative Organization book cover"
+              class="w-64 sm:w-72 rounded-2xl border border-[#2A2A35] shadow-lg"
+            />
+          </div>
+          <div data-aos="fade-left">
+            <p class="text-xs uppercase tracking-[0.35em] text-[#A78BFA]">The Book</p>
+            <h2 class="text-3xl sm:text-4xl font-bold mt-4">The Generative Organization</h2>
+            <p class="text-[#A1A1AA] mt-4">
+              Co-authored with Bryan Cassady. A field guide for leaders navigating organisational transformation
+              with AI &mdash; not theory, but practical patterns from practitioners who&apos;ve done the work.
+              Available free, because we care about people using the tools, not buying books they do nothing with.
+            </p>
+            <div class="mt-6 flex flex-wrap gap-4">
+              <a
+                href={bookFreeLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center justify-center rounded-md bg-gradient-to-r from-[#7C3AED] to-[#9F67FA] text-white px-4 py-2 text-sm font-semibold hover:opacity-90 transition-opacity"
+              >
+                Download the book (free)
+                <BookOpen class="h-4 w-4 ml-2" />
+              </a>
+              <a
+                href={bookReasoningLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center justify-center rounded-md border border-[#7C3AED] text-[#F4F4F5] px-4 py-2 text-sm font-semibold hover:border-[#A78BFA] transition-colors"
+              >
+                Why we made it free
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI Assistant (React Island) -->
+    <AssistantSection client:visible />
+
+    <!-- Where to Find Me -->
+    <section id="find-me" class="py-16 sm:py-20 bg-[#121216]">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mb-10" data-aos="fade-up">
+          <p class="text-xs uppercase tracking-[0.35em] text-[#A78BFA]">Where to Find Me</p>
+          <h2 class="text-3xl sm:text-4xl font-bold mt-4">In person and online.</h2>
+        </div>
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {publicSignals.map((item) => (
+            <div class="rounded-xl bg-[#16161A] border border-[#2A2A35] flex flex-col" data-aos="fade-up">
+              <div class="p-6 flex-1">
+                <h3 class="text-lg font-semibold text-white">{item.title}</h3>
+                <p class="text-[#A1A1AA] mt-2">{item.description}</p>
+              </div>
+              <div class="px-6 pb-6">
+                <a
+                  href={item.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center justify-center w-full rounded-md border border-[#7C3AED] text-[#F4F4F5] px-4 py-2 text-sm font-semibold hover:border-[#A78BFA] transition-colors"
+                >
+                  {item.linkText}
+                  <ArrowRight class="h-4 w-4 ml-2" />
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Thinking / Blog -->
+    {latestPosts.length > 0 && (
+      <section id="thinking" class="py-16 sm:py-20">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12" data-aos="fade-up">
+            <div>
+              <p class="text-xs uppercase tracking-[0.35em] text-[#A78BFA]">Thinking</p>
+              <h2 class="text-3xl sm:text-4xl font-bold mt-4">From the blog</h2>
+              <p class="text-[#A1A1AA] mt-4 max-w-2xl">
+                On transformation, organisational design, product operations, and applied AI.
+              </p>
+            </div>
+            <a
+              href="/blog"
+              class="inline-flex items-center justify-center rounded-md border border-[#7C3AED] text-white px-4 py-2 text-sm font-semibold hover:border-[#A78BFA] transition-colors"
+            >
+              View all posts
+            </a>
+          </div>
+
+          <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {latestPosts.map((post, index) => {
+              const formattedDate = post.date ? dateFormatter.format(new Date(post.date)) : ''
+              return (
+                <div
+                  class="rounded-xl bg-[#16161A] border border-[#2A2A35] hover:border-[#7C3AED]/60 transition-colors flex flex-col"
+                  data-aos="fade-up"
+                  data-aos-delay={index * 100}
+                >
+                  <div class="p-6 space-y-3 flex-1">
+                    <div class="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wide text-[#A1A1AA]">
+                      <span>{formattedDate}</span>
+                      {post.tags?.length ? (
+                        <div class="flex flex-wrap gap-2">
+                          {post.tags.map((tag) => (
+                            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium bg-[#0D0D0F] text-[#A78BFA] border border-[#2A2A35]">
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      ) : null}
+                    </div>
+                    <h3 class="text-xl font-semibold text-white">{post.title}</h3>
+                    <p class="text-[#A1A1AA] text-sm leading-relaxed">{post.summary}</p>
+                  </div>
+                  <div class="px-6 pb-6">
+                    <a
+                      href={`/blog/${post.slug}`}
+                      class="inline-flex items-center justify-center w-full rounded-md border border-[#7C3AED] text-white px-4 py-2 text-sm font-semibold hover:border-[#A78BFA] transition-colors"
+                    >
+                      Read the article
+                    </a>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- FAQ -->
+    <section id="faq" class="py-16 sm:py-20 bg-[#121216]">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mb-10" data-aos="fade-up">
+          <p class="text-xs uppercase tracking-[0.35em] text-[#A78BFA]">FAQ</p>
+          <h2 class="text-3xl sm:text-4xl font-bold mt-4">Common questions.</h2>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2">
+          {faqItems.map((item) => (
+            <div class="rounded-xl bg-[#16161A] border border-[#2A2A35] p-6" data-aos="fade-up">
+              <h3 class="text-lg font-semibold text-white">{item.question}</h3>
+              <p class="text-[#A1A1AA] mt-3">{item.answer}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="py-16 sm:py-20">
+      <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8" data-aos="fade-up">
+        <p class="text-xs uppercase tracking-[0.35em] text-[#A78BFA]">Start here</p>
+        <h2 class="text-3xl sm:text-4xl font-bold mt-4">
+          If your transformation has stalled &mdash; or you&apos;re not sure where AI fits &mdash; let&apos;s talk.
+        </h2>
+        <p class="text-lg text-[#A1A1AA] mt-4">
+          A short conversation is usually enough to know whether I can help.
+        </p>
+        <a
+          href={bookingLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center mt-8 rounded-md bg-gradient-to-r from-[#7C3AED] to-[#9F67FA] text-white text-base px-6 py-3 font-semibold hover:opacity-90 transition-opacity"
+        >
+          Start a conversation
+          <ArrowRight class="h-4 w-4 ml-2" />
+        </a>
+        <div class="mt-6 text-sm text-[#A1A1AA]">Calendly booking &bull; 30 minutes &bull; UK time</div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-[#2A2A35] py-10">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-3 gap-8">
+          <div>
+            <div class="text-2xl font-bold text-white">Tim Robinson</div>
+            <p class="text-[#A1A1AA] mt-2">Transformation & AI</p>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-4">Explore</h3>
+            <div class="space-y-2 text-[#A1A1AA]">
+              <a href="#how-i-work" class="block hover:text-white">How I work</a>
+              <a href="#what-i-build" class="block hover:text-white">What I build</a>
+              <a href="#assistant" class="block hover:text-white">AI assistant</a>
+              <a href="/blog" class="block hover:text-white">Blog</a>
+            </div>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-4">Contact</h3>
+            <a
+              href={bookingLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center w-full rounded-md bg-gradient-to-r from-[#7C3AED] to-[#9F67FA] text-white px-4 py-2 text-sm font-semibold hover:opacity-90 transition-opacity"
+            >
+              <Calendar class="h-4 w-4 mr-2" />
+              Start a conversation
+            </a>
+          </div>
+        </div>
+        <div class="border-t border-[#2A2A35] mt-8 pt-6 text-center text-[#A1A1AA] space-y-2">
+          <p>&copy; 2026 Tim Robinson. All rights reserved.</p>
+          <div class="flex justify-center gap-4 text-xs">
+            <a href="/privacy" class="hover:text-white transition-colors">Privacy policy</a>
+            <button
+              type="button"
+              id="manage-cookies-btn"
+              class="hover:text-white transition-colors"
+            >
+              Manage cookies
+            </button>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Mobile menu toggle script -->
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', function() {
+      var btn = document.getElementById('mobile-menu-btn');
+      var menu = document.getElementById('mobile-menu');
+      var iconOpen = document.getElementById('menu-icon-open');
+      var iconClose = document.getElementById('menu-icon-close');
+      if (btn && menu) {
+        btn.addEventListener('click', function() {
+          var isHidden = menu.classList.contains('hidden');
+          menu.classList.toggle('hidden');
+          if (iconOpen) iconOpen.classList.toggle('hidden', !isHidden);
+          if (iconClose) iconClose.classList.toggle('hidden', isHidden);
+        });
+        menu.querySelectorAll('a').forEach(function(link) {
+          link.addEventListener('click', function() {
+            menu.classList.add('hidden');
+            if (iconOpen) iconOpen.classList.remove('hidden');
+            if (iconClose) iconClose.classList.add('hidden');
+          });
+        });
+      }
+    });
+  </script>
+
+  <!-- Cookie management script -->
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', function() {
+      var btn = document.getElementById('manage-cookies-btn');
+      if (btn) {
+        btn.addEventListener('click', function() {
+          localStorage.removeItem('cookie_consent');
+          window.location.reload();
+        });
+      }
+    });
+  </script>
+
+  <!-- AOS animation init -->
+  <script>
+    import AOS from 'aos'
+    import 'aos/dist/aos.css'
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 120
+    })
+  </script>
+
+  <!-- Analytics init -->
+  <script>
+    import { initAnalytics } from '../lib/analytics.js'
+    initAnalytics()
+  </script>
 </BaseLayout>

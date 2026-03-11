@@ -14,7 +14,9 @@ The frustrating part? It's not a failure of execution. It's not that your team i
 
 It's that your operating model has hit a structural limit.
 
-For the past decade, product operations has been about doing more with less: faster research, better prioritisation, leaner execution. These are table stakes. But something has shifted. The organisations that are pulling ahead aren't working harder. They're working differently. They're using new tools and approaches that fundamentally change what's possible.
+For the past decade, product operations has been about doing more with less: faster research, better prioritisation, leaner execution. These are table stakes. But something has shifted.
+
+McKinsey's 2024 State of Organizations report found that 80% of executives cite speed of decision-making as a top strategic priority, yet only 20% believe their organisations are fast enough. The gap isn't effort — it's structural. The organisations that are pulling ahead aren't working harder. They're working differently. They're using new tools and approaches that fundamentally change what's possible.
 
 And if you're feeling stuck, it's because the traditional playbook - the one that's worked for years - isn't enough anymore. But here's the good news: the shift that's enabling this change is becoming accessible to every team.
 
@@ -37,6 +39,8 @@ The result? Your innovation cycle is measured in quarters, not weeks. Your team 
 This is what we call the incremental treadmill. You're optimising existing processes - making research faster, prioritisation clearer, execution leaner. And these optimisations matter. But they're hitting a ceiling. You can't make manual synthesis much faster. You can't make stakeholder alignment much easier. You can't compress months of development into weeks when you're building everything from scratch.
 
 The constraint isn't your team's capability. The constraint is the operating model itself.
+
+Marty Cagan, partner at Silicon Valley Product Group and author of *Inspired* (2018), draws a sharp distinction between "feature teams" and "empowered product teams." The difference isn't talent — it's the operating model surrounding the team. Feature teams are given solutions to implement; empowered teams are given problems to solve. Most organisations stuck on the incremental treadmill have built elaborate processes around the wrong model.
 
 But here's what's changing: new tools and approaches are making it possible to remove these constraints. To automate synthesis. To accelerate prioritisation. To enable rapid experimentation. Not by replacing human judgment, but by amplifying it - freeing your team to focus on what only humans can do: strategy, creativity, and judgment.
 
@@ -85,6 +89,8 @@ The result: Experimentation is rare. You're risk-averse. You commit to big bets 
 Here's the critical insight: these bottlenecks compound. Because research takes weeks, you can't do it continuously. Because you can't do it continuously, you make decisions with stale data. Because you make decisions with stale data, you're less confident. Because you're less confident, you're more risk-averse. Because you're more risk-averse, you commit to big bets instead of running small experiments. Because you run big bets, you fail expensively.
 
 Each bottleneck creates the conditions for the next one. And the whole system moves slowly.
+
+The Standish Group's CHAOS Report (2020) puts hard numbers on this: only 31% of software projects succeed on time, on budget, and with satisfactory results. The remaining 69% are challenged or fail outright — and the primary driver isn't technical complexity but decision latency and poor feedback loops. When your operating model compounds delays at every phase, the statistics are working against you.
 
 ## Why This Matters Now
 

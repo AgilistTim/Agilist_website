@@ -15,6 +15,8 @@ Traditional product organizations face three challenges:
 2. **Politics** — Incomplete data leads to persuasion-based rather than evidence-based decisions
 3. **Fragility** — Single decisions based on static snapshots lack consideration of second-order effects
 
+These aren't abstract concerns. A Bain & Company study of 750 companies found that decision effectiveness correlated with financial results at a 95% confidence level—far exceeding the impact of any single strategic initiative (Blenko, Mankins, and Rogers, *Decide & Deliver*, 2010). Yet most organisations invest overwhelmingly in analysis and execution while treating the decision process itself as an afterthought.
+
 ## The AI-Native Shift: Decision Intelligence
 
 AI-native teams use AI for three capabilities previously impossible at scale:
@@ -35,9 +37,13 @@ AI identifies unintended consequences that human bias might overlook, helping te
 
 The approach shifts conversations from opinions to documented evidence. Rather than influencing through persuasion, stakeholders debate outcomes using transparent, auditable reasoning. This creates what I call "decisions you can defend" with clear justification trails.
 
+Daniel Kahneman's research, detailed in *Thinking, Fast and Slow* (2011), explains why this matters: groups making decisions under uncertainty default to the most confident voice rather than the most informed one. Structured AI-assisted evidence makes information quality visible alongside the confidence of the person presenting it, breaking the cycle of opinion-driven decision-making.
+
 ## Reframing Product Leadership
 
 The role evolves from "decider-in-chief" to "architect of the decision-making system." Leaders design prompts revealing decisions rather than making calls directly, creating scalable, resilience-based processes replacing personality-driven approaches.
+
+Roger Martin's concept of integrative thinking, developed in *The Opposable Mind* (2007), describes the ability to hold two opposing ideas simultaneously and produce a superior synthesis. AI augments this capacity: leaders can genuinely explore opposing options with rigorous evidence for each, rather than selecting prematurely from constrained choices.
 
 ## What This Approach Is Not
 

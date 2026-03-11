@@ -4,7 +4,7 @@ export async function GET({ site, url }) {
   const baseUrl = site ?? new URL(url.origin)
   const posts = await getCollection('blog', ({ data }) => !data.draft)
 
-  const staticRoutes = ['/', '/blog']
+  const staticRoutes = ['/', '/blog', '/privacy', '/tools/cost-calculator']
 
   const urls = [
     ...staticRoutes.map((route) => ({

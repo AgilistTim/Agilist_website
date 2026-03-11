@@ -11,9 +11,13 @@ draft: false
 
 Most teams struggle with AI not because they lack prompting skills, but because they "ask AI to generate before they've helped it (or themselves) focus." Single prompts produce outputs that sound convincing yet contain errors that only surface when stakeholders review them.
 
+Research supports this. Wei et al.'s landmark study "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models" (*NeurIPS*, 2022) demonstrated that breaking reasoning into sequential steps dramatically improved model performance on complex tasks. The principle extends beyond single prompts: structuring AI interaction as progressive dialogue rather than one-shot instruction produces more reliable, auditable outputs.
+
 ## Why Sequence Matters
 
 The context you establish early in a conversation shapes subsequent responses beyond simple information provision. Early framing questions establish conceptual territory within which later prompts operate.
+
+Cognitive science explains why. Daniel Kahneman's work on anchoring effects (*Thinking, Fast and Slow*, 2011) demonstrates that the first information received disproportionately influences all subsequent judgement. In AI dialogue, deliberate early framing exploits this constructively: you anchor the model on the right conceptual territory before asking it to reason.
 
 Think of it like this: the first few exchanges set the boundaries of the playing field. Everything that comes after operates within those boundaries.
 
@@ -74,6 +78,8 @@ Learn established frameworks (GCSE, RISEN, LearnPrompting) deeply and combine th
 - Few-shot examples
 
 These support the underlying attention-priming sequence but don't replace it.
+
+Ethan Mollick, Wharton professor and author of *Co-Intelligence: Living and Working with AI* (2024), makes the case that the most effective AI users treat the technology as a collaborative thinking partner rather than a command-line tool. Frameworks provide structure, but the underlying skill is conversational steering—knowing when to constrain, when to expand, and when to challenge the model's reasoning.
 
 ## The Shift in Thinking
 

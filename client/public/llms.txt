@@ -1,0 +1,42 @@
+# Tim Robinson — Organisational Transformation & AI
+
+> Helping organisations redesign how work, decisions, and learning flow. 20+ years in transformation. AI practitioner who builds, not just advises.
+
+## About
+
+Tim Robinson is a UK-based organisational transformation consultant and AI practitioner. He works at the intersection of operating model design and applied AI — diagnosing structural constraints and helping leaders redesign how their organisations actually work.
+
+He has trained several hundred people in AI adoption, built 7+ production AI products, and serves as AI Advisor in Residence at SETsquared Bath Innovation Centre. He co-authored "The Generative Organization" with Bryan Cassady.
+
+## Services
+
+- **Diagnostic & Transformation**: Organisational and delivery diagnostics, operating model redesign, agile transformation, leadership advisory. Starts with diagnosis, not solutions.
+- **AI Capability Building**: AI readiness assessments, training programmes, operating model redesign for AI-native working, governance-by-design, hands-on tool integration.
+
+## Key Pages
+
+- Homepage: https://www.agilist.co.uk/
+- Blog: https://www.agilist.co.uk/blog/
+- LLM Cost Calculator: https://www.agilist.co.uk/tools/cost-calculator/
+- Book a conversation: https://calendly.com/agilist/quick-chat
+
+## Blog Topics
+
+Tim writes about organisational transformation, AI adoption, operating model design, product operations, decision-making, and the structural problems that sit between strategy and execution.
+
+## Products Built
+
+- EvaCares — Voice AI wellbeing calls for elderly people
+- PodGuide — AI co-pilot for podcasters
+- Delphi Decision Co-Pilot — Multi-round AI engine for strategic decisions
+- OBD-AI — Vehicle diagnostics with natural language AI
+- LLM Cost Calculator — Cloud vs self-hosted inference cost comparison
+
+## Book
+
+"The Generative Organization" by Tim Robinson and Bryan Cassady. A field guide for leaders navigating organisational transformation with AI. Available free at https://books.genorg.ai
+
+## Contact
+
+Book a conversation: https://calendly.com/agilist/quick-chat
+LinkedIn: https://www.linkedin.com/in/tim-robinson-agilist/

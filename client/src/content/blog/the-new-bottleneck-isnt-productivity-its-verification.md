@@ -12,6 +12,8 @@ That argument still holds. But running it in practice raises an obvious next que
 
 I was part of a panel discussion this morning on AI trust. The conversation kept surfacing the same gap I've been noticing in my own work: organisations have largely solved the productivity problem. The constraint that replaced it — verification — is one almost nobody has a serious answer for yet.
 
+The scale of the problem is measurable. Vectara's Hallucination Evaluation Model (2024) tested leading LLMs and found hallucination rates ranging from 3% to 27% depending on the model and task. When organisations multiply their AI-generated output by 10x, even a low error rate means hundreds of incorrect artefacts entering workflows daily.
+
 ## What we solved, and what replaced it
 
 In [an earlier piece on the economics of AI delivery](/blog/rapid-experimentation-ai-transforms-economics), I argued that AI inverts the cost structure of experimentation. The old world was build-to-ship: high cost per experiment forced fewer attempts, more upfront analysis, and slower learning cycles. AI collapsed that cost, enabling build-to-learn: many parallel experiments, lower stakes per attempt, faster feedback loops.
@@ -27,6 +29,8 @@ The question is no longer "can we afford to test this?" It's "how do we know if 
 The instinctive answer is "human review." Add a checkpoint. Keep a human in the loop. This is the right instinct applied at the wrong scale.
 
 If your team is generating ten times more artefacts — more code, more analysis, more documents, more decisions — then human review at the old ratio means ten times the reviewer time. That's not a governance model. That's a bottleneck with a different label.
+
+Gary Marcus, NYU professor emeritus and co-author of *Rebooting AI* (2019, with Ernest Davis), has consistently highlighted this paradox: AI systems can be simultaneously impressive and unreliable. The productivity gains are real; the reliability gaps are equally real and far less visible until something breaks.
 
 Effective verification at AI-native scale requires something different: **scaffolding**. The ability to structure AI outputs so they can be tested, not just read. Modular, verifiable, auditable. Unit tests for code. Structured outputs with validation logic. Decision chains that surface their own assumptions.
 
@@ -48,7 +52,7 @@ The shift from productivity mindset to verification mindset requires three thing
 
 **First, measure differently.** Output volume is the wrong metric. Speed-to-verified-output is the right one. If your team ships twice as fast but your error rate doubles, you haven't improved — you've just moved the cost downstream.
 
-**Second, invest in verification infrastructure before it's urgent.** Scaffolding, testing frameworks, structured output design — these feel like overhead when everything is working. They become critical the first time something goes wrong at scale. Build the plumbing before you need it.
+**Second, invest in verification infrastructure before it's urgent.** Scaffolding, testing frameworks, structured output design — these feel like overhead when everything is working. They become critical the first time something goes wrong at scale. Build the plumbing before you need it. MIT Sloan Management Review and Boston Consulting Group's annual AI research (2024) finds that the majority of organisations fail to scale value from AI—with governance and verification gaps, not technical capability, emerging as the primary barriers.
 
 **Third, treat governance as a design constraint, not a checkpoint.** The organisations that handle this well don't review AI outputs at the end of the process. They design the process so that verification is intrinsic — outputs that can't be verified aren't allowed into the workflow.
 
