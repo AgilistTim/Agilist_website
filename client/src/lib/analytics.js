@@ -1,13 +1,38 @@
 import posthog from 'posthog-js'
 
 const POSTHOG_KEY = import.meta.env.PUBLIC_POSTHOG_KEY || import.meta.env.VITE_POSTHOG_KEY
-const POSTHOG_HOST = import.meta.env.PUBLIC_POSTHOG_HOST || 'https://app.posthog.com'
+const POSTHOG_HOST = import.meta.env.PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com'
 
 let initialized = false
 
 function hasConsent() {
   if (typeof window === 'undefined') return false
   return window.localStorage.getItem('cookie_consent') === 'accepted'
+}
+
+/** Parse UTM params from current URL */
+function getUtmParams() {
+  if (typeof window === 'undefined') return {}
+  const params = new URLSearchParams(window.location.search)
+  const utm = {}
+  for (const key of ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term']) {
+    const val = params.get(key)
+    if (val) utm[key] = val
+  }
+  return utm
+}
+
+/** Get referrer info */
+function getReferrerInfo() {
+  if (typeof window === 'undefined') return {}
+  const ref = document.referrer
+  if (!ref) return { referrer: '(direct)' }
+  try {
+    const url = new URL(ref)
+    return { referrer: ref, referrer_domain: url.hostname }
+  } catch {
+    return { referrer: ref }
+  }
 }
 
 export function initAnalytics() {
@@ -44,9 +69,38 @@ export function trackEvent(eventName, properties = {}) {
   }
 }
 
+/** Fire a page view with UTM + referrer context. Call once per page load. */
+export function trackPageView(extraProps = {}) {
+  const utm = getUtmParams()
+  const ref = getReferrerInfo()
+  trackEvent('page_viewed', {
+    path: window.location.pathname,
+    ...utm,
+    ...ref,
+    ...extraProps
+  })
+
+  // Store UTM in session so downstream events (chat, booking) inherit attribution
+  if (Object.keys(utm).length > 0) {
+    try {
+      sessionStorage.setItem('agilist_utm', JSON.stringify(utm))
+    } catch { /* private browsing */ }
+  }
+}
+
+/** Retrieve stored UTM params for attributing in-session events */
+function getSessionUtm() {
+  try {
+    const raw = sessionStorage.getItem('agilist_utm')
+    return raw ? JSON.parse(raw) : {}
+  } catch {
+    return {}
+  }
+}
+
 // Specific tracking functions for chatbot
 export const analytics = {
-  chatOpened: () => trackEvent('chat_opened'),
+  chatOpened: () => trackEvent('chat_opened', getSessionUtm()),
 
   chatClosed: () => trackEvent('chat_closed'),
 
@@ -54,7 +108,8 @@ export const analytics = {
 
   messageSent: (messageLength, isStreaming = false) => trackEvent('chat_message_sent', {
     message_length: messageLength,
-    is_streaming: isStreaming
+    is_streaming: isStreaming,
+    ...getSessionUtm()
   }),
 
   messageReceived: (messageLength, responseTime) => trackEvent('chat_message_received', {
@@ -67,7 +122,8 @@ export const analytics = {
   }),
 
   bookingLinkClicked: (source) => trackEvent('booking_link_clicked', {
-    source // 'chat', 'hero', 'footer', etc.
+    source, // 'chat', 'hero', 'footer', etc.
+    ...getSessionUtm()
   }),
 
   historyCleared: () => trackEvent('chat_history_cleared'),
@@ -95,7 +151,9 @@ export const analytics = {
   blogPostViewed: (postTitle, postSlug, tags) => trackEvent('blog_post_viewed', {
     post_title: postTitle,
     post_slug: postSlug,
-    tags: tags?.join(', ')
+    tags: tags?.join(', '),
+    ...getUtmParams(),
+    ...getReferrerInfo()
   }),
 
   externalLinkClicked: (linkText, url, category) => trackEvent('external_link_clicked', {

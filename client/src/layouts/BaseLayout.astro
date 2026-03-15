@@ -65,6 +65,14 @@ const ogImageUrl = ogImage || null
       }
     </script>
 
+    <script>
+      import { initAnalytics, trackPageView } from '../lib/analytics.js'
+      // Init PostHog (React module path — handles dedup internally)
+      initAnalytics()
+      // Fire UTM-enriched page view on every page
+      trackPageView()
+    </script>
+
   </head>
   <body class="bg-[#0D0D0F] text-[#F4F4F5]">
     <slot />
